@@ -1,0 +1,15 @@
+[package]
+name = "llql"
+authors = ["AmrDeveloper"]
+version = "0.1.0"
+edition = "2021"
+description = "A tool to run SQL-like query on your LLVM IR or Bitcode files"
+license = "MIT"
+repository = "https://github.com/amrdeveloper/llql/"
+documentation = "https://github.com/amrdeveloper/llql"
+readme = "README.md"
+keywords = ["llvm-ir", "bitcode", "language", "gitql", "llvm"]
+categories = ["command-line-utilities"]
+exclude = [".github/**", "docs/**", "media/**", "scripts/**"]
+
+[dependencies]
