@@ -10,13 +10,11 @@ use crate::matchers::type_matcher::FloatTypeMatcher;
 use crate::matchers::type_matcher::FloatTypeSize;
 use crate::matchers::type_matcher::IntTypeMatcher;
 use crate::matchers::type_matcher::IntTypeSize;
+use crate::matchers::type_matcher::PointerTypeMatcher;
 use crate::matchers::type_matcher::VoidTypeMatcher;
 
 #[inline(always)]
 pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, Function>) {
-    // Matcher for Void type
-    map.insert("m_void", match_void);
-
     // Matchers for Integer types
     map.insert("m_int1", match_int1);
     map.insert("m_int8", match_int8);
@@ -27,6 +25,12 @@ pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, Function
     // Matchers for Float types
     map.insert("m_f32", match_float32);
     map.insert("m_f64", match_float64);
+
+    // Matcher for Void type
+    map.insert("m_void", match_void);
+
+    // Matcher for Pointer
+    map.insert("m_ptr", match_pointer);
 }
 
 #[inline(always)]
@@ -87,15 +91,22 @@ pub fn register_type_matchers_function_signatures(map: &mut HashMap<&'static str
             return_type: Box::new(TypeMatcherType),
         },
     );
+    map.insert(
+        "m_ptr",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(TypeMatcherType),
+        },
+    );
 }
 
-pub fn match_void(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+fn match_void(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(TypeMatcherValue {
         matcher: Box::new(VoidTypeMatcher),
     })
 }
 
-pub fn match_int1(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+fn match_int1(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let int1_matcher = IntTypeMatcher {
         size: IntTypeSize::Size1,
     };
@@ -105,7 +116,7 @@ pub fn match_int1(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     })
 }
 
-pub fn match_int8(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+fn match_int8(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let int1_matcher = IntTypeMatcher {
         size: IntTypeSize::Size8,
     };
@@ -115,7 +126,7 @@ pub fn match_int8(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     })
 }
 
-pub fn match_int16(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+fn match_int16(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let int1_matcher = IntTypeMatcher {
         size: IntTypeSize::Size16,
     };
@@ -125,7 +136,7 @@ pub fn match_int16(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     })
 }
 
-pub fn match_int32(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+fn match_int32(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let int1_matcher = IntTypeMatcher {
         size: IntTypeSize::Size32,
     };
@@ -135,7 +146,7 @@ pub fn match_int32(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     })
 }
 
-pub fn match_int64(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+fn match_int64(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let int1_matcher = IntTypeMatcher {
         size: IntTypeSize::Size64,
     };
@@ -145,7 +156,7 @@ pub fn match_int64(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     })
 }
 
-pub fn match_float32(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+fn match_float32(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let int1_matcher = FloatTypeMatcher {
         size: FloatTypeSize::Size32,
     };
@@ -155,12 +166,20 @@ pub fn match_float32(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     })
 }
 
-pub fn match_float64(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+fn match_float64(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let int1_matcher = FloatTypeMatcher {
         size: FloatTypeSize::Size64,
     };
 
     Box::new(TypeMatcherValue {
         matcher: Box::new(int1_matcher),
+    })
+}
+
+fn match_pointer(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let pointer_matcher = PointerTypeMatcher;
+
+    Box::new(TypeMatcherValue {
+        matcher: Box::new(pointer_matcher),
     })
 }
