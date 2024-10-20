@@ -1,3 +1,5 @@
+use dyn_clone::DynClone;
+use inkwell::llvm_sys;
 use llvm_sys::core::LLVMGetArrayLength;
 use llvm_sys::core::LLVMGetElementType;
 use llvm_sys::core::LLVMGetIntTypeWidth;
@@ -6,13 +8,16 @@ use llvm_sys::core::LLVMGetVectorSize;
 use llvm_sys::prelude::LLVMTypeRef;
 use llvm_sys::LLVMTypeKind;
 
+dyn_clone::clone_trait_object!(TypeMatcher);
+
 /// Type matcher used to create matcher that check if rules match [`LLVMTypeRef`] or not
-pub trait TypeMatcher {
+pub trait TypeMatcher: DynClone {
     /// Return true if this matcher match the [`LLVMTypeRef`]
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool;
 }
 
 /// Any Type Matcher used to match againts any [`LLVMTypeRef`]
+#[derive(Clone)]
 pub struct AnyTypeMatcher;
 
 impl TypeMatcher for AnyTypeMatcher {
@@ -22,9 +27,11 @@ impl TypeMatcher for AnyTypeMatcher {
 }
 
 /// Void Type Matcher used to match againts any LLVM Void Type
+#[derive(Clone)]
 pub struct VoidTypeMatcher;
 
 impl TypeMatcher for VoidTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
         unsafe {
             let kind = LLVMGetTypeKind(llvm_type);
@@ -34,7 +41,9 @@ impl TypeMatcher for VoidTypeMatcher {
 }
 
 /// Int Type Matcher used to match againts LLVM Integer Type with specific size
+#[derive(Clone)]
 pub enum IntTypeSize {
+    Size1,
     Size8,
     Size16,
     Size32,
@@ -42,17 +51,20 @@ pub enum IntTypeSize {
 }
 
 /// Variant of available int type sizes
+#[derive(Clone)]
 pub struct IntTypeMatcher {
     pub size: IntTypeSize,
 }
 
 impl TypeMatcher for IntTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
         unsafe {
             let kind = LLVMGetTypeKind(llvm_type);
             if kind == LLVMTypeKind::LLVMIntegerTypeKind {
                 let type_width = LLVMGetIntTypeWidth(llvm_type);
                 return match self.size {
+                    IntTypeSize::Size1 => type_width == 1,
                     IntTypeSize::Size8 => type_width == 8,
                     IntTypeSize::Size16 => type_width == 16,
                     IntTypeSize::Size32 => type_width == 32,
@@ -65,17 +77,20 @@ impl TypeMatcher for IntTypeMatcher {
 }
 
 /// Variant of available float type sizes
+#[derive(Clone)]
 pub enum FloatTypeSize {
     Size32,
     Size64,
 }
 
 /// Float Type Matcher used to match againts LLVM Float Type with specific size
+#[derive(Clone)]
 pub struct FloatTypeMatcher {
     pub size: FloatTypeSize,
 }
 
 impl TypeMatcher for FloatTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
         unsafe {
             let kind = LLVMGetTypeKind(llvm_type);
@@ -88,10 +103,12 @@ impl TypeMatcher for FloatTypeMatcher {
 }
 
 /// Pointer Type Matcher used to match againts LLVM Pointer Type
+#[derive(Clone)]
 
 pub struct PointerTypeMatcher;
 
 impl TypeMatcher for PointerTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
         unsafe {
             let kind = LLVMGetTypeKind(llvm_type);
@@ -101,12 +118,14 @@ impl TypeMatcher for PointerTypeMatcher {
 }
 
 /// Array Type Matcher used to match againts LLVM Array Type with specific base element type and size
+#[derive(Clone)]
 pub struct ArrayTypeMatcher {
     pub base_matcher: Box<dyn TypeMatcher>,
     pub length: Option<u32>,
 }
 
 impl TypeMatcher for ArrayTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
         unsafe {
             let kind = LLVMGetTypeKind(llvm_type);
@@ -132,12 +151,14 @@ impl TypeMatcher for ArrayTypeMatcher {
 }
 
 /// Vector Type Matcher used to match againts LLVM Vector Type with specific base element type and size
+#[derive(Clone)]
 pub struct VectorTypeMatcher {
     pub base_matcher: Box<dyn TypeMatcher>,
     pub length: Option<u32>,
 }
 
 impl TypeMatcher for VectorTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
         unsafe {
             let kind = LLVMGetTypeKind(llvm_type);

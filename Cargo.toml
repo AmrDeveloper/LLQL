@@ -13,3 +13,12 @@ categories = ["command-line-utilities"]
 exclude = [".github/**", "docs/**", "media/**", "scripts/**"]
 
 [dependencies]
+gitql-core = { path = "../gitql/crates/gitql-core", version = "0.5.0" }
+gitql-std = { path = "../gitql/crates/gitql-std", version = "0.5.0" }
+gitql-ast = { path = "../gitql/crates/gitql-ast", version = "0.25.0" }
+gitql-parser = { path = "../gitql/crates/gitql-parser", version = "0.27.0" }
+gitql-engine = { path = "../gitql/crates/gitql-engine", version = "0.28.0" }
+gitql-cli = { path = "../gitql/crates/gitql-cli", version = "0.28.0" }
+inkwell = { version = "0.5.0", features = ["llvm16-0"] }
+dyn-clone = "1.0.17"
+atty = "0.2.14"
