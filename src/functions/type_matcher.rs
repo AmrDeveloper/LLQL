@@ -1,11 +1,14 @@
 use std::collections::HashMap;
 
+use gitql_ast::types::integer::IntType;
+use gitql_ast::types::optional::OptionType;
 use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
 use gitql_core::values::base::Value;
 
 use crate::ir::types::TypeMatcherType;
 use crate::ir::values::TypeMatcherValue;
+use crate::matchers::type_matcher::ArrayTypeMatcher;
 use crate::matchers::type_matcher::FloatTypeMatcher;
 use crate::matchers::type_matcher::FloatTypeSize;
 use crate::matchers::type_matcher::IntTypeMatcher;
@@ -31,6 +34,9 @@ pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, Function
 
     // Matcher for Pointer
     map.insert("m_ptr", match_pointer);
+
+    // Matcher for Array
+    map.insert("m_array", match_array);
 }
 
 #[inline(always)]
@@ -95,6 +101,19 @@ pub fn register_type_matchers_function_signatures(map: &mut HashMap<&'static str
         "m_ptr",
         Signature {
             parameters: vec![],
+            return_type: Box::new(TypeMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_array",
+        Signature {
+            parameters: vec![
+                Box::new(TypeMatcherType),
+                Box::new(OptionType {
+                    base: Some(Box::new(IntType)),
+                }),
+            ],
             return_type: Box::new(TypeMatcherType),
         },
     );
@@ -181,5 +200,22 @@ fn match_pointer(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
     Box::new(TypeMatcherValue {
         matcher: Box::new(pointer_matcher),
+    })
+}
+
+fn match_array(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let base_matcher = &values[0]
+        .as_any()
+        .downcast_ref::<TypeMatcherValue>()
+        .unwrap()
+        .matcher;
+
+    let array_type_matcher = ArrayTypeMatcher {
+        base_matcher: base_matcher.clone(),
+        length: None,
+    };
+
+    Box::new(TypeMatcherValue {
+        matcher: Box::new(array_type_matcher),
     })
 }
