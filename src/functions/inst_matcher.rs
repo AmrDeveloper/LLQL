@@ -13,12 +13,14 @@ use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
 use crate::ir::values::TypeMatcherValue;
 use crate::matchers::instruction_matcher::ReturnInstMatcher;
+use crate::matchers::instruction_matcher::UnreachableInstMatcher;
 use crate::matchers::type_matcher::AnyTypeMatcher;
 
 #[inline(always)]
 pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function>) {
     map.insert("m_inst", match_inst);
     map.insert("m_return", match_return_inst);
+    map.insert("m_unreachable", match_unreachable_inst);
 }
 
 #[inline(always)]
@@ -37,6 +39,13 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
             parameters: vec![Box::new(OptionType {
                 base: Some(Box::new(TypeMatcherType)),
             })],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+    map.insert(
+        "m_unreachable",
+        Signature {
+            parameters: vec![],
             return_type: Box::new(InstMatcherType),
         },
     );
@@ -67,5 +76,11 @@ fn match_return_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
     Box::new(InstMatcherValue {
         matcher: Box::new(ReturnInstMatcher { type_matcher }),
+    })
+}
+
+fn match_unreachable_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    Box::new(InstMatcherValue {
+        matcher: Box::new(UnreachableInstMatcher),
     })
 }
