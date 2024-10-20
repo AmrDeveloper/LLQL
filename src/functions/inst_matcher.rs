@@ -17,14 +17,14 @@ use crate::matchers::type_matcher::AnyTypeMatcher;
 
 #[inline(always)]
 pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function>) {
-    map.insert("inst_match", match_inst);
+    map.insert("m_inst", match_inst);
     map.insert("m_return", match_return_inst);
 }
 
 #[inline(always)]
 pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str, Signature>) {
     map.insert(
-        "inst_match",
+        "m_inst",
         Signature {
             parameters: vec![Box::new(LLVMInstType), Box::new(InstMatcherType)],
             return_type: Box::new(BoolType),
