@@ -14,6 +14,7 @@ use crate::matchers::type_matcher::FloatTypeSize;
 use crate::matchers::type_matcher::IntTypeMatcher;
 use crate::matchers::type_matcher::IntTypeSize;
 use crate::matchers::type_matcher::PointerTypeMatcher;
+use crate::matchers::type_matcher::VectorTypeMatcher;
 use crate::matchers::type_matcher::VoidTypeMatcher;
 
 #[inline(always)]
@@ -32,11 +33,14 @@ pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, Function
     // Matcher for Void type
     map.insert("m_void", match_void);
 
-    // Matcher for Pointer
+    // Matcher for Pointer types
     map.insert("m_ptr", match_pointer);
 
-    // Matcher for Array
+    // Matcher for Array type
     map.insert("m_array", match_array);
+
+    // Matcher for Vector type
+    map.insert("m_vector", match_vector);
 }
 
 #[inline(always)]
@@ -107,6 +111,18 @@ pub fn register_type_matchers_function_signatures(map: &mut HashMap<&'static str
 
     map.insert(
         "m_array",
+        Signature {
+            parameters: vec![
+                Box::new(TypeMatcherType),
+                Box::new(OptionType {
+                    base: Some(Box::new(IntType)),
+                }),
+            ],
+            return_type: Box::new(TypeMatcherType),
+        },
+    );
+    map.insert(
+        "m_vector",
         Signature {
             parameters: vec![
                 Box::new(TypeMatcherType),
@@ -210,9 +226,38 @@ fn match_array(values: &[Box<dyn Value>]) -> Box<dyn Value> {
         .unwrap()
         .matcher;
 
+    let length = if values.len() == 2 {
+        Some(values[1].as_int().unwrap() as u32)
+    } else {
+        None
+    };
+
     let array_type_matcher = ArrayTypeMatcher {
         base_matcher: base_matcher.clone(),
-        length: None,
+        length,
+    };
+
+    Box::new(TypeMatcherValue {
+        matcher: Box::new(array_type_matcher),
+    })
+}
+
+fn match_vector(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let base_matcher = &values[0]
+        .as_any()
+        .downcast_ref::<TypeMatcherValue>()
+        .unwrap()
+        .matcher;
+
+    let length = if values.len() == 2 {
+        Some(values[1].as_int().unwrap() as u32)
+    } else {
+        None
+    };
+
+    let array_type_matcher = VectorTypeMatcher {
+        base_matcher: base_matcher.clone(),
+        length,
     };
 
     Box::new(TypeMatcherValue {
