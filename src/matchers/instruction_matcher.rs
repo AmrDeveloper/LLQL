@@ -11,9 +11,45 @@ use super::type_matcher::TypeMatcher;
 dyn_clone::clone_trait_object!(InstMatcher);
 
 /// Instruction matcher used to create matcher that check if rules match the instruction or not
-///
 pub trait InstMatcher: DynClone {
     fn is_match(&self, instruction: LLVMValueRef) -> bool;
+}
+
+/// Instruction Matcher to match to any instruction, used mostly as default matcher
+#[derive(Clone)]
+pub struct AnyInstMatcher;
+
+impl InstMatcher for AnyInstMatcher {
+    fn is_match(&self, _instruction: LLVMValueRef) -> bool {
+        true
+    }
+}
+
+/// Binary instruction matcher to check to match instruction opcode, right and left hand sides
+#[derive(Clone)]
+pub struct BinaryInstMatcher {
+    pub opcode: LLVMOpcode,
+    pub lhs_matcher: Box<dyn InstMatcher>,
+    pub rhs_matcher: Box<dyn InstMatcher>,
+}
+
+impl InstMatcher for BinaryInstMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            let opcode = LLVMGetInstructionOpcode(instruction);
+            if opcode == self.opcode {
+                let lhs = LLVMGetOperand(instruction, 0);
+                if !self.lhs_matcher.is_match(lhs) {
+                    return false;
+                }
+
+                let rhs = LLVMGetOperand(instruction, 1);
+                return self.rhs_matcher.is_match(rhs);
+            }
+            false
+        }
+    }
 }
 
 // Return instruction matcher to check if current instruction is return instruction with specific type or not
