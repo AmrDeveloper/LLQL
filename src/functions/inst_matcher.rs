@@ -24,6 +24,7 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
     map.insert("m_inst", match_inst);
     map.insert("m_any_inst", match_any_inst);
     map.insert("m_add", match_add_inst);
+    map.insert("m_sub", match_sub_inst);
     map.insert("m_return", match_return_inst);
     map.insert("m_unreachable", match_unreachable_inst);
 }
@@ -46,6 +47,13 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
     );
     map.insert(
         "m_add",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+    map.insert(
+        "m_sub",
         Signature {
             parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
             return_type: Box::new(InstMatcherType),
@@ -104,6 +112,30 @@ fn match_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(InstMatcherValue {
         matcher: Box::new(BinaryInstMatcher {
             opcode: LLVMOpcode::LLVMAdd,
+            lhs_matcher,
+            rhs_matcher,
+        }),
+    })
+}
+
+fn match_sub_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: Box::new(BinaryInstMatcher {
+            opcode: LLVMOpcode::LLVMSub,
             lhs_matcher,
             rhs_matcher,
         }),
