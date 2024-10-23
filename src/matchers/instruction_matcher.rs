@@ -83,6 +83,18 @@ impl BinaryInstMatcher {
         })
     }
 
+    pub fn create_rem(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMSRem,
+            commutatively: false,
+        })
+    }
+
     pub fn create_commutatively_add(
         lhs: Box<dyn InstMatcher>,
         rhs: Box<dyn InstMatcher>,
@@ -127,6 +139,18 @@ impl BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
             opcode: LLVMOpcode::LLVMSDiv,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_rem(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMSRem,
             commutatively: true,
         })
     }

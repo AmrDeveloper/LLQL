@@ -28,11 +28,13 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
     map.insert("m_sub", match_sub_inst);
     map.insert("m_mul", match_mul_inst);
     map.insert("m_div", match_div_inst);
+    map.insert("m_rem", match_rem_inst);
 
     map.insert("m_c_add", match_commutatively_add_inst);
     map.insert("m_c_sub", match_commutatively_sub_inst);
     map.insert("m_c_mul", match_commutatively_mul_inst);
     map.insert("m_c_div", match_commutatively_div_inst);
+    map.insert("m_c_rem", match_commutatively_rem_inst);
 
     map.insert("m_return", match_return_inst);
     map.insert("m_unreachable", match_unreachable_inst);
@@ -225,6 +227,26 @@ fn match_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     })
 }
 
+fn match_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_div(lhs_matcher, rhs_matcher),
+    })
+}
+
 fn match_commutatively_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let lhs_matcher = values[0]
         .as_any()
@@ -302,6 +324,26 @@ fn match_commutatively_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
     Box::new(InstMatcherValue {
         matcher: BinaryInstMatcher::create_commutatively_div(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_commutatively_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_commutatively_rem(lhs_matcher, rhs_matcher),
     })
 }
 
