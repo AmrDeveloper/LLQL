@@ -90,14 +90,21 @@ impl InstMatcher for BinaryInstMatcher {
         unsafe {
             let opcode = LLVMGetInstructionOpcode(instruction);
             if opcode == self.opcode {
+                let rhs = LLVMGetOperand(instruction, 1);
                 let lhs = LLVMGetOperand(instruction, 0);
-                if !self.lhs_matcher.is_match(lhs) {
-                    return false;
+
+                if self.lhs_matcher.is_match(lhs) && self.rhs_matcher.is_match(rhs) {
+                    return true;
                 }
 
-                let rhs = LLVMGetOperand(instruction, 1);
-                return self.rhs_matcher.is_match(rhs);
+                if self.commutatively
+                    && self.lhs_matcher.is_match(rhs)
+                    && self.rhs_matcher.is_match(lhs)
+                {
+                    return true;
+                }
             }
+
             false
         }
     }
