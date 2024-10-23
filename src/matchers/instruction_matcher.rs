@@ -82,6 +82,54 @@ impl BinaryInstMatcher {
             commutatively: false,
         })
     }
+
+    pub fn create_commutatively_add(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMAdd,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_sub(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMSub,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_mul(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMMul,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_div(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMSDiv,
+            commutatively: true,
+        })
+    }
 }
 
 impl InstMatcher for BinaryInstMatcher {
