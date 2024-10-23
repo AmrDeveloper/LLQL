@@ -28,9 +28,60 @@ impl InstMatcher for AnyInstMatcher {
 /// Binary instruction matcher to check to match instruction opcode, right and left hand sides
 #[derive(Clone)]
 pub struct BinaryInstMatcher {
-    pub opcode: LLVMOpcode,
     pub lhs_matcher: Box<dyn InstMatcher>,
     pub rhs_matcher: Box<dyn InstMatcher>,
+    pub opcode: LLVMOpcode,
+    pub commutatively: bool,
+}
+
+impl BinaryInstMatcher {
+    pub fn create_add(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMAdd,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_sub(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMSub,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_mul(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMMul,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_div(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMSDiv,
+            commutatively: false,
+        })
+    }
 }
 
 impl InstMatcher for BinaryInstMatcher {

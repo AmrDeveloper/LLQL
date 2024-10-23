@@ -1,11 +1,11 @@
+use std::collections::HashMap;
+
 use gitql_ast::types::boolean::BoolType;
 use gitql_ast::types::optional::OptionType;
 use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
 use gitql_core::values::base::Value;
 use gitql_core::values::boolean::BoolValue;
-use inkwell::llvm_sys::LLVMOpcode;
-use std::collections::HashMap;
 
 use crate::ir::types::InstMatcherType;
 use crate::ir::types::LLVMInstType;
@@ -25,6 +25,8 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
     map.insert("m_any_inst", match_any_inst);
     map.insert("m_add", match_add_inst);
     map.insert("m_sub", match_sub_inst);
+    map.insert("m_mul", match_mul_inst);
+    map.insert("m_div", match_div_inst);
     map.insert("m_return", match_return_inst);
     map.insert("m_unreachable", match_unreachable_inst);
 }
@@ -54,6 +56,20 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
     );
     map.insert(
         "m_sub",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+    map.insert(
+        "m_mul",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+    map.insert(
+        "m_div",
         Signature {
             parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
             return_type: Box::new(InstMatcherType),
@@ -110,11 +126,7 @@ fn match_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
         .to_owned();
 
     Box::new(InstMatcherValue {
-        matcher: Box::new(BinaryInstMatcher {
-            opcode: LLVMOpcode::LLVMAdd,
-            lhs_matcher,
-            rhs_matcher,
-        }),
+        matcher: BinaryInstMatcher::create_add(lhs_matcher, rhs_matcher),
     })
 }
 
@@ -134,11 +146,47 @@ fn match_sub_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
         .to_owned();
 
     Box::new(InstMatcherValue {
-        matcher: Box::new(BinaryInstMatcher {
-            opcode: LLVMOpcode::LLVMSub,
-            lhs_matcher,
-            rhs_matcher,
-        }),
+        matcher: BinaryInstMatcher::create_sub(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_mul_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_mul(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_div(lhs_matcher, rhs_matcher),
     })
 }
 
