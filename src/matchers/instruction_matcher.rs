@@ -433,6 +433,126 @@ impl IntComparisonInstMatcher {
             commutatively: false,
         })
     }
+
+    pub fn create_commutatively_icmp_eq(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntEQ,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_ne(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntNE,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_ugt(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntUGT,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_uge(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntUGE,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_ult(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntULT,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_ule(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntULE,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_sgt(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntSGT,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_sge(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntSGE,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_slt(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntSLT,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_icmp_sle(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(IntComparisonInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            predicate: LLVMIntPredicate::LLVMIntSLE,
+            commutatively: true,
+        })
+    }
 }
 
 impl InstMatcher for IntComparisonInstMatcher {
