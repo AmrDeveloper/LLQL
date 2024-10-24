@@ -9,6 +9,8 @@ use inst_matcher::register_inst_matchers_functions;
 use type_matcher::register_type_matchers_function_signatures;
 use type_matcher::register_type_matchers_functions;
 
+pub(crate) mod arithmetic_matchers;
+pub(crate) mod icmp_matchers;
 pub(crate) mod inst_matcher;
 pub(crate) mod type_matcher;
 
