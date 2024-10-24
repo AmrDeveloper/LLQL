@@ -74,6 +74,14 @@ pub fn register_arithmetic_matchers_function_signatures(
     );
 
     map.insert(
+        "m_rem",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
         "m_c_add",
         Signature {
             parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
@@ -99,6 +107,94 @@ pub fn register_arithmetic_matchers_function_signatures(
 
     map.insert(
         "m_c_div",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_c_rem",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_fadd",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_fsub",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_fmul",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_fdiv",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_frem",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_c_fadd",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_c_fsub",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_c_fmul",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_c_fdiv",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_c_frem",
         Signature {
             parameters: vec![Box::new(InstMatcherType), Box::new(InstMatcherType)],
             return_type: Box::new(InstMatcherType),
