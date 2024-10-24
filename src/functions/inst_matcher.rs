@@ -36,6 +36,18 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
     map.insert("m_c_div", match_commutatively_div_inst);
     map.insert("m_c_rem", match_commutatively_rem_inst);
 
+    map.insert("m_fadd", match_float_add_inst);
+    map.insert("m_fsub", match_float_sub_inst);
+    map.insert("m_fmul", match_float_mul_inst);
+    map.insert("m_fdiv", match_float_div_inst);
+    map.insert("m_frem", match_float_rem_inst);
+
+    map.insert("m_c_fadd", match_commutatively_float_add_inst);
+    map.insert("m_c_fsub", match_commutatively_float_sub_inst);
+    map.insert("m_c_fmul", match_commutatively_float_mul_inst);
+    map.insert("m_c_fdiv", match_commutatively_float_div_inst);
+    map.insert("m_c_frem", match_commutatively_float_rem_inst);
+
     map.insert("m_return", match_return_inst);
     map.insert("m_unreachable", match_unreachable_inst);
 }
@@ -344,6 +356,206 @@ fn match_commutatively_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
     Box::new(InstMatcherValue {
         matcher: BinaryInstMatcher::create_commutatively_rem(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_float_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_float_add(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_float_sub_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_float_sub(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_float_mul_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_float_mul(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_float_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_float_div(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_float_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_float_div(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_commutatively_float_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_commutatively_float_add(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_commutatively_float_sub_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_commutatively_float_sub(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_commutatively_float_mul_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_commutatively_float_mul(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_commutatively_float_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_commutatively_float_div(lhs_matcher, rhs_matcher),
+    })
+}
+
+fn match_commutatively_float_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let lhs_matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    let rhs_matcher = values[1]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+
+    Box::new(InstMatcherValue {
+        matcher: BinaryInstMatcher::create_commutatively_float_rem(lhs_matcher, rhs_matcher),
     })
 }
 

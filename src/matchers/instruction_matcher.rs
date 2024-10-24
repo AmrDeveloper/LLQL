@@ -154,6 +154,126 @@ impl BinaryInstMatcher {
             commutatively: true,
         })
     }
+
+    pub fn create_float_add(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFAdd,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_float_sub(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFSub,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_float_mul(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFMul,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_float_div(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFDiv,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_float_rem(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFRem,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_commutatively_float_add(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFAdd,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_float_sub(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFSub,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_float_mul(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFMul,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_float_div(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFDiv,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_float_rem(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            opcode: LLVMOpcode::LLVMFRem,
+            commutatively: true,
+        })
+    }
 }
 
 impl InstMatcher for BinaryInstMatcher {
