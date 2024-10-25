@@ -20,6 +20,8 @@ use crate::matchers::type_matcher::AnyTypeMatcher;
 
 use super::arithmetic_matchers::register_arithmetic_matchers_function_signatures;
 use super::arithmetic_matchers::register_arithmetic_matchers_functions;
+use super::fcmp_matchers::register_float_comparisons_matchers_function_signatures;
+use super::fcmp_matchers::register_float_comparisons_matchers_functions;
 use super::icmp_matchers::register_int_comparisons_matchers_function_signatures;
 use super::icmp_matchers::register_int_comparisons_matchers_functions;
 
@@ -33,6 +35,7 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
 
     register_arithmetic_matchers_functions(map);
     register_int_comparisons_matchers_functions(map);
+    register_float_comparisons_matchers_functions(map);
 }
 
 #[inline(always)]
@@ -70,6 +73,7 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
 
     register_arithmetic_matchers_function_signatures(map);
     register_int_comparisons_matchers_function_signatures(map);
+    register_float_comparisons_matchers_function_signatures(map);
 }
 
 fn match_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
