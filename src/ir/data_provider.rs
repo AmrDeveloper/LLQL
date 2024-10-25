@@ -23,8 +23,12 @@ impl LLVMIRDataProvider {
     pub fn new(paths: Vec<String>) -> Self {
         unsafe {
             for path in paths.iter() {
-                let memory_buffer = MemoryBuffer::create_from_file(path.as_ref()).unwrap();
-                let module = LLVM_CONTEXT.create_module_from_ir(memory_buffer).unwrap();
+                let module = if path.ends_with(".ll") {
+                    let memory_buffer = MemoryBuffer::create_from_file(path.as_ref()).unwrap();
+                    LLVM_CONTEXT.create_module_from_ir(memory_buffer).unwrap()
+                } else {
+                    Module::parse_bitcode_from_path(path, &*LLVM_CONTEXT).unwrap()
+                };
                 LLVM_MODULES.push(module.to_owned());
             }
         };
