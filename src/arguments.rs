@@ -7,6 +7,7 @@ pub struct Arguments {
     pub analysis: bool,
     pub pagination: bool,
     pub page_size: usize,
+    pub enable_line_editor: bool,
     pub output_format: OutputFormat,
 }
 
@@ -18,6 +19,7 @@ impl Arguments {
             analysis: false,
             pagination: false,
             page_size: 10,
+            enable_line_editor: false,
             output_format: OutputFormat::Render,
         }
     }
@@ -117,6 +119,10 @@ pub fn parse_arguments(args: &[String]) -> Command {
 
                 let page_size = page_size_result.ok().unwrap();
                 arguments.page_size = page_size;
+                arg_index += 1;
+            }
+            "--editor" | "-e" => {
+                arguments.enable_line_editor = true;
                 arg_index += 1;
             }
             "--output" | "-o" => {

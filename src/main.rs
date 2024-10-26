@@ -25,10 +25,12 @@ use gitql_std::aggregation::aggregation_functions;
 use ir::data_provider::LLVMIRDataProvider;
 use ir::schema::llvm_tables_fields_names;
 use ir::schema::llvm_tables_fields_types;
+use lineeditor::LineEditorResult;
 
 pub mod arguments;
 pub mod functions;
 pub mod ir;
+pub mod line_editor;
 pub mod matchers;
 
 fn main() {
@@ -107,8 +109,37 @@ fn launch_llql_repl(arguments: Arguments) {
     global_env.with_standard_functions(&std_signatures, std_functions);
     global_env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
 
-    let mut input = String::new();
+    // Launch the right line editor if the flag is enabled
+    // Later this line editor will be the default editor
+    if arguments.enable_line_editor {
+        let mut line_editor = line_editor::create_new_line_editor();
+        loop {
+            if let Ok(LineEditorResult::Success(input)) = line_editor.read_line() {
+                println!();
 
+                if input.is_empty() || input == "\n" {
+                    continue;
+                }
+
+                if input == "exit" {
+                    break;
+                }
+
+                execute_llql_query(
+                    input.to_owned(),
+                    &arguments,
+                    &files,
+                    &mut global_env,
+                    &mut reporter,
+                );
+
+                global_env.clear_session();
+            }
+        }
+        return;
+    }
+
+    let mut input = String::new();
     loop {
         // Render Prompt only if input is received from terminal
         if atty::is(Stream::Stdin) {
@@ -140,7 +171,7 @@ fn launch_llql_repl(arguments: Arguments) {
         execute_llql_query(
             stdin_input.to_owned(),
             &arguments,
-            files,
+            &files,
             &mut global_env,
             &mut reporter,
         );
