@@ -247,6 +247,10 @@ pub fn create_new_line_editor() -> LineEditor {
     let prompt = StringPrompt::new("llql > ".to_string());
     let mut line_editor = LineEditor::new(Box::new(prompt));
 
+    let mut style = Style::default();
+    style.set_background_color(lineeditor::Color::Cyan);
+    line_editor.set_visual_selection_style(Some(style));
+
     line_editor.add_highlighter(Box::<GitQLHighlighter>::default());
     line_editor.add_highlighter(Box::<MatchingBracketsHighlighter>::default());
     line_editor.add_hinter(Box::<GitQLHinter>::default());

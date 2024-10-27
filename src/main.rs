@@ -128,7 +128,7 @@ fn launch_llql_repl(arguments: Arguments) {
                 execute_llql_query(
                     input.to_owned(),
                     &arguments,
-                    &files,
+                    files,
                     &mut global_env,
                     &mut reporter,
                 );
@@ -171,7 +171,7 @@ fn launch_llql_repl(arguments: Arguments) {
         execute_llql_query(
             stdin_input.to_owned(),
             &arguments,
-            &files,
+            files,
             &mut global_env,
             &mut reporter,
         );
