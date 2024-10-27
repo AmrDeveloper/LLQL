@@ -72,7 +72,10 @@ fn main() {
             env.with_standard_functions(&std_signatures, std_functions);
             env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
 
-            execute_llql_query(query, &arguments, &arguments.files, &mut env, &mut reporter);
+            let provider: Box<dyn DataProvider> =
+                Box::new(LLVMIRDataProvider::new(arguments.files.clone()));
+
+            execute_llql_query(query, &arguments, &mut env, &provider, &mut reporter);
         }
         Command::Help => {
             arguments::print_help_list();
@@ -109,6 +112,8 @@ fn launch_llql_repl(arguments: Arguments) {
     global_env.with_standard_functions(&std_signatures, std_functions);
     global_env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
 
+    let provider: Box<dyn DataProvider> = Box::new(LLVMIRDataProvider::new(files.to_vec()));
+
     // Launch the right line editor if the flag is enabled
     // Later this line editor will be the default editor
     if arguments.enable_line_editor {
@@ -128,8 +133,8 @@ fn launch_llql_repl(arguments: Arguments) {
                 execute_llql_query(
                     input.to_owned(),
                     &arguments,
-                    files,
                     &mut global_env,
+                    &provider,
                     &mut reporter,
                 );
 
@@ -171,8 +176,8 @@ fn launch_llql_repl(arguments: Arguments) {
         execute_llql_query(
             stdin_input.to_owned(),
             &arguments,
-            files,
             &mut global_env,
+            &provider,
             &mut reporter,
         );
 
@@ -181,11 +186,12 @@ fn launch_llql_repl(arguments: Arguments) {
     }
 }
 
+#[allow(clippy::borrowed_box)]
 fn execute_llql_query(
     query: String,
     arguments: &Arguments,
-    files: &[String],
     env: &mut Environment,
+    provider: &Box<dyn DataProvider>,
     reporter: &mut DiagnosticReporter,
 ) {
     let front_start = std::time::Instant::now();
@@ -212,8 +218,7 @@ fn execute_llql_query(
     let front_duration = front_start.elapsed();
 
     let engine_start = std::time::Instant::now();
-    let provider: Box<dyn DataProvider> = Box::new(LLVMIRDataProvider::new(files.to_vec()));
-    let evaluation_result = engine::evaluate(env, &provider, query_node);
+    let evaluation_result = engine::evaluate(env, provider, query_node);
     let engine_duration = engine_start.elapsed();
 
     // Report Runtime exceptions if they exists
