@@ -16,7 +16,7 @@ LLQL is a tool that allow you to run SQL-like query with Pattern matching functi
 </p>
 
 <p align="center">
-  <img src="media/llql_demo.PNG" alt="animated" width="100%"/>
+  <img src="media/llql_demo.png" alt="animated" width="100%"/>
 </p>
 
 ---
@@ -37,13 +37,13 @@ define i32 @function(i32 %a, i32 %b) {
 We can query to print the instruction with this query
 
 ```sql
-SELECT instruction FROM instructions WHERE m_inst(instruction, m_add(m_sub(m_any_inst(), m_any_inst()), m_mul(m_any_inst(), m_any_inst())))
+SELECT instruction FROM instructions WHERE m_inst(instruction, m_add(m_sub(), m_mul()))
 ```
 
-Or you can count the number of times this pattern exists in your inputs files
+Or for example you can query how many times this pattern exists in each function
 
 ```sql
-SELECT COUNT() FROM instructions WHERE m_inst(instruction, m_add(m_sub(m_any_inst(), m_any_inst()), m_mul(m_any_inst(), m_any_inst())))
+SELECT function_name, count() FROM instructions WHERE m_inst(instruction, m_add(m_sub(), m_mul())) GROUP BY function_name
 ```
 
 ---
