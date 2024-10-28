@@ -8,7 +8,7 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | :-----------: | :------------------------------: | :---------: | :---------------------------------------------------: |
 |    m_inst     | (i: Instruction, m: InstMatcher) |    Bool     |     Check if instruction is matched with Matcher      |
 |  m_any_inst   |                ()                | InstMatcher |     Build Inst Matcher that match any Instruction     |
-|   m_return    |        (m : TypeMatcher?)        | InstMatcher |   Build Inst Matcher that match Return Instruction    |
+|   m_return    |        (m : InstMatcher?)        | InstMatcher |   Build Inst Matcher that match Return Instruction    |
 | m_unreachable |                ()                | InstMatcher | Build Inst Matcher that match unreachable Instruction |
 
 ### Arithmetic Instructions Matchers functions

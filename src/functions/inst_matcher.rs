@@ -9,14 +9,11 @@ use gitql_core::values::boolean::BoolValue;
 
 use crate::ir::types::InstMatcherType;
 use crate::ir::types::LLVMInstType;
-use crate::ir::types::TypeMatcherType;
 use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
-use crate::ir::values::TypeMatcherValue;
 use crate::matchers::instruction_matcher::AnyInstMatcher;
 use crate::matchers::instruction_matcher::ReturnInstMatcher;
 use crate::matchers::instruction_matcher::UnreachableInstMatcher;
-use crate::matchers::type_matcher::AnyTypeMatcher;
 
 use super::arithmetic_matchers::register_arithmetic_matchers_function_signatures;
 use super::arithmetic_matchers::register_arithmetic_matchers_functions;
@@ -58,7 +55,7 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
         "m_return",
         Signature {
             parameters: vec![Box::new(OptionType {
-                base: Some(Box::new(TypeMatcherType)),
+                base: Some(Box::new(InstMatcherType)),
             })],
             return_type: Box::new(InstMatcherType),
         },
@@ -94,19 +91,19 @@ fn match_any_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 }
 
 fn match_return_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let type_matcher = if values.is_empty() {
-        Box::new(AnyTypeMatcher)
+    let matcher = if values.is_empty() {
+        Box::new(AnyInstMatcher)
     } else {
         values[0]
             .as_any()
-            .downcast_ref::<TypeMatcherValue>()
+            .downcast_ref::<InstMatcherValue>()
             .unwrap()
             .matcher
             .clone()
     };
 
     Box::new(InstMatcherValue {
-        matcher: Box::new(ReturnInstMatcher { type_matcher }),
+        matcher: Box::new(ReturnInstMatcher { matcher }),
     })
 }
 

@@ -6,11 +6,8 @@ use inkwell::llvm_sys::LLVMIntPredicate;
 use inkwell::llvm_sys::LLVMRealPredicate;
 use llvm_sys::core::LLVMGetInstructionOpcode;
 use llvm_sys::core::LLVMGetOperand;
-use llvm_sys::core::LLVMTypeOf;
 use llvm_sys::prelude::LLVMValueRef;
 use llvm_sys::LLVMOpcode;
-
-use super::type_matcher::TypeMatcher;
 
 dyn_clone::clone_trait_object!(InstMatcher);
 
@@ -959,7 +956,7 @@ impl InstMatcher for FloatComparisonInstMatcher {
 // Return instruction matcher to check if current instruction is return instruction with specific type or not
 #[derive(Clone)]
 pub struct ReturnInstMatcher {
-    pub type_matcher: Box<dyn TypeMatcher>,
+    pub matcher: Box<dyn InstMatcher>,
 }
 
 impl InstMatcher for ReturnInstMatcher {
@@ -969,8 +966,7 @@ impl InstMatcher for ReturnInstMatcher {
             let opcode = LLVMGetInstructionOpcode(instruction);
             if opcode == LLVMOpcode::LLVMRet {
                 let return_value = LLVMGetOperand(instruction, 0);
-                let return_type = LLVMTypeOf(return_value);
-                return self.type_matcher.is_match(return_type);
+                return self.matcher.is_match(return_value);
             }
             false
         }
