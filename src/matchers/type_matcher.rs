@@ -181,6 +181,20 @@ impl TypeMatcher for VectorTypeMatcher {
     }
 }
 
+/// Scalable Vector Type Matcher used to match againts LLVM scalable Vector Type
+#[derive(Clone)]
+pub struct ScalableVectorTypeMatcher;
+
+impl TypeMatcher for ScalableVectorTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+        unsafe {
+            let kind = LLVMGetTypeKind(llvm_type);
+            return kind == LLVMTypeKind::LLVMScalableVectorTypeKind;
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
 

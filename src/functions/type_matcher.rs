@@ -14,6 +14,7 @@ use crate::matchers::type_matcher::FloatTypeSize;
 use crate::matchers::type_matcher::IntTypeMatcher;
 use crate::matchers::type_matcher::IntTypeSize;
 use crate::matchers::type_matcher::PointerTypeMatcher;
+use crate::matchers::type_matcher::ScalableVectorTypeMatcher;
 use crate::matchers::type_matcher::VectorTypeMatcher;
 use crate::matchers::type_matcher::VoidTypeMatcher;
 
@@ -41,6 +42,7 @@ pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, Function
 
     // Matcher for Vector type
     map.insert("m_vector", match_vector);
+    map.insert("m_scalable_vector", match_scalable_vector);
 }
 
 #[inline(always)]
@@ -130,6 +132,13 @@ pub fn register_type_matchers_function_signatures(map: &mut HashMap<&'static str
                     base: Some(Box::new(IntType)),
                 }),
             ],
+            return_type: Box::new(TypeMatcherType),
+        },
+    );
+    map.insert(
+        "m_scalable_vector",
+        Signature {
+            parameters: vec![],
             return_type: Box::new(TypeMatcherType),
         },
     );
@@ -262,5 +271,11 @@ fn match_vector(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
     Box::new(TypeMatcherValue {
         matcher: Box::new(array_type_matcher),
+    })
+}
+
+fn match_scalable_vector(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    Box::new(TypeMatcherValue {
+        matcher: Box::new(ScalableVectorTypeMatcher),
     })
 }
