@@ -190,7 +190,7 @@ impl TypeMatcher for ScalableVectorTypeMatcher {
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
         unsafe {
             let kind = LLVMGetTypeKind(llvm_type);
-            return kind == LLVMTypeKind::LLVMScalableVectorTypeKind;
+            kind == LLVMTypeKind::LLVMScalableVectorTypeKind
         }
     }
 }
