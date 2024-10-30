@@ -971,7 +971,6 @@ impl InstMatcher for LabelInstMatcher {
             let value_kind = LLVMGetValueKind(instruction);
             if value_kind == LLVMValueKind::LLVMBasicBlockValueKind {
                 if let Some(name) = &self.name {
-                    // TODO: Replace LLVMGetValueName with LLVMGetValueName2
                     let label_value_name = llvm_sys::core::LLVMGetValueName(instruction);
                     let name_str = CStr::from_ptr(label_value_name).to_str().unwrap();
                     return name.eq(name_str);

@@ -12,6 +12,7 @@ use crate::ir::types::LLVMInstType;
 use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
 use crate::matchers::instruction_matcher::AnyInstMatcher;
+use crate::matchers::instruction_matcher::LabelInstMatcher;
 use crate::matchers::instruction_matcher::ReturnInstMatcher;
 use crate::matchers::instruction_matcher::UnreachableInstMatcher;
 
@@ -27,6 +28,7 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
     map.insert("m_inst", match_inst);
     map.insert("m_any_inst", match_any_inst);
 
+    map.insert("m_label", match_label_inst);
     map.insert("m_return", match_return_inst);
     map.insert("m_unreachable", match_unreachable_inst);
 
@@ -104,6 +106,18 @@ fn match_return_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
     Box::new(InstMatcherValue {
         matcher: Box::new(ReturnInstMatcher { matcher }),
+    })
+}
+
+fn match_label_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let name = if values.is_empty() {
+        None
+    } else {
+        values[0].as_text()
+    };
+
+    Box::new(InstMatcherValue {
+        matcher: Box::new(LabelInstMatcher { name }),
     })
 }
 
