@@ -1,9 +1,13 @@
+use std::ffi::CStr;
+
 use dyn_clone::DynClone;
 use inkwell::llvm_sys;
 use inkwell::llvm_sys::core::LLVMGetFCmpPredicate;
 use inkwell::llvm_sys::core::LLVMGetICmpPredicate;
+use inkwell::llvm_sys::core::LLVMGetValueKind;
 use inkwell::llvm_sys::LLVMIntPredicate;
 use inkwell::llvm_sys::LLVMRealPredicate;
+use inkwell::llvm_sys::LLVMValueKind;
 use llvm_sys::core::LLVMGetInstructionOpcode;
 use llvm_sys::core::LLVMGetOperand;
 use llvm_sys::prelude::LLVMValueRef;
@@ -947,6 +951,32 @@ impl InstMatcher for FloatComparisonInstMatcher {
                 {
                     return true;
                 }
+            }
+            false
+        }
+    }
+}
+
+// Return instruction matcher to check if current instruction is return instruction with optional specific name or not
+#[derive(Clone)]
+pub struct LabelInstMatcher {
+    pub name: Option<String>,
+}
+
+impl InstMatcher for LabelInstMatcher {
+    #[allow(deprecated)]
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            let value_kind = LLVMGetValueKind(instruction);
+            if value_kind == LLVMValueKind::LLVMBasicBlockValueKind {
+                if let Some(name) = &self.name {
+                    // TODO: Replace LLVMGetValueName with LLVMGetValueName2
+                    let label_value_name = llvm_sys::core::LLVMGetValueName(instruction);
+                    let name_str = CStr::from_ptr(label_value_name).to_str().unwrap();
+                    return name.eq(name_str);
+                }
+                return true;
             }
             false
         }
