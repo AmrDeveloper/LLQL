@@ -957,6 +957,21 @@ impl InstMatcher for FloatComparisonInstMatcher {
     }
 }
 
+// Return instruction matcher to check if current value is poison
+#[derive(Clone)]
+pub struct PoisonInstMatcher;
+
+impl InstMatcher for PoisonInstMatcher {
+    #[allow(deprecated)]
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            let value_kind = LLVMGetValueKind(instruction);
+            value_kind == LLVMValueKind::LLVMPoisonValueKind
+        }
+    }
+}
+
 // Return instruction matcher to check if current instruction is return instruction with optional specific name or not
 #[derive(Clone)]
 pub struct LabelInstMatcher {
