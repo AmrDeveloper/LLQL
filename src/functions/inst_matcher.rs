@@ -12,6 +12,7 @@ use crate::ir::types::LLVMInstType;
 use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
 use crate::matchers::instruction_matcher::AnyInstMatcher;
+use crate::matchers::instruction_matcher::ConstIntMatcher;
 use crate::matchers::instruction_matcher::LabelInstMatcher;
 use crate::matchers::instruction_matcher::PoisonInstMatcher;
 use crate::matchers::instruction_matcher::ReturnInstMatcher;
@@ -28,6 +29,7 @@ use super::icmp_matchers::register_int_comparisons_matchers_functions;
 pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function>) {
     map.insert("m_inst", match_inst);
     map.insert("m_any_inst", match_any_inst);
+    map.insert("m_const_int", match_const_int_inst);
     map.insert("m_poison", match_poison_inst);
     map.insert("m_label", match_label_inst);
     map.insert("m_return", match_return_inst);
@@ -125,6 +127,12 @@ fn match_label_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 fn match_poison_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(InstMatcherValue {
         matcher: Box::new(PoisonInstMatcher),
+    })
+}
+
+fn match_const_int_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    Box::new(InstMatcherValue {
+        matcher: Box::new(ConstIntMatcher),
     })
 }
 

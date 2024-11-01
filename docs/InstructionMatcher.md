@@ -8,6 +8,7 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | :-----------: | :------------------------------: | :---------: | :----------------------------------------------------: |
 |    m_inst     | (i: Instruction, m: InstMatcher) |    Bool     |      Check if instruction is matched with Matcher      |
 |  m_any_inst   |                ()                | InstMatcher |     Build Inst Matcher that match any Instruction      |
+|  m_const_int  |                ()                | InstMatcher |   Build Inst Matcher that match constants int value    |
 |   m_poison    |                ()                | InstMatcher |       Build Inst Matcher that match poison value       |
 |    m_label    |           (n : Text?)            | InstMatcher | Build Inst Matcher that match Label with optional name |
 |   m_return    |        (m : InstMatcher?)        | InstMatcher |    Build Inst Matcher that match Return Instruction    |
