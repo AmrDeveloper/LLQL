@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use gitql_ast::types::boolean::BoolType;
 use gitql_ast::types::optional::OptionType;
+use gitql_ast::types::text::TextType;
 use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
 use gitql_core::values::base::Value;
@@ -12,6 +13,7 @@ use crate::ir::types::LLVMInstType;
 use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
 use crate::matchers::instruction_matcher::AnyInstMatcher;
+use crate::matchers::instruction_matcher::ConstFloatMatcher;
 use crate::matchers::instruction_matcher::ConstIntMatcher;
 use crate::matchers::instruction_matcher::LabelInstMatcher;
 use crate::matchers::instruction_matcher::PoisonInstMatcher;
@@ -30,6 +32,7 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
     map.insert("m_inst", match_inst);
     map.insert("m_any_inst", match_any_inst);
     map.insert("m_const_int", match_const_int_inst);
+    map.insert("m_const_fp", match_const_fp_inst);
     map.insert("m_poison", match_poison_inst);
     map.insert("m_label", match_label_inst);
     map.insert("m_return", match_return_inst);
@@ -53,6 +56,37 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
         "m_any_inst",
         Signature {
             parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+    map.insert(
+        "m_const_int",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_const_fp",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+    map.insert(
+        "m_poison",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+    map.insert(
+        "m_label",
+        Signature {
+            parameters: vec![Box::new(OptionType {
+                base: Some(Box::new(TextType)),
+            })],
             return_type: Box::new(InstMatcherType),
         },
     );
@@ -133,6 +167,12 @@ fn match_poison_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 fn match_const_int_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(InstMatcherValue {
         matcher: Box::new(ConstIntMatcher),
+    })
+}
+
+fn match_const_fp_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    Box::new(InstMatcherValue {
+        matcher: Box::new(ConstFloatMatcher),
     })
 }
 
