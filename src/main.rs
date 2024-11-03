@@ -1,8 +1,9 @@
+use std::io;
+use std::io::IsTerminal;
 use std::path::Path;
 
 use arguments::Arguments;
 use arguments::Command;
-use atty::Stream;
 use functions::llvm_ir_function_signatures;
 use functions::llvm_ir_functions;
 use gitql_cli::arguments::OutputFormat;
@@ -146,8 +147,10 @@ fn launch_llql_repl(arguments: Arguments) {
 
     let mut input = String::new();
     loop {
+        let stdin = io::stdin();
+
         // Render Prompt only if input is received from terminal
-        if atty::is(Stream::Stdin) {
+        if stdin.is_terminal() {
             print!("llql > ");
         }
 
