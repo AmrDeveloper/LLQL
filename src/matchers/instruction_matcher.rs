@@ -987,6 +987,21 @@ impl InstMatcher for ConstFloatMatcher {
     }
 }
 
+// Return instruction matcher to check if current value is a constants pointer null
+#[derive(Clone)]
+pub struct ConstPointerNullMatcher;
+
+impl InstMatcher for ConstPointerNullMatcher {
+    #[allow(deprecated)]
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            let value_kind = LLVMGetValueKind(instruction);
+            value_kind == LLVMValueKind::LLVMConstantPointerNullValueKind
+        }
+    }
+}
+
 // Return instruction matcher to check if current value is poison
 #[derive(Clone)]
 pub struct PoisonInstMatcher;
