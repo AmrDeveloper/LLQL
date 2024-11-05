@@ -13,11 +13,12 @@ use crate::ir::types::LLVMInstType;
 use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
 use crate::matchers::instruction_matcher::AnyInstMatcher;
+use crate::matchers::instruction_matcher::ArgumentMatcher;
 use crate::matchers::instruction_matcher::ConstFloatMatcher;
 use crate::matchers::instruction_matcher::ConstIntMatcher;
 use crate::matchers::instruction_matcher::ConstPointerNullMatcher;
 use crate::matchers::instruction_matcher::LabelInstMatcher;
-use crate::matchers::instruction_matcher::PoisonInstMatcher;
+use crate::matchers::instruction_matcher::PoisonValueMatcher;
 use crate::matchers::instruction_matcher::ReturnInstMatcher;
 use crate::matchers::instruction_matcher::UnreachableInstMatcher;
 
@@ -37,6 +38,7 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
     map.insert("m_const_null", match_const_null_inst);
     map.insert("m_poison", match_poison_inst);
     map.insert("m_label", match_label_inst);
+    map.insert("m_argument", match_argument_inst);
     map.insert("m_return", match_return_inst);
     map.insert("m_unreachable", match_unreachable_inst);
 
@@ -116,6 +118,16 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
     );
 
     map.insert(
+        "m_argument",
+        Signature {
+            parameters: vec![Box::new(OptionType {
+                base: Some(Box::new(TextType)),
+            })],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
         "m_unreachable",
         Signature {
             parameters: vec![],
@@ -176,7 +188,7 @@ fn match_label_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
 fn match_poison_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(InstMatcherValue {
-        matcher: Box::new(PoisonInstMatcher),
+        matcher: Box::new(PoisonValueMatcher),
     })
 }
 
@@ -195,6 +207,18 @@ fn match_const_fp_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 fn match_const_null_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(InstMatcherValue {
         matcher: Box::new(ConstPointerNullMatcher),
+    })
+}
+
+fn match_argument_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let name = if values.is_empty() {
+        None
+    } else {
+        values[0].as_text()
+    };
+
+    Box::new(InstMatcherValue {
+        matcher: Box::new(ArgumentMatcher { name }),
     })
 }
 

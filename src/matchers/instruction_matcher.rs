@@ -1004,15 +1004,40 @@ impl InstMatcher for ConstPointerNullMatcher {
 
 // Return instruction matcher to check if current value is poison
 #[derive(Clone)]
-pub struct PoisonInstMatcher;
+pub struct PoisonValueMatcher;
 
-impl InstMatcher for PoisonInstMatcher {
+impl InstMatcher for PoisonValueMatcher {
     #[allow(deprecated)]
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
             let value_kind = LLVMGetValueKind(instruction);
             value_kind == LLVMValueKind::LLVMPoisonValueKind
+        }
+    }
+}
+
+// Return instruction matcher to check if current value is function argument with optional name
+#[derive(Clone)]
+pub struct ArgumentMatcher {
+    pub name: Option<String>,
+}
+
+impl InstMatcher for ArgumentMatcher {
+    #[allow(deprecated)]
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            let value_kind = LLVMGetValueKind(instruction);
+            if value_kind == LLVMValueKind::LLVMArgumentValueKind {
+                if let Some(name) = &self.name {
+                    let label_value_name = llvm_sys::core::LLVMGetValueName(instruction);
+                    let name_str = CStr::from_ptr(label_value_name).to_str().unwrap();
+                    return name.eq(name_str);
+                }
+                return true;
+            }
+            false
         }
     }
 }
