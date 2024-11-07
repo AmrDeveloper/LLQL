@@ -1046,6 +1046,7 @@ impl InstMatcher for ArgumentMatcher {
                         return true;
                     }
                 }
+                return true;
             }
             false
         }
