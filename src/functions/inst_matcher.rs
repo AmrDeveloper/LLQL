@@ -10,8 +10,10 @@ use gitql_core::values::boolean::BoolValue;
 
 use crate::ir::types::InstMatcherType;
 use crate::ir::types::LLVMInstType;
+use crate::ir::types::TypeMatcherType;
 use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
+use crate::ir::values::TypeMatcherValue;
 use crate::matchers::instruction_matcher::AnyInstMatcher;
 use crate::matchers::instruction_matcher::ArgumentMatcher;
 use crate::matchers::instruction_matcher::ConstFloatMatcher;
@@ -120,9 +122,14 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
     map.insert(
         "m_argument",
         Signature {
-            parameters: vec![Box::new(OptionType {
-                base: Some(Box::new(TextType)),
-            })],
+            parameters: vec![
+                Box::new(OptionType {
+                    base: Some(Box::new(TextType)),
+                }),
+                Box::new(OptionType {
+                    base: Some(Box::new(TypeMatcherType)),
+                }),
+            ],
             return_type: Box::new(InstMatcherType),
         },
     );
@@ -217,8 +224,21 @@ fn match_argument_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
         values[0].as_text()
     };
 
+    let type_matcher = if values.len() == 2 {
+        Some(
+            values[1]
+                .as_any()
+                .downcast_ref::<TypeMatcherValue>()
+                .unwrap()
+                .matcher
+                .clone(),
+        )
+    } else {
+        None
+    };
+
     Box::new(InstMatcherValue {
-        matcher: Box::new(ArgumentMatcher { name }),
+        matcher: Box::new(ArgumentMatcher { name, type_matcher }),
     })
 }
 

@@ -5,6 +5,7 @@ use inkwell::llvm_sys;
 use inkwell::llvm_sys::core::LLVMGetFCmpPredicate;
 use inkwell::llvm_sys::core::LLVMGetICmpPredicate;
 use inkwell::llvm_sys::core::LLVMGetValueKind;
+use inkwell::llvm_sys::core::LLVMTypeOf;
 use inkwell::llvm_sys::LLVMIntPredicate;
 use inkwell::llvm_sys::LLVMRealPredicate;
 use inkwell::llvm_sys::LLVMValueKind;
@@ -12,6 +13,8 @@ use llvm_sys::core::LLVMGetInstructionOpcode;
 use llvm_sys::core::LLVMGetOperand;
 use llvm_sys::prelude::LLVMValueRef;
 use llvm_sys::LLVMOpcode;
+
+use super::type_matcher::TypeMatcher;
 
 dyn_clone::clone_trait_object!(InstMatcher);
 
@@ -1021,6 +1024,7 @@ impl InstMatcher for PoisonValueMatcher {
 #[derive(Clone)]
 pub struct ArgumentMatcher {
     pub name: Option<String>,
+    pub type_matcher: Option<Box<dyn TypeMatcher>>,
 }
 
 impl InstMatcher for ArgumentMatcher {
@@ -1033,9 +1037,15 @@ impl InstMatcher for ArgumentMatcher {
                 if let Some(name) = &self.name {
                     let label_value_name = llvm_sys::core::LLVMGetValueName(instruction);
                     let name_str = CStr::from_ptr(label_value_name).to_str().unwrap();
-                    return name.eq(name_str);
+                    let is_name_matches = name.eq(name_str);
+                    if is_name_matches {
+                        if let Some(type_matcher) = &self.type_matcher {
+                            let value_type = LLVMTypeOf(instruction);
+                            return type_matcher.is_match(value_type);
+                        }
+                        return true;
+                    }
                 }
-                return true;
             }
             false
         }
