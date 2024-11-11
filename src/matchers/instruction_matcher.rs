@@ -3,7 +3,9 @@ use std::ffi::CStr;
 use dyn_clone::DynClone;
 use inkwell::llvm_sys;
 use inkwell::llvm_sys::core::LLVMGetFCmpPredicate;
+use inkwell::llvm_sys::core::LLVMGetFirstUse;
 use inkwell::llvm_sys::core::LLVMGetICmpPredicate;
+use inkwell::llvm_sys::core::LLVMGetNextUse;
 use inkwell::llvm_sys::core::LLVMGetValueKind;
 use inkwell::llvm_sys::core::LLVMTypeOf;
 use inkwell::llvm_sys::LLVMIntPredicate;
@@ -960,7 +962,7 @@ impl InstMatcher for FloatComparisonInstMatcher {
     }
 }
 
-// Return instruction matcher to check if current value is a constants integer
+/// Return instruction matcher to check if current value is a constants integer
 #[derive(Clone)]
 pub struct ConstIntMatcher;
 
@@ -975,7 +977,7 @@ impl InstMatcher for ConstIntMatcher {
     }
 }
 
-// Return instruction matcher to check if current value is a constants floating point
+/// Return instruction matcher to check if current value is a constants floating point
 #[derive(Clone)]
 pub struct ConstFloatMatcher;
 
@@ -990,7 +992,7 @@ impl InstMatcher for ConstFloatMatcher {
     }
 }
 
-// Return instruction matcher to check if current value is a constants pointer null
+/// Return instruction matcher to check if current value is a constants pointer null
 #[derive(Clone)]
 pub struct ConstPointerNullMatcher;
 
@@ -1005,7 +1007,7 @@ impl InstMatcher for ConstPointerNullMatcher {
     }
 }
 
-// Return instruction matcher to check if current value is poison
+/// Return instruction matcher to check if current value is poison
 #[derive(Clone)]
 pub struct PoisonValueMatcher;
 
@@ -1020,7 +1022,7 @@ impl InstMatcher for PoisonValueMatcher {
     }
 }
 
-// Return instruction matcher to check if current value is function argument with optional name
+/// Return instruction matcher to check if current value is function argument with optional name
 #[derive(Clone)]
 pub struct ArgumentMatcher {
     pub name: Option<String>,
@@ -1053,7 +1055,7 @@ impl InstMatcher for ArgumentMatcher {
     }
 }
 
-// Return instruction matcher to check if current instruction is return instruction with optional specific name or not
+/// Return instruction matcher to check if current instruction is return instruction with optional specific name or not
 #[derive(Clone)]
 pub struct LabelInstMatcher {
     pub name: Option<String>,
@@ -1078,7 +1080,7 @@ impl InstMatcher for LabelInstMatcher {
     }
 }
 
-// Return instruction matcher to check if current instruction is return instruction with specific type or not
+/// Return instruction matcher to check if current instruction is return instruction with specific type or not
 #[derive(Clone)]
 pub struct ReturnInstMatcher {
     pub matcher: Box<dyn InstMatcher>,
@@ -1098,7 +1100,7 @@ impl InstMatcher for ReturnInstMatcher {
     }
 }
 
-// Unreachable instruction matcher to check if current instruction is Unreachable instruction
+/// Unreachable instruction matcher to check if current instruction is Unreachable instruction
 #[derive(Clone)]
 pub struct UnreachableInstMatcher;
 
@@ -1106,5 +1108,29 @@ impl InstMatcher for UnreachableInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe { LLVMGetInstructionOpcode(instruction) == LLVMOpcode::LLVMUnreachable }
+    }
+}
+
+/// Instruction Matcher to check if the value is used only once or not
+#[derive(Clone)]
+pub struct HasOneUseInstMatcher {
+    pub matcher: Box<dyn InstMatcher>,
+}
+
+impl InstMatcher for HasOneUseInstMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            if !self.matcher.is_match(instruction) {
+                return false;
+            }
+
+            let first_use = LLVMGetFirstUse(instruction);
+            if first_use.is_null() {
+                return false;
+            }
+            let next_use = LLVMGetNextUse(first_use);
+            next_use.is_null()
+        }
     }
 }
