@@ -46,6 +46,18 @@ Or for example you can query how many times this pattern exists in each function
 SELECT function_name, count() FROM instructions WHERE m_inst(instruction, m_add(m_sub(), m_mul())) GROUP BY function_name
 ```
 
+You can also filter by number of times the value is used for example for not used values
+
+```sql
+SELECT instruction FROM instructions WHERE m_inst(instruction, m_unused(m_add()))
+```
+
+and for value that used only time
+
+```sql
+SELECT instruction FROM instructions WHERE m_inst(instruction, m_has_one_use(m_add()))
+```
+
 ---
 
 ### List of available functions

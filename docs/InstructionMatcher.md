@@ -16,6 +16,8 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 |  m_argument   |  (n : Text?, m : TypeMatcher?)   | InstMatcher | Build Inst Matcher that match Argument value with optional name and type |
 |   m_return    |        (m : InstMatcher?)        | InstMatcher |             Build Inst Matcher that match Return Instruction             |
 | m_unreachable |                ()                | InstMatcher |          Build Inst Matcher that match unreachable Instruction           |
+|   m_unused    |        (m : InstMatcher?)        | InstMatcher |       Build Inst Matcher that match instruction that unused at all       |
+| m_has_one_use |        (m : InstMatcher?)        | InstMatcher |    Build Inst Matcher that match instruction that has exactly on use     |
 
 ### Arithmetic Instructions Matchers functions
 

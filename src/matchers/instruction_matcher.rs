@@ -1111,6 +1111,26 @@ impl InstMatcher for UnreachableInstMatcher {
     }
 }
 
+/// Instruction Matcher to check if the value is unused
+#[derive(Clone)]
+pub struct UnusedMatcher {
+    pub matcher: Box<dyn InstMatcher>,
+}
+
+impl InstMatcher for UnusedMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            if !self.matcher.is_match(instruction) {
+                return false;
+            }
+
+            let first_use = LLVMGetFirstUse(instruction);
+            first_use.is_null()
+        }
+    }
+}
+
 /// Instruction Matcher to check if the value is used only once or not
 #[derive(Clone)]
 pub struct HasOneUseInstMatcher {

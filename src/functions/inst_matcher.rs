@@ -44,6 +44,8 @@ pub fn register_inst_matchers_functions(map: &mut HashMap<&'static str, Function
     map.insert("m_argument", match_argument_inst);
     map.insert("m_return", match_return_inst);
     map.insert("m_unreachable", match_unreachable_inst);
+
+    map.insert("m_unused", match_unused);
     map.insert("m_has_one_use", match_has_one_use);
 
     register_arithmetic_matchers_functions(map);
@@ -140,6 +142,14 @@ pub fn register_inst_matchers_function_signatures(map: &mut HashMap<&'static str
         "m_unreachable",
         Signature {
             parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_unused",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType)],
             return_type: Box::new(InstMatcherType),
         },
     );
@@ -255,6 +265,19 @@ fn match_argument_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 fn match_unreachable_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(InstMatcherValue {
         matcher: Box::new(UnreachableInstMatcher),
+    })
+}
+
+fn match_unused(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .clone();
+
+    Box::new(InstMatcherValue {
+        matcher: Box::new(HasOneUseInstMatcher { matcher }),
     })
 }
 
