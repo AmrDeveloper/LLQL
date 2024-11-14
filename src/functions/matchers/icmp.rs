@@ -4,11 +4,10 @@ use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
 use gitql_core::values::base::Value;
 
+use crate::functions::binary_matcher_signature;
+use crate::functions::binary_matchers_sides;
 use crate::ir::values::InstMatcherValue;
-use crate::matchers::instruction_matcher::IntComparisonInstMatcher;
-
-use super::binary_matcher_signature;
-use super::binary_matchers_sides;
+use crate::matchers::icmp::IntComparisonInstMatcher;
 
 #[inline(always)]
 pub fn register_int_comparisons_matchers_functions(map: &mut HashMap<&'static str, Function>) {

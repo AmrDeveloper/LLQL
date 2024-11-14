@@ -1,4 +1,5 @@
-use std::{collections::HashMap, sync::OnceLock};
+use std::collections::HashMap;
+use std::sync::OnceLock;
 
 use gitql_ast::types::optional::OptionType;
 use gitql_core::signature::Function;
@@ -6,36 +7,52 @@ use gitql_core::signature::Signature;
 use gitql_core::values::base::Value;
 use gitql_std::function::standard_function_signatures;
 use gitql_std::function::standard_functions;
-use inst_matcher::register_inst_matchers_function_signatures;
-use inst_matcher::register_inst_matchers_functions;
-use type_matcher::register_type_matchers_function_signatures;
-use type_matcher::register_type_matchers_functions;
+use matchers::arithmetic::register_arithmetic_matchers_function_signatures;
+use matchers::arithmetic::register_arithmetic_matchers_functions;
+use matchers::constants::register_constants_matchers_function_signatures;
+use matchers::constants::register_constants_matchers_functions;
+use matchers::fcmp::register_float_comparisons_matchers_function_signatures;
+use matchers::fcmp::register_float_comparisons_matchers_functions;
+use matchers::icmp::register_int_comparisons_matchers_function_signatures;
+use matchers::icmp::register_int_comparisons_matchers_functions;
+use matchers::other::register_other_inst_matchers_function_signatures;
+use matchers::other::register_other_inst_matchers_functions;
+use matchers::types::register_type_matchers_function_signatures;
+use matchers::types::register_type_matchers_functions;
+use matchers::usage::register_usage_matchers_function_signatures;
+use matchers::usage::register_usage_matchers_functions;
 
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
-use crate::matchers::instruction_matcher::AnyInstMatcher;
-use crate::matchers::instruction_matcher::InstMatcher;
+use crate::matchers::AnyInstMatcher;
+use crate::matchers::InstMatcher;
 
-pub(crate) mod arithmetic_matchers;
-pub(crate) mod fcmp_matchers;
-pub(crate) mod icmp_matchers;
-pub(crate) mod inst_matcher;
-pub(crate) mod type_matcher;
+pub(crate) mod matchers;
 
 pub fn llvm_ir_functions() -> &'static HashMap<&'static str, Function> {
     static HASHMAP: OnceLock<HashMap<&'static str, Function>> = OnceLock::new();
     HASHMAP.get_or_init(|| {
         let mut map = standard_functions().to_owned();
-        register_inst_matchers_functions(&mut map);
         register_type_matchers_functions(&mut map);
+        register_arithmetic_matchers_functions(&mut map);
+        register_int_comparisons_matchers_functions(&mut map);
+        register_float_comparisons_matchers_functions(&mut map);
+        register_usage_matchers_functions(&mut map);
+        register_constants_matchers_functions(&mut map);
+        register_other_inst_matchers_functions(&mut map);
         map
     })
 }
 
 pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     let mut map = standard_function_signatures().to_owned();
-    register_inst_matchers_function_signatures(&mut map);
     register_type_matchers_function_signatures(&mut map);
+    register_arithmetic_matchers_function_signatures(&mut map);
+    register_int_comparisons_matchers_function_signatures(&mut map);
+    register_float_comparisons_matchers_function_signatures(&mut map);
+    register_usage_matchers_function_signatures(&mut map);
+    register_constants_matchers_function_signatures(&mut map);
+    register_other_inst_matchers_function_signatures(&mut map);
     map
 }
 

@@ -1,4 +1,3 @@
-use dyn_clone::DynClone;
 use inkwell::llvm_sys;
 use llvm_sys::core::LLVMGetArrayLength;
 use llvm_sys::core::LLVMGetElementType;
@@ -8,25 +7,9 @@ use llvm_sys::core::LLVMGetVectorSize;
 use llvm_sys::prelude::LLVMTypeRef;
 use llvm_sys::LLVMTypeKind;
 
-dyn_clone::clone_trait_object!(TypeMatcher);
+use super::TypeMatcher;
 
-/// Type matcher used to create matcher that check if rules match [`LLVMTypeRef`] or not
-pub trait TypeMatcher: DynClone {
-    /// Return true if this matcher match the [`LLVMTypeRef`]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool;
-}
-
-/// Any Type Matcher used to match againts any [`LLVMTypeRef`]
-#[derive(Clone)]
-pub struct AnyTypeMatcher;
-
-impl TypeMatcher for AnyTypeMatcher {
-    fn is_match(&self, _llvm_type: LLVMTypeRef) -> bool {
-        true
-    }
-}
-
-/// Void Type Matcher used to match againts any LLVM Void Type
+/// Void Type Matcher used to match against any LLVM Void Type
 #[derive(Clone)]
 pub struct VoidTypeMatcher;
 
@@ -40,7 +23,7 @@ impl TypeMatcher for VoidTypeMatcher {
     }
 }
 
-/// Int Type Matcher used to match againts LLVM Integer Type with specific size
+/// Int Type Matcher used to match against LLVM Integer Type with specific size
 #[derive(Clone)]
 pub enum IntTypeSize {
     Size1,
@@ -83,7 +66,7 @@ pub enum FloatTypeSize {
     Size64,
 }
 
-/// Float Type Matcher used to match againts LLVM Float Type with specific size
+/// Float Type Matcher used to match against LLVM Float Type with specific size
 #[derive(Clone)]
 pub struct FloatTypeMatcher {
     pub size: FloatTypeSize,
@@ -102,7 +85,7 @@ impl TypeMatcher for FloatTypeMatcher {
     }
 }
 
-/// Pointer Type Matcher used to match againts LLVM Pointer Type
+/// Pointer Type Matcher used to match against LLVM Pointer Type
 #[derive(Clone)]
 
 pub struct PointerTypeMatcher;
@@ -117,7 +100,7 @@ impl TypeMatcher for PointerTypeMatcher {
     }
 }
 
-/// Array Type Matcher used to match againts LLVM Array Type with specific base element type and size
+/// Array Type Matcher used to match against LLVM Array Type with specific base element type and size
 #[derive(Clone)]
 pub struct ArrayTypeMatcher {
     pub base_matcher: Box<dyn TypeMatcher>,
@@ -150,7 +133,7 @@ impl TypeMatcher for ArrayTypeMatcher {
     }
 }
 
-/// Vector Type Matcher used to match againts LLVM Vector Type with specific base element type and size
+/// Vector Type Matcher used to match against LLVM Vector Type with specific base element type and size
 #[derive(Clone)]
 pub struct VectorTypeMatcher {
     pub base_matcher: Box<dyn TypeMatcher>,
@@ -181,7 +164,7 @@ impl TypeMatcher for VectorTypeMatcher {
     }
 }
 
-/// Scalable Vector Type Matcher used to match againts LLVM scalable Vector Type
+/// Scalable Vector Type Matcher used to match against LLVM scalable Vector Type
 #[derive(Clone)]
 pub struct ScalableVectorTypeMatcher;
 
@@ -197,6 +180,8 @@ impl TypeMatcher for ScalableVectorTypeMatcher {
 
 #[cfg(test)]
 mod tests {
+
+    use crate::matchers::AnyTypeMatcher;
 
     use super::*;
     use llvm_sys::core::LLVMArrayType;

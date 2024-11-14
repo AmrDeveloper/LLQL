@@ -9,8 +9,8 @@ use llvm_sys::core::LLVMPrintValueToString;
 use llvm_sys::prelude::LLVMTypeRef;
 use llvm_sys::prelude::LLVMValueRef;
 
-use crate::matchers::instruction_matcher::InstMatcher;
-use crate::matchers::type_matcher::TypeMatcher;
+use crate::matchers::InstMatcher;
+use crate::matchers::TypeMatcher;
 
 use super::types::InstMatcherType;
 use super::types::LLVMDataType;

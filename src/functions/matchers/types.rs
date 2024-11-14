@@ -8,15 +8,15 @@ use gitql_core::values::base::Value;
 
 use crate::ir::types::TypeMatcherType;
 use crate::ir::values::TypeMatcherValue;
-use crate::matchers::type_matcher::ArrayTypeMatcher;
-use crate::matchers::type_matcher::FloatTypeMatcher;
-use crate::matchers::type_matcher::FloatTypeSize;
-use crate::matchers::type_matcher::IntTypeMatcher;
-use crate::matchers::type_matcher::IntTypeSize;
-use crate::matchers::type_matcher::PointerTypeMatcher;
-use crate::matchers::type_matcher::ScalableVectorTypeMatcher;
-use crate::matchers::type_matcher::VectorTypeMatcher;
-use crate::matchers::type_matcher::VoidTypeMatcher;
+use crate::matchers::types::ArrayTypeMatcher;
+use crate::matchers::types::FloatTypeMatcher;
+use crate::matchers::types::FloatTypeSize;
+use crate::matchers::types::IntTypeMatcher;
+use crate::matchers::types::IntTypeSize;
+use crate::matchers::types::PointerTypeMatcher;
+use crate::matchers::types::ScalableVectorTypeMatcher;
+use crate::matchers::types::VectorTypeMatcher;
+use crate::matchers::types::VoidTypeMatcher;
 
 #[inline(always)]
 pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, Function>) {
@@ -222,7 +222,6 @@ fn match_float64(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
 fn match_pointer(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let pointer_matcher = PointerTypeMatcher;
-
     Box::new(TypeMatcherValue {
         matcher: Box::new(pointer_matcher),
     })

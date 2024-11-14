@@ -4,12 +4,10 @@ use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
 use gitql_core::values::base::Value;
 
+use crate::functions::binary_matcher_signature;
+use crate::functions::binary_matchers_sides;
 use crate::ir::values::InstMatcherValue;
-
-use crate::matchers::instruction_matcher::ArithmeticInstMatcher;
-
-use super::binary_matcher_signature;
-use super::binary_matchers_sides;
+use crate::matchers::arithmetic::ArithmeticInstMatcher;
 
 #[inline(always)]
 pub fn register_arithmetic_matchers_functions(map: &mut HashMap<&'static str, Function>) {
