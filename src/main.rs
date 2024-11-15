@@ -24,6 +24,7 @@ use gitql_parser::tokenizer;
 use gitql_std::aggregation::aggregation_function_signatures;
 use gitql_std::aggregation::aggregation_functions;
 use ir::data_provider::LLVMIRDataProvider;
+use ir::module_parser::parse_llvm_modules;
 use ir::schema::llvm_tables_fields_names;
 use ir::schema::llvm_tables_fields_types;
 use lineeditor::LineEditorResult;
@@ -112,6 +113,13 @@ fn launch_llql_repl(arguments: Arguments) {
     let mut global_env = Environment::new(schema);
     global_env.with_standard_functions(&std_signatures, std_functions);
     global_env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
+
+    let parse_modules_result = parse_llvm_modules(files);
+    if parse_modules_result.is_err() {
+        let error_message = parse_modules_result.err().unwrap();
+        reporter.report_diagnostic("", Diagnostic::error(error_message.as_str()));
+        return;
+    }
 
     let provider: Box<dyn DataProvider> = Box::new(LLVMIRDataProvider::new(files.to_vec()));
 

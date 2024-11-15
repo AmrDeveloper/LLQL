@@ -6,14 +6,13 @@ use gitql_core::values::null::NullValue;
 use gitql_core::values::text::TextValue;
 use gitql_engine::data_provider::DataProvider;
 use inkwell::context::Context;
-use inkwell::memory_buffer::MemoryBuffer;
 use inkwell::module::Module;
 use inkwell::values::AsValueRef;
 
 use super::values::LLVMInstValue;
 
-static mut LLVM_CONTEXT: LazyLock<Context> = LazyLock::new(Context::create);
-static mut LLVM_MODULES: Vec<Module> = Vec::new();
+pub(crate) static mut LLVM_CONTEXT: LazyLock<Context> = LazyLock::new(Context::create);
+pub(crate) static mut LLVM_MODULES: Vec<Module> = Vec::new();
 
 pub struct LLVMIRDataProvider {
     pub paths: Vec<String>,
@@ -21,18 +20,6 @@ pub struct LLVMIRDataProvider {
 
 impl LLVMIRDataProvider {
     pub fn new(paths: Vec<String>) -> Self {
-        unsafe {
-            for path in paths.iter() {
-                let module = if path.ends_with(".ll") {
-                    let memory_buffer = MemoryBuffer::create_from_file(path.as_ref()).unwrap();
-                    LLVM_CONTEXT.create_module_from_ir(memory_buffer).unwrap()
-                } else {
-                    Module::parse_bitcode_from_path(path, &*LLVM_CONTEXT).unwrap()
-                };
-                LLVM_MODULES.push(module.to_owned());
-            }
-        };
-
         Self { paths }
     }
 }

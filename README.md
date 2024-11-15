@@ -58,6 +58,12 @@ and for value that used only time
 SELECT instruction FROM instructions WHERE m_inst(instruction, m_has_one_use(m_add()))
 ```
 
+and for value that used n times
+
+```sql
+SELECT instruction FROM instructions WHERE m_inst(instruction, m_has_n_uses(m_add(), 2))
+```
+
 ---
 
 ### List of available functions
