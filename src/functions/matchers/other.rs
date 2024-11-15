@@ -15,6 +15,7 @@ use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
 use crate::ir::values::TypeMatcherValue;
 use crate::matchers::other::ArgumentMatcher;
+use crate::matchers::other::InstTypeMatcher;
 use crate::matchers::other::LabelInstMatcher;
 use crate::matchers::other::PoisonValueMatcher;
 use crate::matchers::other::ReturnInstMatcher;
@@ -24,6 +25,7 @@ use crate::matchers::AnyInstMatcher;
 #[inline(always)]
 pub fn register_other_inst_matchers_functions(map: &mut HashMap<&'static str, Function>) {
     map.insert("m_inst", match_inst);
+    map.insert("m_inst_type", match_inst_type);
     map.insert("m_any_inst", match_any_inst);
     map.insert("m_poison", match_poison_inst);
     map.insert("m_label", match_label_inst);
@@ -113,6 +115,20 @@ fn match_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
     let is_match = matcher.matcher.is_match(inst.llvm_value);
     Box::new(BoolValue { value: is_match })
+}
+
+fn match_inst_type(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = values[0]
+        .as_any()
+        .downcast_ref::<TypeMatcherValue>()
+        .unwrap()
+        .matcher
+        .clone();
+    let inst_matcher = Box::new(InstTypeMatcher { matcher });
+
+    Box::new(InstMatcherValue {
+        matcher: inst_matcher,
+    })
 }
 
 fn match_any_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {

@@ -7,6 +7,7 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 |   Function    |            Parameters            |   Return    |                               Description                                |
 | :-----------: | :------------------------------: | :---------: | :----------------------------------------------------------------------: |
 |    m_inst     | (i: Instruction, m: InstMatcher) |    Bool     |               Check if instruction is matched with Matcher               |
+|  m_inst_type  |        (m : TypeMatcher?)        | InstMatcher |         Build Inst Matcher that match instruction returned type          |
 |  m_any_inst   |                ()                | InstMatcher |              Build Inst Matcher that match any Instruction               |
 |  m_const_int  |                ()                | InstMatcher |            Build Inst Matcher that match constants int value             |
 |  m_const_fp   |                ()                | InstMatcher |           Build Inst Matcher that match constants float value            |

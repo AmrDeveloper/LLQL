@@ -13,10 +13,24 @@ use super::InstMatcher;
 use super::TypeMatcher;
 
 #[derive(Clone)]
+pub struct InstTypeMatcher {
+    pub matcher: Box<dyn TypeMatcher>,
+}
+
+impl InstMatcher for InstTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            let value_type = LLVMTypeOf(instruction);
+            self.matcher.is_match(value_type)
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct PoisonValueMatcher;
 
 impl InstMatcher for PoisonValueMatcher {
-    #[allow(deprecated)]
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
