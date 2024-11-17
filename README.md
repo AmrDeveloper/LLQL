@@ -48,6 +48,17 @@ SELECT function_name, count() FROM instructions WHERE m_inst(instruction, m_add(
 
 You can also filter by number of times the value is used for example for not used values
 
+```IR
+define i32 @function(i32 %a, i32 %b) {
+  %unused_add = add i32 %a, 1
+
+  %used_twice = add i32 %a, %b
+  %add2 = add i32 %used_twice, %b
+  %add3 = add i32 %used_twice, %add2
+  ret i32 %add3
+}
+```
+
 ```sql
 SELECT instruction FROM instructions WHERE m_inst(instruction, m_unused(m_add()))
 ```
