@@ -5,6 +5,7 @@ use super::data_provider::LLVM_CONTEXT;
 use super::data_provider::LLVM_MODULES;
 
 pub fn parse_llvm_modules(paths: &[String]) -> Result<(), String> {
+    #[allow(static_mut_refs)]
     unsafe {
         LLVM_MODULES.clear();
         for path in paths.iter() {

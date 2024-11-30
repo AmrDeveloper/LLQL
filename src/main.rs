@@ -20,7 +20,7 @@ use gitql_engine::engine;
 use gitql_engine::engine::EvaluationResult::SelectedGroups;
 use gitql_parser::diagnostic::Diagnostic;
 use gitql_parser::parser;
-use gitql_parser::tokenizer;
+use gitql_parser::tokenizer::Tokenizer;
 use gitql_std::aggregation::aggregation_function_signatures;
 use gitql_std::aggregation::aggregation_functions;
 use ir::data_provider::LLVMIRDataProvider;
@@ -206,7 +206,7 @@ fn execute_llql_query(
     reporter: &mut DiagnosticReporter,
 ) {
     let front_start = std::time::Instant::now();
-    let tokenizer_result = tokenizer::tokenize(query.clone());
+    let tokenizer_result = Tokenizer::tokenize(query.clone());
     if tokenizer_result.is_err() {
         let diagnostic = tokenizer_result.err().unwrap();
         reporter.report_diagnostic(&query, *diagnostic);
@@ -233,35 +233,38 @@ fn execute_llql_query(
     let engine_duration = engine_start.elapsed();
 
     // Report Runtime exceptions if they exists
+    // Report Runtime exceptions if they exists
     if evaluation_result.is_err() {
-        reporter.report_diagnostic(
-            &query,
-            Diagnostic::exception(&evaluation_result.err().unwrap()),
-        );
+        let exception = Diagnostic::exception(&evaluation_result.err().unwrap());
+        reporter.report_diagnostic(&query, exception);
         return;
     }
 
     // Render the result only if they are selected groups not any other statement
-    let mut rows_count = 0;
-    let engine_result = evaluation_result.ok().unwrap();
-    if let SelectedGroups(mut groups) = engine_result {
-        rows_count += groups.len();
-        let printer: Box<dyn OutputPrinter> = match arguments.output_format {
-            OutputFormat::Render => {
-                Box::new(TablePrinter::new(arguments.pagination, arguments.page_size))
-            }
-            OutputFormat::JSON => Box::new(JSONPrinter),
-            OutputFormat::CSV => Box::new(CSVPrinter),
-        };
-        printer.print(&mut groups);
-    }
+    let printer: Box<dyn OutputPrinter> = match arguments.output_format {
+        OutputFormat::Render => {
+            Box::new(TablePrinter::new(arguments.pagination, arguments.page_size))
+        }
+        OutputFormat::JSON => Box::new(JSONPrinter {}),
+        OutputFormat::CSV => Box::new(CSVPrinter {}),
+    };
 
-    if arguments.analysis {
-        let total_time = front_duration + engine_duration;
-        println!(
-            "{} row in set (total: {:?}, front: {:?}, engine: {:?})",
-            rows_count, total_time, front_duration, engine_duration
-        );
+    // Render the result only if they are selected groups not any other statement
+    let evaluations_results = evaluation_result.ok().unwrap();
+    for evaluation_result in evaluations_results {
+        let mut rows_count = 0;
+        if let SelectedGroups(mut groups) = evaluation_result {
+            rows_count += groups.len();
+            printer.print(&mut groups);
+        }
+
+        if arguments.analysis {
+            let total_time = front_duration + engine_duration;
+            println!(
+                "{} row in set (total: {:?}, front: {:?}, engine: {:?})",
+                rows_count, total_time, front_duration, engine_duration
+            );
+        }
     }
 }
 
