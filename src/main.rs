@@ -1,3 +1,4 @@
+use std::fs;
 use std::io;
 use std::io::IsTerminal;
 use std::path::Path;
@@ -47,6 +48,39 @@ fn main() {
     match command {
         Command::ReplMode(arguments) => {
             launch_llql_repl(arguments);
+        }
+        Command::ScriptMode(script_file, arguments) => {
+            let mut reporter = diagnostic_reporter::DiagnosticReporter::default();
+            let files_validation_result = validate_files_paths(&arguments.files);
+            if files_validation_result.is_err() {
+                reporter.report_diagnostic(
+                    "",
+                    Diagnostic::error(files_validation_result.err().unwrap().as_str()),
+                );
+                return;
+            }
+            let schema = Schema {
+                tables_fields_names: llvm_tables_fields_names().to_owned(),
+                tables_fields_types: llvm_tables_fields_types().to_owned(),
+            };
+
+            let std_signatures = llvm_ir_function_signatures();
+            let std_functions = llvm_ir_functions();
+
+            let aggregation_signatures = aggregation_function_signatures();
+            let aggregation_functions = aggregation_functions();
+
+            let mut env = Environment::new(schema);
+            env.with_standard_functions(&std_signatures, std_functions);
+            env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
+
+            let query =
+                fs::read_to_string(script_file).expect("Should have been able to read the file");
+
+            let provider: Box<dyn DataProvider> =
+                Box::new(LLVMIRDataProvider::new(arguments.files.clone()));
+
+            execute_llql_query(query, &arguments, &mut env, &provider, &mut reporter);
         }
         Command::QueryMode(query, arguments) => {
             let mut reporter = diagnostic_reporter::DiagnosticReporter::default();
