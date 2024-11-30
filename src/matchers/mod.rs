@@ -9,7 +9,7 @@ pub trait TypeMatcher: DynClone {
     fn is_match(&self, llvm_type: LLVMTypeRef) -> bool;
 }
 
-/// Any Type Matcher used to match againts any [`LLVMTypeRef`]
+/// Any Type Matcher used to match against any [`LLVMTypeRef`]
 #[derive(Clone)]
 pub struct AnyTypeMatcher;
 

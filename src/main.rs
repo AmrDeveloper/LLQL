@@ -117,7 +117,7 @@ fn main() {
             arguments::print_help_list();
         }
         Command::Version => {
-            println!("GitQL version {}", env!("CARGO_PKG_VERSION"));
+            println!("LLQL version {}", env!("CARGO_PKG_VERSION"));
         }
         Command::Error(error_message) => {
             println!("{}", error_message);
