@@ -25,7 +25,7 @@
    This will trigger a GitHub Action workflow which will create a GitHub release and
    publish to Cargo.
 
-# Releasing GitQL SDK crate
+# Releasing LLQL SDK crate
 
   1. Update `Cargo.toml` with the new version.
   2. `cargo publish --allow-dirty`

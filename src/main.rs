@@ -47,7 +47,7 @@ fn main() {
 
     match command {
         Command::ReplMode(arguments) => {
-            launch_llql_repl(arguments);
+            launch_llql_repl(&arguments);
         }
         Command::ScriptMode(script_file, arguments) => {
             let mut reporter = diagnostic_reporter::DiagnosticReporter::default();
@@ -59,6 +59,7 @@ fn main() {
                 );
                 return;
             }
+
             let schema = Schema {
                 tables_fields_names: llvm_tables_fields_names().to_owned(),
                 tables_fields_types: llvm_tables_fields_types().to_owned(),
@@ -125,7 +126,7 @@ fn main() {
     }
 }
 
-fn launch_llql_repl(arguments: Arguments) {
+fn launch_llql_repl(arguments: &Arguments) {
     let mut reporter = diagnostic_reporter::DiagnosticReporter::default();
     let files = &arguments.files;
     if let Err(error) = validate_files_paths(files) {
@@ -267,7 +268,6 @@ fn execute_llql_query(
     let engine_duration = engine_start.elapsed();
 
     // Report Runtime exceptions if they exists
-    // Report Runtime exceptions if they exists
     if evaluation_result.is_err() {
         let exception = Diagnostic::exception(&evaluation_result.err().unwrap());
         reporter.report_diagnostic(&query, exception);
@@ -279,8 +279,8 @@ fn execute_llql_query(
         OutputFormat::Render => {
             Box::new(TablePrinter::new(arguments.pagination, arguments.page_size))
         }
-        OutputFormat::JSON => Box::new(JSONPrinter {}),
-        OutputFormat::CSV => Box::new(CSVPrinter {}),
+        OutputFormat::JSON => Box::new(JSONPrinter),
+        OutputFormat::CSV => Box::new(CSVPrinter),
     };
 
     // Render the result only if they are selected groups not any other statement

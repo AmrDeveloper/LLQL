@@ -122,6 +122,7 @@ Usage: LLQL [OPTIONS]
 
 Options:
   -f,  --files <paths>        Path for local files to run query on
+  -s,  --script <file>        Script file contains one or more query
   -q,  --query <GQL Query>    LLQL query to run on selected files
   -p,  --pagination           Enable print result with pagination
   -ps, --pagesize             Set pagination page size [default: 10]
