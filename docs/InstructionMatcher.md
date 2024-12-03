@@ -103,3 +103,14 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | m_c_fcmp_uge | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match fcmp uge Instruction with commutatively |
 | m_c_fcmp_ult | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match fcmp ult Instruction with commutatively |
 | m_c_fcmp_ule | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match fcmp ule Instruction with commutatively |
+
+### Shifts Instructions Matchers functions
+
+| Function |              Parameters              |   Return    |                            Description                            |
+| :------: | :----------------------------------: | :---------: | :---------------------------------------------------------------: |
+|  m_shl   | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |           Build Inst Matcher that match shl Instruction           |
+|  m_shr   | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |           Build Inst Matcher that match shr Instruction           |
+|  m_ashr  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |          Build Inst Matcher that match ashr Instruction           |
+| m_c_shl  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match shl Instruction with commutatively  |
+| m_c_shr  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match shr Instruction with commutatively  |
+| m_c_ashr | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match ashr Instruction with commutatively |
