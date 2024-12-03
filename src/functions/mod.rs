@@ -17,6 +17,8 @@ use matchers::icmp::register_int_comparisons_matchers_function_signatures;
 use matchers::icmp::register_int_comparisons_matchers_functions;
 use matchers::other::register_other_inst_matchers_function_signatures;
 use matchers::other::register_other_inst_matchers_functions;
+use matchers::shifts::register_shift_matchers_function_signatures;
+use matchers::shifts::register_shift_matchers_functions;
 use matchers::types::register_type_matchers_function_signatures;
 use matchers::types::register_type_matchers_functions;
 use matchers::usage::register_usage_matchers_function_signatures;
@@ -40,6 +42,7 @@ pub fn llvm_ir_functions() -> &'static HashMap<&'static str, Function> {
         register_usage_matchers_functions(&mut map);
         register_constants_matchers_functions(&mut map);
         register_other_inst_matchers_functions(&mut map);
+        register_shift_matchers_functions(&mut map);
         map
     })
 }
@@ -53,6 +56,7 @@ pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     register_usage_matchers_function_signatures(&mut map);
     register_constants_matchers_function_signatures(&mut map);
     register_other_inst_matchers_function_signatures(&mut map);
+    register_shift_matchers_function_signatures(&mut map);
     map
 }
 
