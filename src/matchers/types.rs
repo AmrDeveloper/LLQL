@@ -85,6 +85,17 @@ impl TypeMatcher for FloatTypeMatcher {
     }
 }
 
+/// Ha;f Type Matcher used to match against LLVM Half Type
+#[derive(Clone)]
+pub struct HalfTypeMatcher;
+
+impl TypeMatcher for HalfTypeMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+        unsafe { LLVMGetTypeKind(llvm_type) == LLVMTypeKind::LLVMHalfTypeKind }
+    }
+}
+
 /// Pointer Type Matcher used to match against LLVM Pointer Type
 #[derive(Clone)]
 

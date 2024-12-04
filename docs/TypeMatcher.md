@@ -11,6 +11,7 @@ Types Matchers are functions that build a type matcher to match against LLVM Typ
 |      m_int64      |               ()                | TypeMatcher |               Build Matcher for LLVM Type Int64                |
 |       m_f32       |               ()                | TypeMatcher |              Build Matcher for LLVM Type Float32               |
 |       m_f64       |               ()                | TypeMatcher |              Build Matcher for LLVM Type Float64               |
+|       m_f64       |               ()                | TypeMatcher |                Build Matcher for LLVM Type Half                |
 |      m_void       |               ()                | TypeMatcher |                Build Matcher for LLVM Type void                |
 |       m_ptr       |               ()                | TypeMatcher |              Build Matcher for LLVM Type Pointer               |
 |      m_array      | (type: TypeMatcher, size: Int?) | TypeMatcher | Build Matcher for LLVM Type Array with optional base and size  |

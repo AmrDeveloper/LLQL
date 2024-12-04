@@ -11,6 +11,7 @@ use crate::ir::values::TypeMatcherValue;
 use crate::matchers::types::ArrayTypeMatcher;
 use crate::matchers::types::FloatTypeMatcher;
 use crate::matchers::types::FloatTypeSize;
+use crate::matchers::types::HalfTypeMatcher;
 use crate::matchers::types::IntTypeMatcher;
 use crate::matchers::types::IntTypeSize;
 use crate::matchers::types::PointerTypeMatcher;
@@ -30,6 +31,9 @@ pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, Function
     // Matchers for Float types
     map.insert("m_f32", match_float32);
     map.insert("m_f64", match_float64);
+
+    // Matcher fof Half type
+    map.insert("m_half", match_half);
 
     // Matcher for Void type
     map.insert("m_void", match_void);
@@ -98,6 +102,13 @@ pub fn register_type_matchers_function_signatures(map: &mut HashMap<&'static str
     );
     map.insert(
         "m_f64",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(TypeMatcherType),
+        },
+    );
+    map.insert(
+        "m_half",
         Signature {
             parameters: vec![],
             return_type: Box::new(TypeMatcherType),
@@ -218,6 +229,11 @@ fn match_float64(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(TypeMatcherValue {
         matcher: Box::new(int1_matcher),
     })
+}
+
+fn match_half(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(HalfTypeMatcher);
+    Box::new(TypeMatcherValue { matcher })
 }
 
 fn match_pointer(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
