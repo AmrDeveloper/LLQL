@@ -37,6 +37,7 @@ impl InstMatcher for AnyInstMatcher {
 }
 
 pub mod arithmetic;
+pub mod binary;
 pub mod constants;
 pub mod fcmp;
 pub mod icmp;

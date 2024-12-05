@@ -7,8 +7,11 @@ use gitql_core::signature::Signature;
 use gitql_core::values::base::Value;
 use gitql_std::function::standard_function_signatures;
 use gitql_std::function::standard_functions;
+
 use matchers::arithmetic::register_arithmetic_matchers_function_signatures;
 use matchers::arithmetic::register_arithmetic_matchers_functions;
+use matchers::binary::register_binary_inst_matchers_function_signatures;
+use matchers::binary::register_binary_inst_matchers_functions;
 use matchers::constants::register_constants_matchers_function_signatures;
 use matchers::constants::register_constants_matchers_functions;
 use matchers::fcmp::register_float_comparisons_matchers_function_signatures;
@@ -43,6 +46,7 @@ pub fn llvm_ir_functions() -> &'static HashMap<&'static str, Function> {
         register_constants_matchers_functions(&mut map);
         register_other_inst_matchers_functions(&mut map);
         register_shift_matchers_functions(&mut map);
+        register_binary_inst_matchers_functions(&mut map);
         map
     })
 }
@@ -57,6 +61,7 @@ pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     register_constants_matchers_function_signatures(&mut map);
     register_other_inst_matchers_function_signatures(&mut map);
     register_shift_matchers_function_signatures(&mut map);
+    register_binary_inst_matchers_function_signatures(&mut map);
     map
 }
 
