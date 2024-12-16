@@ -1,5 +1,6 @@
 use dyn_clone::DynClone;
-use inkwell::llvm_sys::prelude::{LLVMTypeRef, LLVMValueRef};
+use inkwell::llvm_sys::prelude::LLVMTypeRef;
+use inkwell::llvm_sys::prelude::LLVMValueRef;
 
 dyn_clone::clone_trait_object!(TypeMatcher);
 
@@ -39,6 +40,7 @@ impl InstMatcher for AnyInstMatcher {
 pub mod arithmetic;
 pub mod binary;
 pub mod constants;
+pub mod exception;
 pub mod fcmp;
 pub mod icmp;
 pub mod other;

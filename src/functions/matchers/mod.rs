@@ -1,6 +1,7 @@
 pub mod arithmetic;
 pub mod binary;
 pub mod constants;
+pub mod exception;
 pub mod fcmp;
 pub mod icmp;
 pub mod other;

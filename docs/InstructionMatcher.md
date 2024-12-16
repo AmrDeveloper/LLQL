@@ -126,3 +126,9 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 |  m_c_or  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match or Instruction commutatively  |
 | m_c_and  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match and Instruction commutatively |
 | m_c_xor  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match xor Instruction commutatively |
+
+### Exceptions Instructions Matchers functions
+
+|   Function   | Parameters |   Return    |                     Description                      |
+| :----------: | :--------: | :---------: | :--------------------------------------------------: |
+| m_landingpad |     ()     | InstMatcher | Build Inst Matcher that match landingpad Instruction |
