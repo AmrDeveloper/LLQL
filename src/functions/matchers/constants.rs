@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 
 use crate::ir::types::InstMatcherType;
@@ -11,7 +11,7 @@ use crate::matchers::constants::ConstIntMatcher;
 use crate::matchers::constants::ConstPointerNullMatcher;
 
 #[inline(always)]
-pub fn register_constants_matchers_functions(map: &mut HashMap<&'static str, Function>) {
+pub fn register_constants_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
     map.insert("m_const_int", match_const_int_inst);
     map.insert("m_const_fp", match_const_fp_inst);
     map.insert("m_const_null", match_const_null_inst);

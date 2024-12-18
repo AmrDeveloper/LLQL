@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use gitql_ast::types::integer::IntType;
 use gitql_ast::types::optional::OptionType;
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 
 use crate::ir::types::TypeMatcherType;
@@ -20,7 +20,7 @@ use crate::matchers::types::VectorTypeMatcher;
 use crate::matchers::types::VoidTypeMatcher;
 
 #[inline(always)]
-pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, Function>) {
+pub fn register_type_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
     // Matchers for Integer types
     map.insert("m_int1", match_int1);
     map.insert("m_int8", match_int8);

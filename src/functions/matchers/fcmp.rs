@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 
 use crate::functions::binary_matcher_signature;
@@ -10,7 +10,9 @@ use crate::ir::values::InstMatcherValue;
 use crate::matchers::fcmp::FloatComparisonInstMatcher;
 
 #[inline(always)]
-pub fn register_float_comparisons_matchers_functions(map: &mut HashMap<&'static str, Function>) {
+pub fn register_float_comparisons_matchers_functions(
+    map: &mut HashMap<&'static str, StandardFunction>,
+) {
     map.insert("m_fcmp_eq", match_fcmp_eq_inst);
     map.insert("m_fcmp_ne", match_fcmp_ne_inst);
     map.insert("m_fcmp_gt", match_fcmp_gt_inst);

@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use gitql_ast::types::boolean::BoolType;
 use gitql_ast::types::optional::OptionType;
 use gitql_ast::types::text::TextType;
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 use gitql_core::values::boolean::BoolValue;
 
@@ -23,7 +23,7 @@ use crate::matchers::other::UnreachableInstMatcher;
 use crate::matchers::AnyInstMatcher;
 
 #[inline(always)]
-pub fn register_other_inst_matchers_functions(map: &mut HashMap<&'static str, Function>) {
+pub fn register_other_inst_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
     map.insert("m_inst", match_inst);
     map.insert("m_inst_type", match_inst_type);
     map.insert("m_any_inst", match_any_inst);

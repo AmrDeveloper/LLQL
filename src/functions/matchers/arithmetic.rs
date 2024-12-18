@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 
 use crate::functions::binary_matcher_signature;
@@ -10,7 +10,7 @@ use crate::ir::values::InstMatcherValue;
 use crate::matchers::arithmetic::ArithmeticInstMatcher;
 
 #[inline(always)]
-pub fn register_arithmetic_matchers_functions(map: &mut HashMap<&'static str, Function>) {
+pub fn register_arithmetic_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
     map.insert("m_add", match_add_inst);
     map.insert("m_sub", match_sub_inst);
     map.insert("m_mul", match_mul_inst);

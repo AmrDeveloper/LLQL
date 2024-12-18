@@ -2,12 +2,12 @@ use std::collections::HashMap;
 use std::sync::OnceLock;
 
 use gitql_ast::types::optional::OptionType;
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
-use gitql_std::function::standard_function_signatures;
-use gitql_std::function::standard_functions;
 
+use gitql_std::standard::standard_function_signatures;
+use gitql_std::standard::standard_functions;
 use matchers::arithmetic::register_arithmetic_matchers_function_signatures;
 use matchers::arithmetic::register_arithmetic_matchers_functions;
 use matchers::binary::register_binary_inst_matchers_function_signatures;
@@ -36,8 +36,8 @@ use crate::matchers::InstMatcher;
 
 pub(crate) mod matchers;
 
-pub fn llvm_ir_functions() -> &'static HashMap<&'static str, Function> {
-    static HASHMAP: OnceLock<HashMap<&'static str, Function>> = OnceLock::new();
+pub fn llvm_ir_functions() -> &'static HashMap<&'static str, StandardFunction> {
+    static HASHMAP: OnceLock<HashMap<&'static str, StandardFunction>> = OnceLock::new();
     HASHMAP.get_or_init(|| {
         let mut map = standard_functions().to_owned();
         register_type_matchers_functions(&mut map);

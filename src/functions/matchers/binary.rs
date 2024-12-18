@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 
 use crate::functions::binary_matcher_signature;
@@ -10,7 +10,7 @@ use crate::ir::values::InstMatcherValue;
 use crate::matchers::binary::BinaryInstMatcher;
 
 #[inline(always)]
-pub fn register_binary_inst_matchers_functions(map: &mut HashMap<&'static str, Function>) {
+pub fn register_binary_inst_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
     map.insert("m_or", match_or_inst);
     map.insert("m_and", match_and_inst);
     map.insert("m_xor", match_xor_inst);

@@ -67,9 +67,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "chrono"
-version = "0.4.38"
+version = "0.4.39"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a21f936df1771bf62b77f047b726c4625ff2e8aa607c01ec06e5a05bd8463401"
+checksum = "7e36cc9d416881d2e24f9a963be5fb1cd90966419ac844274161d10488b3e825"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
@@ -81,11 +81,11 @@ dependencies = [
 
 [[package]]
 name = "comfy-table"
-version = "7.1.1"
+version = "7.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b34115915337defe99b2aff5c2ce6771e5fbc4079f4b506301f5cf394c8452f7"
+checksum = "24f165e7b643266ea80cb858aed492ad9280e3e05ce24d4a99d7d7b889b6a4d9"
 dependencies = [
- "crossterm 0.27.0",
+ "crossterm",
  "strum",
  "strum_macros",
  "unicode-width",
@@ -96,19 +96,6 @@ name = "core-foundation-sys"
 version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
-
-[[package]]
-name = "crossterm"
-version = "0.27.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f476fe445d41c9e991fd07515a6f463074b782242ccf4a5b7b1d1012e70824df"
-dependencies = [
- "bitflags",
- "crossterm_winapi",
- "libc",
- "parking_lot",
- "winapi",
-]
 
 [[package]]
 name = "crossterm"
@@ -137,9 +124,9 @@ dependencies = [
 
 [[package]]
 name = "csv"
-version = "1.3.0"
+version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac574ff4d437a7b5ad237ef331c17ccca63c46479e5b5453eb8e10bb99a759fe"
+checksum = "acdc4883a9c96732e4733212c01447ebd805833b7275a73ca3ee080fd77afdaf"
 dependencies = [
  "csv-core",
  "itoa",
@@ -197,18 +184,18 @@ dependencies = [
 
 [[package]]
 name = "gitql-ast"
-version = "0.29.0"
+version = "0.30.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4bcd0fb0e0a97c30a8d3a44f8504dd6d838715043d2550e20cd9f3820a57d083"
+checksum = "a245ad6a15dca8b0af0450e91612941400214faf295f9bf83ba89658e28df0af"
 dependencies = [
  "dyn-clone",
 ]
 
 [[package]]
 name = "gitql-cli"
-version = "0.32.0"
+version = "0.33.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "367ca9dd9779755bc0410ec706bca9eda52a2d228cb4c3f0cc3e5cd31ac5e490"
+checksum = "737b06f40a3886b90e8d915ef0e055940bbde12fcce9824a4c94e63856127f4d"
 dependencies = [
  "comfy-table",
  "csv",
@@ -221,9 +208,9 @@ dependencies = [
 
 [[package]]
 name = "gitql-core"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75e8761d0e6fceaf60134d72d390970019fd0766774b72b3fa519c37863b851a"
+checksum = "8feedad85fd9591ce779ae58911a19b3ed6507b8d056ae1ff92b6a12d1e7697c"
 dependencies = [
  "chrono",
  "dyn-clone",
@@ -233,9 +220,9 @@ dependencies = [
 
 [[package]]
 name = "gitql-engine"
-version = "0.32.0"
+version = "0.33.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a008e5b8b7b6e218404cbb7dfc4709359e41d6066dccaf2cf110ecb5847a834"
+checksum = "f18606f048f9fc07b09aa8681c35508dd80d3e69b17fde58d7463864011f1255"
 dependencies = [
  "chrono",
  "gitql-ast",
@@ -245,9 +232,9 @@ dependencies = [
 
 [[package]]
 name = "gitql-parser"
-version = "0.31.0"
+version = "0.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be3b7cdbc7a2be9afd0427bbd50f374175c3eee08496b1e5a094b8573879963f"
+checksum = "18f1be997847ce2e5393216bbfb9bc706207d5bfbcb2e922ce3486b851359c5b"
 dependencies = [
  "gitql-ast",
  "gitql-core",
@@ -255,9 +242,9 @@ dependencies = [
 
 [[package]]
 name = "gitql-std"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9cf7af95a172b1cbc8a73d04a317bed8083cb06a6fe7fc09bddc73cf522b3c91"
+checksum = "759df2dc41a6f5752b72b8cbad1c9fab470c37b738ea94310051d40fa7f35922"
 dependencies = [
  "chrono",
  "gitql-ast",
@@ -310,9 +297,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.6.0"
+version = "2.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "707907fe3c25f5424cce2cb7e1cbcafee6bdbe735ca90ef77c29e84591e5b9da"
+checksum = "62f822373a4fe84d4bb149bf54e584a7f4abec90e072ed49cda0edea5b95471f"
 dependencies = [
  "equivalent",
  "hashbrown",
@@ -376,7 +363,7 @@ version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dbe4aeb1c174dd840f072b25b8d7998900832989493c613abb150ce626805697"
 dependencies = [
- "crossterm 0.28.1",
+ "crossterm",
 ]
 
 [[package]]
@@ -554,9 +541,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.11.0"
+version = "1.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38200e5ee88914975b69f657f0801b6f6dccafd44fd9326302a4aaeecfacb1d8"
+checksum = "b544ef1b4eac5dc2db33ea63606ae9ffcfac26c1416a2806ae0bf5f56b201191"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -640,9 +627,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.129"
+version = "1.0.133"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6dbcf9b78a125ee667ae19388837dd12294b858d101fdd393cb9d5501ef09eb2"
+checksum = "c7fceb2473b9166b2294ef05efcb65a3db80803f0b03ef86a5fc88a2b85ee377"
 dependencies = [
  "itoa",
  "memchr",
@@ -759,9 +746,9 @@ checksum = "e91b56cd4cadaeb79bbf1a5645f6b4f8dc5bde8834ad5894a8db35fda9efa1fe"
 
 [[package]]
 name = "unicode-width"
-version = "0.1.14"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7dd6e30e90baa6f72411720665d41d89b9a3d039dc45b8faea1ddd07f617f6af"
+checksum = "1fc81956842c57dac11422a97c3b8195a1ff727f06e85c84ed2e8aa277c9a0fd"
 
 [[package]]
 name = "uuid"

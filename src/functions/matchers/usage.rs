@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use gitql_ast::types::integer::IntType;
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 
 use crate::ir::types::InstMatcherType;
@@ -10,7 +10,7 @@ use crate::ir::values::InstMatcherValue;
 use crate::matchers::usage::UsageInstMatcher;
 
 #[inline(always)]
-pub fn register_usage_matchers_functions(map: &mut HashMap<&'static str, Function>) {
+pub fn register_usage_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
     map.insert("m_unused", match_unused);
     map.insert("m_has_one_use", match_has_one_use);
     map.insert("m_has_n_uses", match_has_n_uses);

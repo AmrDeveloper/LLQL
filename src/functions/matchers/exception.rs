@@ -5,12 +5,14 @@ use crate::ir::values::InstMatcherValue;
 use crate::matchers::exception::InvokeInstMatcher;
 use crate::matchers::exception::LandingPadInstMatcher;
 
-use gitql_core::signature::Function;
 use gitql_core::signature::Signature;
+use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 
 #[inline(always)]
-pub fn register_exception_inst_matchers_functions(map: &mut HashMap<&'static str, Function>) {
+pub fn register_exception_inst_matchers_functions(
+    map: &mut HashMap<&'static str, StandardFunction>,
+) {
     map.insert("m_invoke", match_invoke_inst);
     map.insert("m_landingpad", match_landingpad_inst);
 }

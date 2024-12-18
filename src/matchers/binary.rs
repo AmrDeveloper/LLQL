@@ -39,7 +39,7 @@ impl BinaryInstMatcher {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
-            operator: BinaryOperator::Or,
+            operator: BinaryOperator::And,
             commutatively: false,
         })
     }
@@ -48,7 +48,7 @@ impl BinaryInstMatcher {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
-            operator: BinaryOperator::And,
+            operator: BinaryOperator::Or,
             commutatively: false,
         })
     }
@@ -72,7 +72,7 @@ impl BinaryInstMatcher {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
-            operator: BinaryOperator::Or,
+            operator: BinaryOperator::And,
             commutatively: true,
         })
     }
@@ -84,7 +84,7 @@ impl BinaryInstMatcher {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
-            operator: BinaryOperator::And,
+            operator: BinaryOperator::Or,
             commutatively: true,
         })
     }
