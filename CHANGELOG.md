@@ -1,5 +1,15 @@
 # Change Log
 
+## Version 0.3.0 _(2024-12-18)_
+
+- Migrate to GitQL 0.32.0.
+- Support Script mode.
+- Add CLI option to enable scripting mode.
+- Implement Logical and Arithmetic shifts matchers.
+- Implement `m_half` Matchers.
+- Implement `m_or`, `m_and`, `m_xor`, `m_c_or`, `m_c_and`, `m_c_xor`, Matchers.
+- Implement `m_invoke`, `m_landingpad` Matchers.
+
 ## Version 0.2.0 _(2024-11-17)_
 
 - Handle Parsing IR/BC files with invalid content.
