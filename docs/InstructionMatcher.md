@@ -118,14 +118,16 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 
 ### Logical and Bitwise Instructions Matchers functions
 
-| Function |              Parameters              |   Return    |                         Description                         |
-| :------: | :----------------------------------: | :---------: | :---------------------------------------------------------: |
-|   m_or   | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |        Build Inst Matcher that match or Instruction         |
-|  m_and   | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |        Build Inst Matcher that match and Instruction        |
-|  m_xor   | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |        Build Inst Matcher that match xor Instruction        |
-|  m_c_or  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match or Instruction commutatively  |
-| m_c_and  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match and Instruction commutatively |
-| m_c_xor  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match xor Instruction commutatively |
+|    Function     |              Parameters              |   Return    |                         Description                         |
+| :-------------: | :----------------------------------: | :---------: | :---------------------------------------------------------: |
+|      m_or       | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |        Build Inst Matcher that match or Instruction         |
+|  m_or_disjoint  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |    Build Inst Matcher that match or disjoint Instruction    |
+|      m_and      | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |        Build Inst Matcher that match and Instruction        |
+|      m_xor      | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |        Build Inst Matcher that match xor Instruction        |
+|     m_c_or      | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match or Instruction commutatively  |
+| m_c_or_disjoint | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |    Build Inst Matcher that match or disjoint Instruction    |
+|     m_c_and     | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match and Instruction commutatively |
+|     m_c_xor     | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match xor Instruction commutatively |
 
 ### Exceptions Instructions Matchers functions
 
