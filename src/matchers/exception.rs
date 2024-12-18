@@ -13,3 +13,13 @@ impl InstMatcher for LandingPadInstMatcher {
         unsafe { LLVMOpcode::LLVMLandingPad == LLVMGetInstructionOpcode(instruction) }
     }
 }
+
+#[derive(Clone)]
+pub struct InvokeInstMatcher;
+
+impl InstMatcher for InvokeInstMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe { LLVMOpcode::LLVMInvoke == LLVMGetInstructionOpcode(instruction) }
+    }
+}
