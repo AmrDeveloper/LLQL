@@ -60,6 +60,11 @@ fn main() {
                 return;
             }
 
+            if let Err(parse_modules_error) = parse_llvm_modules(&arguments.files) {
+                reporter.report_diagnostic("", Diagnostic::error(parse_modules_error.as_str()));
+                return;
+            }
+
             let schema = Schema {
                 tables_fields_names: llvm_tables_fields_names().to_owned(),
                 tables_fields_types: llvm_tables_fields_types().to_owned(),
@@ -85,12 +90,15 @@ fn main() {
         }
         Command::QueryMode(query, arguments) => {
             let mut reporter = diagnostic_reporter::DiagnosticReporter::default();
-            let git_repos_result = validate_files_paths(&arguments.files);
-            if git_repos_result.is_err() {
-                reporter.report_diagnostic(
-                    &query,
-                    Diagnostic::error(git_repos_result.err().unwrap().as_str()),
-                );
+
+            if let Err(validate_files_errors) = validate_files_paths(&arguments.files) {
+                reporter
+                    .report_diagnostic(&query, Diagnostic::error(validate_files_errors.as_str()));
+                return;
+            }
+
+            if let Err(parse_modules_error) = parse_llvm_modules(&arguments.files) {
+                reporter.report_diagnostic("", Diagnostic::error(parse_modules_error.as_str()));
                 return;
             }
 
@@ -149,10 +157,8 @@ fn launch_llql_repl(arguments: &Arguments) {
     global_env.with_standard_functions(&std_signatures, std_functions);
     global_env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
 
-    let parse_modules_result = parse_llvm_modules(files);
-    if parse_modules_result.is_err() {
-        let error_message = parse_modules_result.err().unwrap();
-        reporter.report_diagnostic("", Diagnostic::error(error_message.as_str()));
+    if let Err(parse_modules_error) = parse_llvm_modules(files) {
+        reporter.report_diagnostic("", Diagnostic::error(parse_modules_error.as_str()));
         return;
     }
 
