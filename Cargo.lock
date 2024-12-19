@@ -27,6 +27,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.94"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c1fd03a028ef38ba2276dce7e33fcd6369c158a1bca17946c4b1b701891c1ff7"
+
+[[package]]
 name = "autocfg"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -389,14 +395,15 @@ dependencies = [
 
 [[package]]
 name = "llvm-sys"
-version = "160.2.1"
+version = "180.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e73861901245d32e1c3d8b35b639cf100859b4cd0c9da56fe0273040acbb3ea4"
+checksum = "778fa5fa02e32728e718f11eec147e6f134137399ab02fd2c13d32476337affa"
 dependencies = [
+ "anyhow",
  "cc",
  "lazy_static",
  "libc",
- "regex",
+ "regex-lite",
  "semver",
 ]
 
@@ -561,6 +568,12 @@ dependencies = [
  "memchr",
  "regex-syntax",
 ]
+
+[[package]]
+name = "regex-lite"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "53a49587ad06b26609c52e423de037e7f57f20d53535d66e08c695f347df952a"
 
 [[package]]
 name = "regex-syntax"

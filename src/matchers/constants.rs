@@ -9,7 +9,6 @@ use super::InstMatcher;
 pub struct ConstIntMatcher;
 
 impl InstMatcher for ConstIntMatcher {
-    #[allow(deprecated)]
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
@@ -24,7 +23,6 @@ impl InstMatcher for ConstIntMatcher {
 pub struct ConstFloatMatcher;
 
 impl InstMatcher for ConstFloatMatcher {
-    #[allow(deprecated)]
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
@@ -39,7 +37,6 @@ impl InstMatcher for ConstFloatMatcher {
 pub struct ConstPointerNullMatcher;
 
 impl InstMatcher for ConstPointerNullMatcher {
-    #[allow(deprecated)]
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {

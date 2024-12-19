@@ -1,9 +1,9 @@
 use std::ffi::CStr;
 
-use inkwell::llvm_sys;
 use inkwell::llvm_sys::core::LLVMGetInstructionOpcode;
 use inkwell::llvm_sys::core::LLVMGetOperand;
 use inkwell::llvm_sys::core::LLVMGetValueKind;
+use inkwell::llvm_sys::core::LLVMGetValueName2;
 use inkwell::llvm_sys::core::LLVMTypeOf;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMOpcode;
@@ -48,14 +48,15 @@ pub struct ArgumentMatcher {
 }
 
 impl InstMatcher for ArgumentMatcher {
-    #[allow(deprecated)]
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
             let value_kind = LLVMGetValueKind(instruction);
             if value_kind == LLVMValueKind::LLVMArgumentValueKind {
                 if let Some(name) = &self.name {
-                    let label_value_name = llvm_sys::core::LLVMGetValueName(instruction);
+                    let mut name_len: usize = 0;
+                    let label_value_name =
+                        LLVMGetValueName2(instruction, &mut name_len as *mut usize);
                     let name_str = CStr::from_ptr(label_value_name).to_str().unwrap();
                     let is_name_matches = name.eq(name_str);
                     if is_name_matches {
@@ -80,14 +81,15 @@ pub struct LabelInstMatcher {
 }
 
 impl InstMatcher for LabelInstMatcher {
-    #[allow(deprecated)]
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
             let value_kind = LLVMGetValueKind(instruction);
             if value_kind == LLVMValueKind::LLVMBasicBlockValueKind {
                 if let Some(name) = &self.name {
-                    let label_value_name = llvm_sys::core::LLVMGetValueName(instruction);
+                    let mut name_len: usize = 0;
+                    let label_value_name =
+                        LLVMGetValueName2(instruction, &mut name_len as *mut usize);
                     let name_str = CStr::from_ptr(label_value_name).to_str().unwrap();
                     return name.eq(name_str);
                 }

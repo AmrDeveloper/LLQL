@@ -251,7 +251,7 @@ fn match_array(values: &[Box<dyn Value>]) -> Box<dyn Value> {
         .matcher;
 
     let length = if values.len() == 2 {
-        Some(values[1].as_int().unwrap() as u32)
+        Some(values[1].as_int().unwrap() as u64)
     } else {
         None
     };

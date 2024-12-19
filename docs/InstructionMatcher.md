@@ -135,3 +135,10 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | :----------: | :--------: | :---------: | :--------------------------------------------------: |
 |   m_invoke   |     ()     | InstMatcher |   Build Inst Matcher that match invoke Instruction   |
 | m_landingpad |     ()     | InstMatcher | Build Inst Matcher that match landingpad Instruction |
+
+### Compound Instructions Matchers functions
+
+|   Function   |       Parameters       |   Return    |                                   Description                                    |
+| :----------: | :--------------------: | :---------: | :------------------------------------------------------------------------------: |
+| m_inst_oneof | (inst: ...InstMatcher) | InstMatcher | Build Inst Matcher from list of matchers that return true if one of them matches |
+| m_inst_allof | (inst: ...InstMatcher) | InstMatcher | Build Inst Matcher from list of matchers that return true if all of them matches |

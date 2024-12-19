@@ -1,5 +1,5 @@
 use inkwell::llvm_sys;
-use llvm_sys::core::LLVMGetArrayLength;
+use inkwell::llvm_sys::core::LLVMGetArrayLength2;
 use llvm_sys::core::LLVMGetElementType;
 use llvm_sys::core::LLVMGetIntTypeWidth;
 use llvm_sys::core::LLVMGetTypeKind;
@@ -115,7 +115,7 @@ impl TypeMatcher for PointerTypeMatcher {
 #[derive(Clone)]
 pub struct ArrayTypeMatcher {
     pub base_matcher: Box<dyn TypeMatcher>,
-    pub length: Option<u32>,
+    pub length: Option<u64>,
 }
 
 impl TypeMatcher for ArrayTypeMatcher {
@@ -133,7 +133,7 @@ impl TypeMatcher for ArrayTypeMatcher {
                 }
 
                 if let Some(target_length) = self.length {
-                    let length = LLVMGetArrayLength(llvm_type);
+                    let length = LLVMGetArrayLength2(llvm_type);
                     return target_length == length;
                 }
 
@@ -195,7 +195,7 @@ mod tests {
     use crate::matchers::AnyTypeMatcher;
 
     use super::*;
-    use llvm_sys::core::LLVMArrayType;
+    use llvm_sys::core::LLVMArrayType2;
     use llvm_sys::core::LLVMContextCreate;
     use llvm_sys::core::LLVMDoubleTypeInContext;
     use llvm_sys::core::LLVMFloatTypeInContext;
@@ -363,12 +363,12 @@ mod tests {
         let context = unsafe { LLVMContextCreate() };
 
         let i32t = unsafe { LLVMInt32TypeInContext(context) };
-        let i32t_array_10_n = unsafe { LLVMArrayType(i32t, 10) };
-        let i32t_array_20_n = unsafe { LLVMArrayType(i32t, 20) };
+        let i32t_array_10_n = unsafe { LLVMArrayType2(i32t, 10) };
+        let i32t_array_20_n = unsafe { LLVMArrayType2(i32t, 20) };
 
         let i64t = unsafe { LLVMInt64TypeInContext(context) };
-        let i64t_array_10_n = unsafe { LLVMArrayType(i64t, 10) };
-        let i64t_array_20_n = unsafe { LLVMArrayType(i64t, 20) };
+        let i64t_array_10_n = unsafe { LLVMArrayType2(i64t, 10) };
+        let i64t_array_20_n = unsafe { LLVMArrayType2(i64t, 20) };
 
         let i32_matcher = Box::new(IntTypeMatcher {
             size: IntTypeSize::Size32,
