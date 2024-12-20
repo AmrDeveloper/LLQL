@@ -7,7 +7,7 @@ use gitql_core::values::base::Value;
 
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
-use crate::matchers::compound::CompoundInstMatcher;
+use crate::matchers::combine::CombineInstMatcher;
 use crate::matchers::InstMatcher;
 
 #[inline(always)]

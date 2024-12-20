@@ -33,6 +33,7 @@ pub struct ExtractValueInstMatcher {
 }
 
 impl InstMatcher for ExtractValueInstMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
             if LLVMGetInstructionOpcode(instruction) == LLVMOpcode::LLVMExtractValue {

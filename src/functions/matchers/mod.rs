@@ -1,6 +1,6 @@
 pub mod arithmetic;
 pub mod binary;
-pub mod compound;
+pub mod combine;
 pub mod constants;
 pub mod exception;
 pub mod fcmp;
