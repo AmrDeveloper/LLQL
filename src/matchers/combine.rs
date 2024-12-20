@@ -57,3 +57,59 @@ impl InstMatcher for CombineInstMatcher {
         }
     }
 }
+
+#[derive(PartialEq, Clone)]
+enum CombineBinaryMatcherKind {
+    And,
+    Or,
+    Xor,
+}
+
+#[derive(Clone)]
+pub struct CombineBinaryInstMatcher {
+    lhs: Box<dyn InstMatcher>,
+    rhs: Box<dyn InstMatcher>,
+    kind: CombineBinaryMatcherKind,
+}
+
+impl CombineBinaryInstMatcher {
+    pub fn create_and(lhs: Box<dyn InstMatcher>, rhs: Box<dyn InstMatcher>) -> Self {
+        CombineBinaryInstMatcher {
+            lhs,
+            rhs,
+            kind: CombineBinaryMatcherKind::And,
+        }
+    }
+
+    pub fn create_or(lhs: Box<dyn InstMatcher>, rhs: Box<dyn InstMatcher>) -> Self {
+        CombineBinaryInstMatcher {
+            lhs,
+            rhs,
+            kind: CombineBinaryMatcherKind::Or,
+        }
+    }
+
+    pub fn create_xor(lhs: Box<dyn InstMatcher>, rhs: Box<dyn InstMatcher>) -> Self {
+        CombineBinaryInstMatcher {
+            lhs,
+            rhs,
+            kind: CombineBinaryMatcherKind::Xor,
+        }
+    }
+}
+
+impl InstMatcher for CombineBinaryInstMatcher {
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        match self.kind {
+            CombineBinaryMatcherKind::And => {
+                self.lhs.is_match(instruction) && self.rhs.is_match(instruction)
+            }
+            CombineBinaryMatcherKind::Or => {
+                self.lhs.is_match(instruction) || self.rhs.is_match(instruction)
+            }
+            CombineBinaryMatcherKind::Xor => {
+                self.lhs.is_match(instruction) ^ self.rhs.is_match(instruction)
+            }
+        }
+    }
+}
