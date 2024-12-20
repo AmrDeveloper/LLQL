@@ -28,6 +28,23 @@ impl InstMatcher for InstTypeMatcher {
 }
 
 #[derive(Clone)]
+pub struct ExtractValueInstMatcher {
+    pub matcher: Box<dyn InstMatcher>,
+}
+
+impl InstMatcher for ExtractValueInstMatcher {
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe {
+            if LLVMGetInstructionOpcode(instruction) == LLVMOpcode::LLVMExtractValue {
+                let value = LLVMGetOperand(instruction, 0);
+                return self.matcher.is_match(value);
+            }
+            false
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct PoisonValueMatcher;
 
 impl InstMatcher for PoisonValueMatcher {
