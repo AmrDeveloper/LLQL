@@ -10,15 +10,19 @@ use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
 use crate::matchers::combine::CombineBinaryInstMatcher;
 use crate::matchers::combine::CombineInstMatcher;
+use crate::matchers::combine::CombineUnaryInstMatcher;
 use crate::matchers::InstMatcher;
 
 #[inline(always)]
 pub fn register_combine_matchers_function(map: &mut HashMap<&'static str, StandardFunction>) {
     map.insert("m_inst_combine_oneof", match_oneof_combine_inst);
     map.insert("m_inst_combine_allof", match_allof_combine_inst);
+
     map.insert("m_inst_combine_and", match_and_combine_inst);
     map.insert("m_inst_combine_or", match_or_combine_inst);
     map.insert("m_inst_combine_xor", match_xor_combine_inst);
+
+    map.insert("m_inst_combine_not", match_not_combine_inst);
 }
 
 #[inline(always)]
@@ -72,6 +76,14 @@ pub fn register_combine_matchers_function_signatures(map: &mut HashMap<&'static 
             return_type: Box::new(InstMatcherType),
         },
     );
+
+    map.insert(
+        "m_inst_combine_not",
+        Signature {
+            parameters: vec![Box::new(InstMatcherType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
 }
 
 fn match_oneof_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
@@ -111,5 +123,16 @@ fn match_or_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 fn match_xor_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs, rhs) = binary_matchers_sides(values);
     let matcher = Box::new(CombineBinaryInstMatcher::create_xor(lhs, rhs));
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_not_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let rhs = values[0]
+        .as_any()
+        .downcast_ref::<InstMatcherValue>()
+        .unwrap()
+        .matcher
+        .to_owned();
+    let matcher = Box::new(CombineUnaryInstMatcher::create_not(rhs));
     Box::new(InstMatcherValue { matcher })
 }

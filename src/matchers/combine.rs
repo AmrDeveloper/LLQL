@@ -113,3 +113,20 @@ impl InstMatcher for CombineBinaryInstMatcher {
         }
     }
 }
+
+#[derive(Clone)]
+pub struct CombineUnaryInstMatcher {
+    rhs: Box<dyn InstMatcher>,
+}
+
+impl CombineUnaryInstMatcher {
+    pub fn create_not(rhs: Box<dyn InstMatcher>) -> Self {
+        CombineUnaryInstMatcher { rhs }
+    }
+}
+
+impl InstMatcher for CombineUnaryInstMatcher {
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        !(self.rhs.is_match(instruction))
+    }
+}

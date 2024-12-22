@@ -146,3 +146,4 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 |  m_inst_combine_and  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |     Build Inst Matcher two matchers that return true if (lhs and rhs) = true     |
 |  m_inst_combine_or   | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |     Build Inst Matcher two matchers that return true if (lhs or rhs) = true      |
 |  m_inst_combine_xor  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |     Build Inst Matcher two matchers that return true if (lhs xor rhs )= true     |
+|  m_inst_combine_not  |          (rhs: InstMatcher)          | InstMatcher |        Build Inst Matcher two matchers that return true if (!rhs) = true         |
