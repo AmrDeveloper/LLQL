@@ -22,6 +22,8 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 |  m_has_one_use  |        (m : InstMatcher?)        | InstMatcher |    Build Inst Matcher that match instruction that has exactly on use     |
 |  m_has_n_uses   |    (m : InstMatcher?, n: Int)    | InstMatcher |   Build Inst Matcher that match instruction that has n number of uses    |
 
+---
+
 ### Arithmetic Instructions Matchers functions
 
 | Function |               Parameters               |   Return    |                            Description                            |
@@ -47,6 +49,8 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | m_c_fdiv | (lhs: InstMatcher?, rhs: InstMatcher?) | InstMatcher | Build Inst Matcher that match FDiv Instruction with commutatively |
 | m_c_frem | (lhs: InstMatcher?, rhs: InstMatcher?) | InstMatcher | Build Inst Matcher that match FRem Instruction with commutatively |
 
+---
+
 ### ICMP Instructions Matchers functions
 
 |   Function   |              Parameters              |   Return    |                              Description                              |
@@ -71,6 +75,8 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | m_c_icmp_sge | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match icmp sge Instruction with commutatively |
 | m_c_icmp_slt | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match icmp slt Instruction with commutatively |
 | m_c_icmp_sle | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match icmp sle Instruction with commutatively |
+
+---
 
 ### FCMP Instructions Matchers functions
 
@@ -105,6 +111,8 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | m_c_fcmp_ult | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match fcmp ult Instruction with commutatively |
 | m_c_fcmp_ule | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match fcmp ule Instruction with commutatively |
 
+---
+
 ### Shifts Instructions Matchers functions
 
 | Function |              Parameters              |   Return    |                            Description                            |
@@ -116,6 +124,7 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | m_c_shr  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match shr Instruction with commutatively  |
 | m_c_ashr | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match ashr Instruction with commutatively |
 
+---
 
 ### Logical and Bitwise Instructions Matchers functions
 
@@ -130,12 +139,16 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 |     m_c_and     | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match and Instruction commutatively |
 |     m_c_xor     | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher | Build Inst Matcher that match xor Instruction commutatively |
 
+---
+
 ### Exceptions Instructions Matchers functions
 
 |   Function   | Parameters |   Return    |                     Description                      |
 | :----------: | :--------: | :---------: | :--------------------------------------------------: |
 |   m_invoke   |     ()     | InstMatcher |   Build Inst Matcher that match invoke Instruction   |
 | m_landingpad |     ()     | InstMatcher | Build Inst Matcher that match landingpad Instruction |
+
+---
 
 ### Combine Instructions Matchers functions
 
@@ -147,3 +160,9 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 |  m_inst_combine_or   | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |     Build Inst Matcher two matchers that return true if (lhs or rhs) = true      |
 |  m_inst_combine_xor  | (lhs: InstMatcher, rhs: InstMatcher) | InstMatcher |     Build Inst Matcher two matchers that return true if (lhs xor rhs )= true     |
 |  m_inst_combine_not  |          (rhs: InstMatcher)          | InstMatcher |        Build Inst Matcher two matchers that return true if (!rhs) = true         |
+
+### Combine Instructions Matchers Operators
+
+| Operator | Description                             |
+| -------- | --------------------------------------- |
+| !        | A syntax sugar for `m_inst_combine_not` |

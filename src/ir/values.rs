@@ -9,6 +9,7 @@ use llvm_sys::core::LLVMPrintValueToString;
 use llvm_sys::prelude::LLVMTypeRef;
 use llvm_sys::prelude::LLVMValueRef;
 
+use crate::matchers::combine::CombineUnaryInstMatcher;
 use crate::matchers::InstMatcher;
 use crate::matchers::TypeMatcher;
 
@@ -116,6 +117,11 @@ impl Value for InstMatcherValue {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn bang_op(&self) -> Result<Box<dyn Value>, String> {
+        let matcher = Box::new(CombineUnaryInstMatcher::create_not(self.matcher.clone()));
+        Ok(Box::new(InstMatcherValue { matcher }))
     }
 }
 
