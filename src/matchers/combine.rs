@@ -2,10 +2,12 @@ use inkwell::llvm_sys::prelude::LLVMValueRef;
 
 use super::InstMatcher;
 
+#[allow(clippy::enum_variant_names)]
 #[derive(PartialEq, Clone)]
 enum CombineMatcherKind {
     OneOf,
     AllOf,
+    NoneOf,
 }
 
 #[derive(Clone)]
@@ -28,21 +30,34 @@ impl CombineInstMatcher {
             matcher_kind: CombineMatcherKind::AllOf,
         }
     }
+
+    pub fn create_none_of(matchers: Vec<Box<dyn InstMatcher>>) -> Self {
+        CombineInstMatcher {
+            matchers,
+            matcher_kind: CombineMatcherKind::AllOf,
+        }
+    }
 }
 
 impl InstMatcher for CombineInstMatcher {
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         let mut matches_count = 0;
+        let matcher_kind = &self.matcher_kind;
         for matcher in self.matchers.iter() {
             let is_matches = matcher.is_match(instruction);
 
             // If kind is `oneOf` and one if matches, return true
-            if is_matches && self.matcher_kind == CombineMatcherKind::OneOf {
+            if is_matches && CombineMatcherKind::OneOf.eq(matcher_kind) {
                 return true;
             }
 
             // If kind is `allOf` and one is not matches, return false
-            if !is_matches && self.matcher_kind == CombineMatcherKind::AllOf {
+            if !is_matches && CombineMatcherKind::AllOf.eq(matcher_kind) {
+                return false;
+            }
+
+            // If kind is `noneOf` and one is matches, return false
+            if is_matches && CombineMatcherKind::NoneOf.eq(matcher_kind) {
                 return false;
             }
 
@@ -54,6 +69,7 @@ impl InstMatcher for CombineInstMatcher {
         match self.matcher_kind {
             CombineMatcherKind::OneOf => matches_count > 1,
             CombineMatcherKind::AllOf => matches_count == self.matchers.len(),
+            CombineMatcherKind::NoneOf => matches_count == 0,
         }
     }
 }

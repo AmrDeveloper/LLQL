@@ -17,6 +17,7 @@ use crate::matchers::InstMatcher;
 pub fn register_combine_matchers_function(map: &mut HashMap<&'static str, StandardFunction>) {
     map.insert("m_inst_combine_oneof", match_oneof_combine_inst);
     map.insert("m_inst_combine_allof", match_allof_combine_inst);
+    map.insert("m_inst_combine_noneof", match_noneof_combine_inst);
 
     map.insert("m_inst_combine_and", match_and_combine_inst);
     map.insert("m_inst_combine_or", match_or_combine_inst);
@@ -42,6 +43,19 @@ pub fn register_combine_matchers_function_signatures(map: &mut HashMap<&'static 
 
     map.insert(
         "m_inst_combine_allof",
+        Signature {
+            parameters: vec![
+                Box::new(InstMatcherType),
+                Box::new(VarargsType {
+                    base: Box::new(InstMatcherType),
+                }),
+            ],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_inst_combine_noneof",
         Signature {
             parameters: vec![
                 Box::new(InstMatcherType),
@@ -105,6 +119,17 @@ fn match_allof_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
         }
     }
     let matcher = Box::new(CombineInstMatcher::create_all_of(matchers));
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_noneof_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let mut matchers: Vec<Box<dyn InstMatcher>> = vec![];
+    for value in values.iter() {
+        if let Some(inst_matcher) = value.as_any().downcast_ref::<InstMatcherValue>() {
+            matchers.push(inst_matcher.matcher.to_owned());
+        }
+    }
+    let matcher = Box::new(CombineInstMatcher::create_none_of(matchers));
     Box::new(InstMatcherValue { matcher })
 }
 
