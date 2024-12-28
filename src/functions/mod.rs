@@ -89,6 +89,14 @@ pub fn binary_matcher_signature() -> Signature {
 }
 
 #[inline]
+pub fn matcher_signature_without_parameters() -> Signature {
+    Signature {
+        parameters: vec![],
+        return_type: Box::new(InstMatcherType),
+    }
+}
+
+#[inline]
 pub fn binary_matchers_sides(
     values: &[Box<dyn Value>],
 ) -> (Box<dyn InstMatcher>, Box<dyn InstMatcher>) {

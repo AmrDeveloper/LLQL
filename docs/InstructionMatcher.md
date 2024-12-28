@@ -10,9 +10,6 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | m_extract_value |        (m : InstMatcher?)        | InstMatcher |          Build Inst Matcher that match ExtractValue Instruction          |
 |   m_inst_type   |        (m : TypeMatcher?)        | InstMatcher |         Build Inst Matcher that match instruction returned type          |
 |   m_any_inst    |                ()                | InstMatcher |              Build Inst Matcher that match any Instruction               |
-|   m_const_int   |                ()                | InstMatcher |            Build Inst Matcher that match constants int value             |
-|   m_const_fp    |                ()                | InstMatcher |           Build Inst Matcher that match constants float value            |
-|  m_const_null   |                ()                | InstMatcher |           Build Inst Matcher that match constants pointer null           |
 |    m_poison     |                ()                | InstMatcher |                Build Inst Matcher that match poison value                |
 |     m_label     |           (n : Text?)            | InstMatcher |          Build Inst Matcher that match Label with optional name          |
 |   m_argument    |  (n : Text?, m : TypeMatcher?)   | InstMatcher | Build Inst Matcher that match Argument value with optional name and type |
@@ -21,6 +18,20 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 |    m_unused     |        (m : InstMatcher?)        | InstMatcher |       Build Inst Matcher that match instruction that unused at all       |
 |  m_has_one_use  |        (m : InstMatcher?)        | InstMatcher |    Build Inst Matcher that match instruction that has exactly on use     |
 |  m_has_n_uses   |    (m : InstMatcher?, n: Int)    | InstMatcher |   Build Inst Matcher that match instruction that has n number of uses    |
+
+---
+
+### Constants Instructions Matchers functions
+
+|    Function    |  Parameters  |   Return    |                           Description                            |
+| :------------: | :----------: | :---------: | :--------------------------------------------------------------: |
+|  m_const_int   |      ()      | InstMatcher |        Build Inst Matcher that match constants int value         |
+|     m_zero     |      ()      | InstMatcher |     Build Inst Matcher that match constants int with value 0     |
+|     m_one      |      ()      | InstMatcher |     Build Inst Matcher that match constants int with value 1     |
+|    m_power2    |      ()      | InstMatcher | Build Inst Matcher that match constants int if it's power of two |
+| m_specific_int | (value: Int) | InstMatcher |    Build Inst Matcher that match specific constants int value    |
+|   m_const_fp   |      ()      | InstMatcher |       Build Inst Matcher that match constants float value        |
+|  m_const_null  |      ()      | InstMatcher |       Build Inst Matcher that match constants pointer null       |
 
 ---
 
