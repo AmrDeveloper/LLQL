@@ -190,18 +190,18 @@ dependencies = [
 
 [[package]]
 name = "gitql-ast"
-version = "0.30.0"
+version = "0.31.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a245ad6a15dca8b0af0450e91612941400214faf295f9bf83ba89658e28df0af"
+checksum = "f85e456ba3f5ac7108b8b7de5313dbc56e2fcd660ecbfcf039ed162c64d635fd"
 dependencies = [
  "dyn-clone",
 ]
 
 [[package]]
 name = "gitql-cli"
-version = "0.33.0"
+version = "0.34.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "737b06f40a3886b90e8d915ef0e055940bbde12fcce9824a4c94e63856127f4d"
+checksum = "9a8a3426fd183672ad70bec5a9059a2ff7933d6ab9ff2683493db07aa673ee7e"
 dependencies = [
  "comfy-table",
  "csv",
@@ -214,33 +214,33 @@ dependencies = [
 
 [[package]]
 name = "gitql-core"
-version = "0.10.0"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8feedad85fd9591ce779ae58911a19b3ed6507b8d056ae1ff92b6a12d1e7697c"
+checksum = "8b41a82c3daef3aaddd980315e6ee9cc800f4bd5576266a81cb1f46a8259fc7d"
 dependencies = [
  "chrono",
  "dyn-clone",
  "gitql-ast",
  "indexmap",
-]
-
-[[package]]
-name = "gitql-engine"
-version = "0.33.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f18606f048f9fc07b09aa8681c35508dd80d3e69b17fde58d7463864011f1255"
-dependencies = [
- "chrono",
- "gitql-ast",
- "gitql-core",
  "regex",
 ]
 
 [[package]]
-name = "gitql-parser"
-version = "0.32.0"
+name = "gitql-engine"
+version = "0.34.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18f1be997847ce2e5393216bbfb9bc706207d5bfbcb2e922ce3486b851359c5b"
+checksum = "b68188f092458660d005799f6f431517390364a6d37b2172291153269dd1db1c"
+dependencies = [
+ "chrono",
+ "gitql-ast",
+ "gitql-core",
+]
+
+[[package]]
+name = "gitql-parser"
+version = "0.33.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "935c77cfa4258dd02101aa67539e2dd806fbea0c89dc0de9d24b44f889dafd89"
 dependencies = [
  "gitql-ast",
  "gitql-core",
@@ -248,9 +248,9 @@ dependencies = [
 
 [[package]]
 name = "gitql-std"
-version = "0.10.0"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "759df2dc41a6f5752b72b8cbad1c9fab470c37b738ea94310051d40fa7f35922"
+checksum = "4c4957e538f2c393d730aa9d598753a8749d96a93e7b878130ab8f5911fe1198"
 dependencies = [
  "chrono",
  "gitql-ast",
@@ -640,9 +640,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.133"
+version = "1.0.134"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7fceb2473b9166b2294ef05efcb65a3db80803f0b03ef86a5fc88a2b85ee377"
+checksum = "d00f4175c42ee48b15416f6193a959ba3a0d67fc699a0db9ad12df9f83991c7d"
 dependencies = [
  "itoa",
  "memchr",
