@@ -9,6 +9,7 @@ use llvm_sys::core::LLVMPrintValueToString;
 use llvm_sys::prelude::LLVMTypeRef;
 use llvm_sys::prelude::LLVMValueRef;
 
+use crate::matchers::combine::CombineBinaryInstMatcher;
 use crate::matchers::combine::CombineUnaryInstMatcher;
 use crate::matchers::InstMatcher;
 use crate::matchers::TypeMatcher;
@@ -121,6 +122,42 @@ impl Value for InstMatcherValue {
 
     fn bang_op(&self) -> Result<Box<dyn Value>, String> {
         let matcher = Box::new(CombineUnaryInstMatcher::create_not(self.matcher.clone()));
+        Ok(Box::new(InstMatcherValue { matcher }))
+    }
+
+    fn logical_or_op(&self, other: &Box<dyn Value>) -> Result<Box<dyn Value>, String> {
+        let lhs = self.matcher.clone();
+        let rhs = other
+            .as_any()
+            .downcast_ref::<InstMatcherValue>()
+            .unwrap()
+            .matcher
+            .to_owned();
+        let matcher = Box::new(CombineBinaryInstMatcher::create_or(lhs, rhs));
+        Ok(Box::new(InstMatcherValue { matcher }))
+    }
+
+    fn logical_and_op(&self, other: &Box<dyn Value>) -> Result<Box<dyn Value>, String> {
+        let lhs = self.matcher.clone();
+        let rhs = other
+            .as_any()
+            .downcast_ref::<InstMatcherValue>()
+            .unwrap()
+            .matcher
+            .to_owned();
+        let matcher = Box::new(CombineBinaryInstMatcher::create_and(lhs, rhs));
+        Ok(Box::new(InstMatcherValue { matcher }))
+    }
+
+    fn logical_xor_op(&self, other: &Box<dyn Value>) -> Result<Box<dyn Value>, String> {
+        let lhs = self.matcher.clone();
+        let rhs = other
+            .as_any()
+            .downcast_ref::<InstMatcherValue>()
+            .unwrap()
+            .matcher
+            .to_owned();
+        let matcher = Box::new(CombineBinaryInstMatcher::create_xor(lhs, rhs));
         Ok(Box::new(InstMatcherValue { matcher }))
     }
 }

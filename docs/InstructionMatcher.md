@@ -177,4 +177,7 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 
 | Operator | Description                             |
 | -------- | --------------------------------------- |
+| AND      | A syntax sugar for `m_inst_combine_and` |
+| OR       | A syntax sugar for `m_inst_combine_or`  |
+| XOR      | A syntax sugar for `m_inst_combine_xor` |
 | !        | A syntax sugar for `m_inst_combine_not` |
