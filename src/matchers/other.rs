@@ -1,6 +1,8 @@
 use std::ffi::CStr;
 
+use inkwell::llvm_sys::core::LLVMGetIndices;
 use inkwell::llvm_sys::core::LLVMGetInstructionOpcode;
+use inkwell::llvm_sys::core::LLVMGetNumIndices;
 use inkwell::llvm_sys::core::LLVMGetOperand;
 use inkwell::llvm_sys::core::LLVMGetValueKind;
 use inkwell::llvm_sys::core::LLVMGetValueName2;
@@ -30,6 +32,7 @@ impl InstMatcher for InstTypeMatcher {
 #[derive(Clone)]
 pub struct ExtractValueInstMatcher {
     pub matcher: Box<dyn InstMatcher>,
+    pub indices: Option<Vec<i64>>,
 }
 
 impl InstMatcher for ExtractValueInstMatcher {
@@ -37,10 +40,30 @@ impl InstMatcher for ExtractValueInstMatcher {
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
             if LLVMGetInstructionOpcode(instruction) == LLVMOpcode::LLVMExtractValue {
-                let value = LLVMGetOperand(instruction, 0);
-                return self.matcher.is_match(value);
+                return false;
             }
-            false
+
+            let value = LLVMGetOperand(instruction, 0);
+            if !self.matcher.is_match(value) {
+                return false;
+            }
+
+            if let Some(indices) = &self.indices {
+                let indices_num = LLVMGetNumIndices(instruction) as usize;
+                if indices.len() != indices_num {
+                    return false;
+                }
+
+                let inst_indices = LLVMGetIndices(instruction);
+                let indices_slice = std::slice::from_raw_parts(inst_indices, indices_num);
+                for i in 0..indices_num {
+                    if indices[i] != indices_slice[i] as i64 {
+                        return false;
+                    }
+                }
+            }
+
+            true
         }
     }
 }

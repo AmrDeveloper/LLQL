@@ -98,7 +98,7 @@ SELECT instruction FROM instructions WHERE m_inst(instruction, m_has_n_uses(m_ad
 
 ### Download or Install
 
-Note that Building from source or installing from Cargo.io requires LibClang 16 to be installed
+Note that Building from source or installing from Cargo.io requires LibClang 18.0 to be installed
 
 - Install from Cargo.io
 

@@ -1,10 +1,13 @@
 use std::collections::HashMap;
 
 use gitql_ast::types::boolean::BoolType;
+use gitql_ast::types::integer::IntType;
 use gitql_ast::types::optional::OptionType;
 use gitql_ast::types::text::TextType;
+use gitql_ast::types::varargs::VarargsType;
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
+use gitql_core::values::array::ArrayValue;
 use gitql_core::values::base::Value;
 use gitql_core::values::boolean::BoolValue;
 
@@ -51,9 +54,10 @@ pub fn register_other_inst_matchers_function_signatures(
     map.insert(
         "m_extract_value",
         Signature {
-            parameters: vec![Box::new(OptionType {
-                base: Some(Box::new(InstMatcherType)),
-            })],
+            parameters: vec![
+                Box::new(OptionType::new(Some(Box::new(InstMatcherType)))),
+                Box::new(VarargsType::new(Box::new(IntType))),
+            ],
             return_type: Box::new(InstMatcherType),
         },
     );
@@ -141,7 +145,18 @@ fn match_extract_value(values: &[Box<dyn Value>]) -> Box<dyn Value> {
             .clone()
     };
 
-    let inst_matcher = Box::new(ExtractValueInstMatcher { matcher });
+    let mut indices: Option<Vec<i64>> = None;
+    if let Some(indices_array) = values.get(1) {
+        let array = indices_array.as_any().downcast_ref::<ArrayValue>().unwrap();
+        let mut i64_indices: Vec<i64> = Vec::with_capacity(array.values.len());
+        for element in array.values.iter() {
+            i64_indices.push(element.as_int().unwrap());
+        }
+        indices = Some(i64_indices);
+    }
+
+    let inst_matcher = Box::new(ExtractValueInstMatcher { matcher, indices });
+
     Box::new(InstMatcherValue {
         matcher: inst_matcher,
     })
