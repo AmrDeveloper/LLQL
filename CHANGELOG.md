@@ -1,5 +1,16 @@
 # Change Log
 
+## Version 0.4.0 _(2025-01-04)_
+
+- Implement `m_or_disjoint`, `m_c_or_disjoint` Matchers.
+- Implement `m_extract_value` with varargs number of indices Matcher.
+- Implement Combine functions `m_inst_combine_oneof`, `m_inst_combine_allof` and `m_inst_combine_noneof` matchers.
+- Implement Combine Binary functions `m_inst_combine_and`, `m_inst_combine_or`, `m_inst_combine_xor`.
+- Implement Constants Matchers `m_zero`, `m_one`, `m_power2` and `m_specific_int` functions.
+- Implement Combine Unary function `m_inst_combine_not`.
+- Migrate to LLVM 18.0.0
+- Migrate to GitQL 0.34.0.
+
 ## Version 0.3.0 _(2024-12-18)_
 
 - Migrate to GitQL 0.32.0.
