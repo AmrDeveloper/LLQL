@@ -5,8 +5,6 @@ use std::path::Path;
 
 use arguments::Arguments;
 use arguments::Command;
-use functions::llvm_ir_function_signatures;
-use functions::llvm_ir_functions;
 use gitql_cli::arguments::OutputFormat;
 use gitql_cli::diagnostic_reporter;
 use gitql_cli::diagnostic_reporter::DiagnosticReporter;
@@ -15,19 +13,15 @@ use gitql_cli::printer::csv_printer::CSVPrinter;
 use gitql_cli::printer::json_printer::JSONPrinter;
 use gitql_cli::printer::table_printer::TablePrinter;
 use gitql_core::environment::Environment;
-use gitql_core::schema::Schema;
 use gitql_engine::data_provider::DataProvider;
 use gitql_engine::engine;
 use gitql_engine::engine::EvaluationResult::SelectedGroups;
 use gitql_parser::diagnostic::Diagnostic;
 use gitql_parser::parser;
 use gitql_parser::tokenizer::Tokenizer;
-use gitql_std::aggregation::aggregation_function_signatures;
-use gitql_std::aggregation::aggregation_functions;
 use ir::data_provider::LLVMIRDataProvider;
 use ir::module_parser::parse_llvm_modules;
-use ir::schema::llvm_tables_fields_names;
-use ir::schema::llvm_tables_fields_types;
+use ir::schema::create_llql_environment;
 use lineeditor::LineEditorResult;
 
 pub mod arguments;
@@ -65,21 +59,7 @@ fn main() {
                 return;
             }
 
-            let schema = Schema {
-                tables_fields_names: llvm_tables_fields_names().to_owned(),
-                tables_fields_types: llvm_tables_fields_types().to_owned(),
-            };
-
-            let std_signatures = llvm_ir_function_signatures();
-            let std_functions = llvm_ir_functions();
-
-            let aggregation_signatures = aggregation_function_signatures();
-            let aggregation_functions = aggregation_functions();
-
-            let mut env = Environment::new(schema);
-            env.with_standard_functions(&std_signatures, std_functions);
-            env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
-
+            let mut env = create_llql_environment();
             let query =
                 fs::read_to_string(script_file).expect("Should have been able to read the file");
 
@@ -102,21 +82,7 @@ fn main() {
                 return;
             }
 
-            let schema = Schema {
-                tables_fields_names: llvm_tables_fields_names().to_owned(),
-                tables_fields_types: llvm_tables_fields_types().to_owned(),
-            };
-
-            let std_signatures = llvm_ir_function_signatures();
-            let std_functions = llvm_ir_functions();
-
-            let aggregation_signatures = aggregation_function_signatures();
-            let aggregation_functions = aggregation_functions();
-
-            let mut env = Environment::new(schema);
-            env.with_standard_functions(&std_signatures, std_functions);
-            env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
-
+            let mut env = create_llql_environment();
             let provider: Box<dyn DataProvider> =
                 Box::new(LLVMIRDataProvider::new(arguments.files.clone()));
 
@@ -142,26 +108,12 @@ fn launch_llql_repl(arguments: &Arguments) {
         return;
     }
 
-    let schema = Schema {
-        tables_fields_names: llvm_tables_fields_names().to_owned(),
-        tables_fields_types: llvm_tables_fields_types().to_owned(),
-    };
-
-    let std_signatures = llvm_ir_function_signatures();
-    let std_functions = llvm_ir_functions();
-
-    let aggregation_signatures = aggregation_function_signatures();
-    let aggregation_functions = aggregation_functions();
-
-    let mut global_env = Environment::new(schema);
-    global_env.with_standard_functions(&std_signatures, std_functions);
-    global_env.with_aggregation_functions(&aggregation_signatures, aggregation_functions);
-
     if let Err(parse_modules_error) = parse_llvm_modules(files) {
         reporter.report_diagnostic("", Diagnostic::error(parse_modules_error.as_str()));
         return;
     }
 
+    let mut global_env = create_llql_environment();
     let provider: Box<dyn DataProvider> = Box::new(LLVMIRDataProvider::new(files.to_vec()));
 
     // Launch the right line editor if the flag is enabled
