@@ -21,6 +21,7 @@ use crate::matchers::other::ArgumentMatcher;
 use crate::matchers::other::ExtractValueInstMatcher;
 use crate::matchers::other::InstTypeMatcher;
 use crate::matchers::other::LabelInstMatcher;
+use crate::matchers::other::OperandCountMatcher;
 use crate::matchers::other::PoisonValueMatcher;
 use crate::matchers::other::ReturnInstMatcher;
 use crate::matchers::other::UnreachableInstMatcher;
@@ -37,6 +38,7 @@ pub fn register_other_inst_matchers_functions(map: &mut HashMap<&'static str, St
     map.insert("m_argument", match_argument_inst);
     map.insert("m_return", match_return_inst);
     map.insert("m_unreachable", match_unreachable_inst);
+    map.insert("m_operands_number", match_operands_number);
 }
 
 #[inline(always)]
@@ -119,6 +121,11 @@ pub fn register_other_inst_matchers_function_signatures(
             parameters: vec![],
             return_type: Box::new(InstMatcherType),
         },
+    );
+
+    map.insert(
+        "m_operands_number",
+        Signature::with_return(Box::new(InstMatcherType)).add_parameter(Box::new(IntType)),
     );
 }
 
@@ -243,7 +250,12 @@ fn match_argument_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 }
 
 fn match_unreachable_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    Box::new(InstMatcherValue {
-        matcher: Box::new(UnreachableInstMatcher),
-    })
+    let matcher = Box::new(UnreachableInstMatcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_operands_number(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let expected_number = values[0].as_int().unwrap() as i32;
+    let matcher = Box::new(OperandCountMatcher::has_n_operands(expected_number));
+    Box::new(InstMatcherValue { matcher })
 }

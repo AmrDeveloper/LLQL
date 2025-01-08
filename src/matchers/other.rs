@@ -3,6 +3,7 @@ use std::ffi::CStr;
 use inkwell::llvm_sys::core::LLVMGetIndices;
 use inkwell::llvm_sys::core::LLVMGetInstructionOpcode;
 use inkwell::llvm_sys::core::LLVMGetNumIndices;
+use inkwell::llvm_sys::core::LLVMGetNumOperands;
 use inkwell::llvm_sys::core::LLVMGetOperand;
 use inkwell::llvm_sys::core::LLVMGetValueKind;
 use inkwell::llvm_sys::core::LLVMGetValueName2;
@@ -169,5 +170,24 @@ impl InstMatcher for UnreachableInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe { LLVMGetInstructionOpcode(instruction) == LLVMOpcode::LLVMUnreachable }
+    }
+}
+
+/// Match the number of operands in LLVM instruction
+#[derive(Clone)]
+pub struct OperandCountMatcher {
+    expected_number: i32,
+}
+
+impl OperandCountMatcher {
+    pub fn has_n_operands(expected_number: i32) -> Self {
+        OperandCountMatcher { expected_number }
+    }
+}
+
+impl InstMatcher for OperandCountMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+        unsafe { LLVMGetNumOperands(instruction) == self.expected_number }
     }
 }
