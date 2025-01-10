@@ -12,6 +12,8 @@ use matchers::arithmetic::register_arithmetic_matchers_function_signatures;
 use matchers::arithmetic::register_arithmetic_matchers_functions;
 use matchers::binary::register_binary_inst_matchers_function_signatures;
 use matchers::binary::register_binary_inst_matchers_functions;
+use matchers::call::register_call_inst_matchers_function_signatures;
+use matchers::call::register_call_inst_matchers_functions;
 use matchers::combine::register_combine_matchers_function;
 use matchers::combine::register_combine_matchers_function_signatures;
 use matchers::constants::register_constants_matchers_function_signatures;
@@ -53,6 +55,7 @@ pub fn llvm_ir_functions() -> &'static HashMap<&'static str, StandardFunction> {
         register_binary_inst_matchers_functions(&mut map);
         register_exception_inst_matchers_functions(&mut map);
         register_combine_matchers_function(&mut map);
+        register_call_inst_matchers_functions(&mut map);
         map
     })
 }
@@ -70,6 +73,7 @@ pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     register_binary_inst_matchers_function_signatures(&mut map);
     register_exception_inst_matchers_function_signatures(&mut map);
     register_combine_matchers_function_signatures(&mut map);
+    register_call_inst_matchers_function_signatures(&mut map);
     map
 }
 
