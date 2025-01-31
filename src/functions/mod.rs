@@ -40,6 +40,7 @@ use crate::matchers::InstMatcher;
 
 pub(crate) mod matchers;
 
+#[inline(always)]
 pub fn llvm_ir_functions() -> &'static HashMap<&'static str, StandardFunction> {
     static HASHMAP: OnceLock<HashMap<&'static str, StandardFunction>> = OnceLock::new();
     HASHMAP.get_or_init(|| {
@@ -60,6 +61,7 @@ pub fn llvm_ir_functions() -> &'static HashMap<&'static str, StandardFunction> {
     })
 }
 
+#[inline(always)]
 pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     let mut map = standard_function_signatures().to_owned();
     register_type_matchers_function_signatures(&mut map);
