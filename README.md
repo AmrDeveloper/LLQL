@@ -10,7 +10,7 @@
   <img alt="Docs" src="https://github.com/AmrDeveloper/GQL/actions/workflows/docs.yaml/badge.svg">
   <img alt="GitHub issues" src="https://img.shields.io/github/issues/amrdeveloper/llql">
   <img alt="GitHub" src="https://img.shields.io/github/license/amrdeveloper/llql">
-  <img alt="GitHub release" src="https://img.shields.io/github/v/release/amrdeveloper/gql">
+  <img alt="GitHub release" src="https://img.shields.io/github/v/release/amrdeveloper/llql">
   <img all="Crates.io" src="https://img.shields.io/crates/d/llql?label=Crates.io%20Downloads">
 </p>
 
