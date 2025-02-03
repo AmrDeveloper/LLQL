@@ -7,8 +7,11 @@
 <p align="center">
   <img alt="Crates.io" src="https://img.shields.io/crates/v/llql?style=flat-square">
   <img alt="Deps" src="https://deps.rs/repo/github/amrdeveloper/llql/status.svg">
+  <img alt="Docs" src="https://github.com/AmrDeveloper/GQL/actions/workflows/docs.yaml/badge.svg">
   <img alt="GitHub issues" src="https://img.shields.io/github/issues/amrdeveloper/llql">
   <img alt="GitHub" src="https://img.shields.io/github/license/amrdeveloper/llql">
+  <img alt="GitHub release" src="https://img.shields.io/github/v/release/amrdeveloper/gql">
+  <img all="Crates.io" src="https://img.shields.io/crates/d/llql?label=Crates.io%20Downloads">
 </p>
 
 <p align="center">
