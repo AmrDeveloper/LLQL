@@ -77,25 +77,6 @@ SELECT instruction FROM instructions WHERE m_inst(instruction, m_has_n_uses(m_ad
 
 ---
 
-### List of available functions
-
-- [Instructions Matchers Functions](docs/InstructionMatcher.md)
-- [Types Matchers functions](docs/TypeMatcher.md)
-
----
-
-### Tables structures
-
-#### Instructions table
-
-| Name             | Type      | Description                     |
-| ---------------- | --------- | ------------------------------- |
-| function_name    | Text      | Instruction function name       |
-| basic_block_name | Text      | Basic block of this instruction |
-| instruction      | LLVMValue | LLVM Instruction                |
-
----
-
 ### Download or Install
 
 Note that Building from source or installing from Cargo.io requires LibClang 18.0 to be installed
