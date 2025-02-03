@@ -14,6 +14,8 @@ use matchers::binary::register_binary_inst_matchers_function_signatures;
 use matchers::binary::register_binary_inst_matchers_functions;
 use matchers::call::register_call_inst_matchers_function_signatures;
 use matchers::call::register_call_inst_matchers_functions;
+use matchers::cast::register_cast_matchers_function;
+use matchers::cast::register_cast_matchers_function_signatures;
 use matchers::combine::register_combine_matchers_function;
 use matchers::combine::register_combine_matchers_function_signatures;
 use matchers::constants::register_constants_matchers_function_signatures;
@@ -57,6 +59,7 @@ pub fn llvm_ir_functions() -> &'static HashMap<&'static str, StandardFunction> {
         register_exception_inst_matchers_functions(&mut map);
         register_combine_matchers_function(&mut map);
         register_call_inst_matchers_functions(&mut map);
+        register_cast_matchers_function(&mut map);
         map
     })
 }
@@ -76,6 +79,7 @@ pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     register_exception_inst_matchers_function_signatures(&mut map);
     register_combine_matchers_function_signatures(&mut map);
     register_call_inst_matchers_function_signatures(&mut map);
+    register_cast_matchers_function_signatures(&mut map);
     map
 }
 
@@ -83,12 +87,8 @@ pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
 pub fn binary_matcher_signature() -> Signature {
     Signature {
         parameters: vec![
-            Box::new(OptionType {
-                base: Some(Box::new(InstMatcherType)),
-            }),
-            Box::new(OptionType {
-                base: Some(Box::new(InstMatcherType)),
-            }),
+            Box::new(OptionType::new(Some(Box::new(InstMatcherType)))),
+            Box::new(OptionType::new(Some(Box::new(InstMatcherType)))),
         ],
         return_type: Box::new(InstMatcherType),
     }
@@ -96,10 +96,7 @@ pub fn binary_matcher_signature() -> Signature {
 
 #[inline]
 pub fn matcher_signature_without_parameters() -> Signature {
-    Signature {
-        parameters: vec![],
-        return_type: Box::new(InstMatcherType),
-    }
+    Signature::with_return(Box::new(InstMatcherType))
 }
 
 #[inline]

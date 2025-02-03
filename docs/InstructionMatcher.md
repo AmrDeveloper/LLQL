@@ -184,6 +184,15 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 
 ---
 
+### Cast Instructions Matchers Operators
+
+|   Function   | Parameters |   Return    |                      Description                      |
+| :----------: | :--------: | :---------: | :---------------------------------------------------: |
+| m_int_to_ptr |     ()     | InstMatcher | Build Inst Matcher that matchers IntToPtr instruction |
+| m_ptr_to_int |     ()     | InstMatcher | Build Inst Matcher that matchers PtrToInt instruction |
+
+---
+
 ### Combine Instructions Matchers Operators
 
 | Operator | Description                             |
@@ -192,3 +201,4 @@ Instructions Matchers are functions that build a instruction matcher to match ag
 | OR       | A syntax sugar for `m_inst_combine_or`  |
 | XOR      | A syntax sugar for `m_inst_combine_xor` |
 | !        | A syntax sugar for `m_inst_combine_not` |
+
