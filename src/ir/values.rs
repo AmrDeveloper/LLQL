@@ -24,6 +24,12 @@ pub struct LLVMInstValue {
     pub llvm_value: LLVMValueRef,
 }
 
+impl LLVMInstValue {
+    pub fn new(llvm_value: LLVMValueRef) -> Self {
+        LLVMInstValue { llvm_value }
+    }
+}
+
 impl Value for LLVMInstValue {
     fn literal(&self) -> String {
         unsafe {

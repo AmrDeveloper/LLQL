@@ -8,7 +8,8 @@ use super::InstMatcher;
 enum CastMatcherKind {
     IntToPtr,
     PtrToInt,
-    Bit,
+    BitCast,
+    AddrSpaceCast,
 }
 
 impl CastMatcherKind {
@@ -16,7 +17,8 @@ impl CastMatcherKind {
         match self {
             CastMatcherKind::IntToPtr => LLVMOpcode::LLVMIntToPtr,
             CastMatcherKind::PtrToInt => LLVMOpcode::LLVMPtrToInt,
-            CastMatcherKind::Bit => LLVMOpcode::LLVMBitCast,
+            CastMatcherKind::BitCast => LLVMOpcode::LLVMBitCast,
+            CastMatcherKind::AddrSpaceCast => LLVMOpcode::LLVMAddrSpaceCast,
         }
     }
 }
@@ -41,7 +43,13 @@ impl CastInstMatcher {
 
     pub fn create_bit_cast() -> CastInstMatcher {
         CastInstMatcher {
-            matcher_kind: CastMatcherKind::Bit,
+            matcher_kind: CastMatcherKind::BitCast,
+        }
+    }
+
+    pub fn create_addr_space_cast() -> CastInstMatcher {
+        CastInstMatcher {
+            matcher_kind: CastMatcherKind::AddrSpaceCast,
         }
     }
 }

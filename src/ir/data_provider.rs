@@ -15,7 +15,7 @@ pub(crate) static mut LLVM_CONTEXT: LazyLock<Context> = LazyLock::new(Context::c
 pub(crate) static mut LLVM_MODULES: Vec<Module> = Vec::new();
 
 pub struct LLVMIRDataProvider {
-    pub paths: Vec<String>,
+    paths: Vec<String>,
 }
 
 impl LLVMIRDataProvider {
@@ -68,30 +68,22 @@ fn select_llvm_ir_instructions(
                     let mut values: Vec<Box<dyn Value>> = Vec::with_capacity(row_width);
                     for field_name in selected_columns {
                         if field_name == "function_name" {
-                            values.push(Box::new(TextValue {
-                                value: function_name.clone(),
-                            }));
+                            values.push(Box::new(TextValue::new(function_name.clone())));
                             continue;
                         }
 
                         if field_name == "basic_block_name" {
-                            values.push(Box::new(TextValue {
-                                value: basic_block_name.clone(),
-                            }));
+                            values.push(Box::new(TextValue::new(basic_block_name.clone())));
                             continue;
                         }
 
                         if field_name == "instruction" {
-                            values.push(Box::new(LLVMInstValue {
-                                llvm_value: inst.as_value_ref(),
-                            }));
+                            values.push(Box::new(LLVMInstValue::new(inst.as_value_ref())));
                             continue;
                         }
 
                         if field_name == "file_name" {
-                            values.push(Box::new(TextValue {
-                                value: path.to_string(),
-                            }));
+                            values.push(Box::new(TextValue::new(path.to_string())));
                             continue;
                         }
 
