@@ -8,6 +8,8 @@ use super::InstMatcher;
 enum CastMatcherKind {
     IntToPtr,
     PtrToInt,
+    ZExt,
+    SExt,
     BitCast,
     AddrSpaceCast,
 }
@@ -15,6 +17,8 @@ enum CastMatcherKind {
 impl CastMatcherKind {
     pub fn llvm_opcode(&self) -> LLVMOpcode {
         match self {
+            CastMatcherKind::ZExt => LLVMOpcode::LLVMZExt,
+            CastMatcherKind::SExt => LLVMOpcode::LLVMSExt,
             CastMatcherKind::IntToPtr => LLVMOpcode::LLVMIntToPtr,
             CastMatcherKind::PtrToInt => LLVMOpcode::LLVMPtrToInt,
             CastMatcherKind::BitCast => LLVMOpcode::LLVMBitCast,
@@ -29,6 +33,18 @@ pub struct CastInstMatcher {
 }
 
 impl CastInstMatcher {
+    pub fn create_zext() -> CastInstMatcher {
+        CastInstMatcher {
+            matcher_kind: CastMatcherKind::ZExt,
+        }
+    }
+
+    pub fn create_sext() -> CastInstMatcher {
+        CastInstMatcher {
+            matcher_kind: CastMatcherKind::SExt,
+        }
+    }
+
     pub fn create_int_to_ptr() -> CastInstMatcher {
         CastInstMatcher {
             matcher_kind: CastMatcherKind::IntToPtr,
