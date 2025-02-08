@@ -89,6 +89,7 @@ nav:
   - Matchers:
     - General: matchers/general.md
     - Constants: matchers/constants.md
+    - Binary: matchers/binary.md
     - Arithmetics: matchers/arithmetics.md
     - ICmp: matchers/icmp.md
     - FCmp: matchers/fcmp.md

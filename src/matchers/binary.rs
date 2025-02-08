@@ -11,6 +11,8 @@ use super::InstMatcher;
 
 #[derive(PartialEq, Clone)]
 pub enum BinaryOperator {
+    Any,
+
     Add,
     Sub,
     Mul,
@@ -33,26 +35,50 @@ pub enum BinaryOperator {
 }
 
 impl BinaryOperator {
-    pub fn match_llvm_opcode(&self, op: LLVMOpcode) -> bool {
-        match op {
-            LLVMOpcode::LLVMAdd => matches!(self, BinaryOperator::Add),
-            LLVMOpcode::LLVMSub => matches!(self, BinaryOperator::Sub),
-            LLVMOpcode::LLVMMul => matches!(self, BinaryOperator::Mul),
-            LLVMOpcode::LLVMSDiv => matches!(self, BinaryOperator::SDiv),
-            LLVMOpcode::LLVMSRem => matches!(self, BinaryOperator::SRem),
-            LLVMOpcode::LLVMFAdd => matches!(self, BinaryOperator::FAdd),
-            LLVMOpcode::LLVMFSub => matches!(self, BinaryOperator::FSub),
-            LLVMOpcode::LLVMFMul => matches!(self, BinaryOperator::FMul),
-            LLVMOpcode::LLVMFDiv => matches!(self, BinaryOperator::FDiv),
-            LLVMOpcode::LLVMFRem => matches!(self, BinaryOperator::FRem),
+    pub fn match_llvm_opcode(&self, llvm_op: LLVMOpcode) -> bool {
+        match llvm_op {
+            LLVMOpcode::LLVMAdd => matches!(self, BinaryOperator::Any | BinaryOperator::Add),
 
-            LLVMOpcode::LLVMAnd => matches!(self, BinaryOperator::And),
-            LLVMOpcode::LLVMOr => matches!(self, BinaryOperator::Or | BinaryOperator::OrDisjoint),
-            LLVMOpcode::LLVMXor => matches!(self, BinaryOperator::Xor),
+            LLVMOpcode::LLVMSub => matches!(self, BinaryOperator::Any | BinaryOperator::Sub),
 
-            LLVMOpcode::LLVMShl => matches!(self, BinaryOperator::LogicalShiftLeft),
-            LLVMOpcode::LLVMLShr => matches!(self, BinaryOperator::LogicalShiftRight),
-            LLVMOpcode::LLVMAShr => matches!(self, BinaryOperator::ArithmeticShiftRight),
+            LLVMOpcode::LLVMMul => matches!(self, BinaryOperator::Any | BinaryOperator::Mul),
+
+            LLVMOpcode::LLVMSDiv => matches!(self, BinaryOperator::Any | BinaryOperator::SDiv),
+
+            LLVMOpcode::LLVMSRem => matches!(self, BinaryOperator::Any | BinaryOperator::SRem),
+
+            LLVMOpcode::LLVMFAdd => matches!(self, BinaryOperator::Any | BinaryOperator::FAdd),
+
+            LLVMOpcode::LLVMFSub => matches!(self, BinaryOperator::Any | BinaryOperator::FSub),
+
+            LLVMOpcode::LLVMFMul => matches!(self, BinaryOperator::Any | BinaryOperator::FMul),
+
+            LLVMOpcode::LLVMFDiv => matches!(self, BinaryOperator::Any | BinaryOperator::FDiv),
+
+            LLVMOpcode::LLVMFRem => matches!(self, BinaryOperator::Any | BinaryOperator::FRem),
+
+            LLVMOpcode::LLVMAnd => matches!(self, BinaryOperator::Any | BinaryOperator::And),
+
+            LLVMOpcode::LLVMOr => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Or | BinaryOperator::OrDisjoint
+            ),
+
+            LLVMOpcode::LLVMXor => matches!(self, BinaryOperator::Any | BinaryOperator::Xor),
+
+            LLVMOpcode::LLVMShl => {
+                matches!(self, BinaryOperator::Any | BinaryOperator::LogicalShiftLeft)
+            }
+
+            LLVMOpcode::LLVMLShr => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::LogicalShiftRight
+            ),
+
+            LLVMOpcode::LLVMAShr => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::ArithmeticShiftRight
+            ),
 
             _ => false,
         }
@@ -69,6 +95,30 @@ pub struct BinaryInstMatcher {
 }
 
 impl BinaryInstMatcher {
+    pub fn create_any(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Any,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_commutatively_any(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Any,
+            commutatively: true,
+        })
+    }
+
     pub fn create_add(
         lhs: Box<dyn InstMatcher>,
         rhs: Box<dyn InstMatcher>,
@@ -494,8 +544,8 @@ impl InstMatcher for BinaryInstMatcher {
                     }
                 }
 
-                let rhs = LLVMGetOperand(instruction, 1);
                 let lhs = LLVMGetOperand(instruction, 0);
+                let rhs = LLVMGetOperand(instruction, 1);
 
                 if self.lhs_matcher.is_match(lhs) && self.rhs_matcher.is_match(rhs) {
                     return true;
