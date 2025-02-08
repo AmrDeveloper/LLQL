@@ -7,17 +7,27 @@ use llvm_sys::core::LLVMGetVectorSize;
 use llvm_sys::prelude::LLVMTypeRef;
 use llvm_sys::LLVMTypeKind;
 
-use super::TypeMatcher;
+use super::Matcher;
+
+/// Any Type Matcher used to match against any [`LLVMTypeRef`]
+#[derive(Clone)]
+pub struct AnyTypeMatcher;
+
+impl Matcher<LLVMTypeRef> for AnyTypeMatcher {
+    fn is_match(&self, _llvm_type: &LLVMTypeRef) -> bool {
+        true
+    }
+}
 
 /// Void Type Matcher used to match against any LLVM Void Type
 #[derive(Clone)]
 pub struct VoidTypeMatcher;
 
-impl TypeMatcher for VoidTypeMatcher {
+impl Matcher<LLVMTypeRef> for VoidTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+    fn is_match(&self, llvm_type: &LLVMTypeRef) -> bool {
         unsafe {
-            let kind = LLVMGetTypeKind(llvm_type);
+            let kind = LLVMGetTypeKind(*llvm_type);
             kind == LLVMTypeKind::LLVMVoidTypeKind
         }
     }
@@ -39,13 +49,13 @@ pub struct IntTypeMatcher {
     pub size: IntTypeSize,
 }
 
-impl TypeMatcher for IntTypeMatcher {
+impl Matcher<LLVMTypeRef> for IntTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+    fn is_match(&self, llvm_type: &LLVMTypeRef) -> bool {
         unsafe {
-            let kind = LLVMGetTypeKind(llvm_type);
+            let kind = LLVMGetTypeKind(*llvm_type);
             if kind == LLVMTypeKind::LLVMIntegerTypeKind {
-                let type_width = LLVMGetIntTypeWidth(llvm_type);
+                let type_width = LLVMGetIntTypeWidth(*llvm_type);
                 return match self.size {
                     IntTypeSize::Size1 => type_width == 1,
                     IntTypeSize::Size8 => type_width == 8,
@@ -72,11 +82,11 @@ pub struct FloatTypeMatcher {
     pub size: FloatTypeSize,
 }
 
-impl TypeMatcher for FloatTypeMatcher {
+impl Matcher<LLVMTypeRef> for FloatTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+    fn is_match(&self, llvm_type: &LLVMTypeRef) -> bool {
         unsafe {
-            let kind = LLVMGetTypeKind(llvm_type);
+            let kind = LLVMGetTypeKind(*llvm_type);
             match self.size {
                 FloatTypeSize::Size32 => kind == LLVMTypeKind::LLVMFloatTypeKind,
                 FloatTypeSize::Size64 => kind == LLVMTypeKind::LLVMDoubleTypeKind,
@@ -89,10 +99,10 @@ impl TypeMatcher for FloatTypeMatcher {
 #[derive(Clone)]
 pub struct HalfTypeMatcher;
 
-impl TypeMatcher for HalfTypeMatcher {
+impl Matcher<LLVMTypeRef> for HalfTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
-        unsafe { LLVMGetTypeKind(llvm_type) == LLVMTypeKind::LLVMHalfTypeKind }
+    fn is_match(&self, llvm_type: &LLVMTypeRef) -> bool {
+        unsafe { LLVMGetTypeKind(*llvm_type) == LLVMTypeKind::LLVMHalfTypeKind }
     }
 }
 
@@ -101,11 +111,11 @@ impl TypeMatcher for HalfTypeMatcher {
 
 pub struct PointerTypeMatcher;
 
-impl TypeMatcher for PointerTypeMatcher {
+impl Matcher<LLVMTypeRef> for PointerTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+    fn is_match(&self, llvm_type: &LLVMTypeRef) -> bool {
         unsafe {
-            let kind = LLVMGetTypeKind(llvm_type);
+            let kind = LLVMGetTypeKind(*llvm_type);
             kind == LLVMTypeKind::LLVMPointerTypeKind
         }
     }
@@ -114,26 +124,26 @@ impl TypeMatcher for PointerTypeMatcher {
 /// Array Type Matcher used to match against LLVM Array Type with specific base element type and size
 #[derive(Clone)]
 pub struct ArrayTypeMatcher {
-    pub base_matcher: Box<dyn TypeMatcher>,
+    pub base_matcher: Box<dyn Matcher<LLVMTypeRef>>,
     pub length: Option<u64>,
 }
 
-impl TypeMatcher for ArrayTypeMatcher {
+impl Matcher<LLVMTypeRef> for ArrayTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+    fn is_match(&self, llvm_type: &LLVMTypeRef) -> bool {
         unsafe {
-            let kind = LLVMGetTypeKind(llvm_type);
+            let kind = LLVMGetTypeKind(*llvm_type);
             if kind == LLVMTypeKind::LLVMArrayTypeKind {
-                let element_type = LLVMGetElementType(llvm_type);
+                let element_type = LLVMGetElementType(*llvm_type);
 
-                let is_base_matches = self.base_matcher.is_match(element_type);
+                let is_base_matches = self.base_matcher.is_match(&element_type);
 
                 if !is_base_matches {
                     return false;
                 }
 
                 if let Some(target_length) = self.length {
-                    let length = LLVMGetArrayLength2(llvm_type);
+                    let length = LLVMGetArrayLength2(*llvm_type);
                     return target_length == length;
                 }
 
@@ -147,24 +157,24 @@ impl TypeMatcher for ArrayTypeMatcher {
 /// Vector Type Matcher used to match against LLVM Vector Type with specific base element type and size
 #[derive(Clone)]
 pub struct VectorTypeMatcher {
-    pub base_matcher: Box<dyn TypeMatcher>,
+    pub base_matcher: Box<dyn Matcher<LLVMTypeRef>>,
     pub length: Option<u32>,
 }
 
-impl TypeMatcher for VectorTypeMatcher {
+impl Matcher<LLVMTypeRef> for VectorTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+    fn is_match(&self, llvm_type: &LLVMTypeRef) -> bool {
         unsafe {
-            let kind = LLVMGetTypeKind(llvm_type);
+            let kind = LLVMGetTypeKind(*llvm_type);
             if kind == LLVMTypeKind::LLVMVectorTypeKind {
-                let element_type = LLVMGetElementType(llvm_type);
-                let is_base_matches = self.base_matcher.is_match(element_type);
+                let element_type = LLVMGetElementType(*llvm_type);
+                let is_base_matches = self.base_matcher.is_match(&element_type);
                 if !is_base_matches {
                     return false;
                 }
 
                 if let Some(target_length) = self.length {
-                    let length = LLVMGetVectorSize(llvm_type);
+                    let length = LLVMGetVectorSize(*llvm_type);
                     return target_length == length;
                 }
 
@@ -179,11 +189,11 @@ impl TypeMatcher for VectorTypeMatcher {
 #[derive(Clone)]
 pub struct ScalableVectorTypeMatcher;
 
-impl TypeMatcher for ScalableVectorTypeMatcher {
+impl Matcher<LLVMTypeRef> for ScalableVectorTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, llvm_type: LLVMTypeRef) -> bool {
+    fn is_match(&self, llvm_type: &LLVMTypeRef) -> bool {
         unsafe {
-            let kind = LLVMGetTypeKind(llvm_type);
+            let kind = LLVMGetTypeKind(*llvm_type);
             kind == LLVMTypeKind::LLVMScalableVectorTypeKind
         }
     }
@@ -191,8 +201,6 @@ impl TypeMatcher for ScalableVectorTypeMatcher {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::matchers::AnyTypeMatcher;
 
     use super::*;
     use llvm_sys::core::LLVMArrayType2;
@@ -216,8 +224,8 @@ mod tests {
         let voidt = unsafe { LLVMVoidType() };
         let i64t = unsafe { LLVMInt64TypeInContext(context) };
 
-        assert!(matcher.is_match(voidt));
-        assert!(matcher.is_match(i64t));
+        assert!(matcher.is_match(&voidt));
+        assert!(matcher.is_match(&i64t));
     }
 
     #[test]
@@ -229,8 +237,8 @@ mod tests {
 
         let matcher = VoidTypeMatcher;
 
-        assert!(matcher.is_match(voidt));
-        assert!(!matcher.is_match(i64t));
+        assert!(matcher.is_match(&voidt));
+        assert!(!matcher.is_match(&i64t));
     }
 
     #[test]
@@ -261,37 +269,37 @@ mod tests {
             size: IntTypeSize::Size64,
         };
 
-        assert!(!i8_matcher.is_match(voidt));
-        assert!(i8_matcher.is_match(i8t));
-        assert!(!i8_matcher.is_match(i16t));
-        assert!(!i8_matcher.is_match(i32t));
-        assert!(!i8_matcher.is_match(i64t));
-        assert!(!i8_matcher.is_match(f32t));
-        assert!(!i8_matcher.is_match(f64t));
+        assert!(!i8_matcher.is_match(&voidt));
+        assert!(i8_matcher.is_match(&i8t));
+        assert!(!i8_matcher.is_match(&i16t));
+        assert!(!i8_matcher.is_match(&i32t));
+        assert!(!i8_matcher.is_match(&i64t));
+        assert!(!i8_matcher.is_match(&f32t));
+        assert!(!i8_matcher.is_match(&f64t));
 
-        assert!(!i16_matcher.is_match(voidt));
-        assert!(!i16_matcher.is_match(i8t));
-        assert!(i16_matcher.is_match(i16t));
-        assert!(!i16_matcher.is_match(i32t));
-        assert!(!i16_matcher.is_match(i64t));
-        assert!(!i16_matcher.is_match(f32t));
-        assert!(!i16_matcher.is_match(f64t));
+        assert!(!i16_matcher.is_match(&voidt));
+        assert!(!i16_matcher.is_match(&i8t));
+        assert!(i16_matcher.is_match(&i16t));
+        assert!(!i16_matcher.is_match(&i32t));
+        assert!(!i16_matcher.is_match(&i64t));
+        assert!(!i16_matcher.is_match(&f32t));
+        assert!(!i16_matcher.is_match(&f64t));
 
-        assert!(!i32_matcher.is_match(voidt));
-        assert!(!i32_matcher.is_match(i8t));
-        assert!(!i32_matcher.is_match(i16t));
-        assert!(i32_matcher.is_match(i32t));
-        assert!(!i32_matcher.is_match(i64t));
-        assert!(!i32_matcher.is_match(f32t));
-        assert!(!i32_matcher.is_match(f64t));
+        assert!(!i32_matcher.is_match(&voidt));
+        assert!(!i32_matcher.is_match(&i8t));
+        assert!(!i32_matcher.is_match(&i16t));
+        assert!(i32_matcher.is_match(&i32t));
+        assert!(!i32_matcher.is_match(&i64t));
+        assert!(!i32_matcher.is_match(&f32t));
+        assert!(!i32_matcher.is_match(&f64t));
 
-        assert!(!i64_matcher.is_match(voidt));
-        assert!(!i64_matcher.is_match(i8t));
-        assert!(!i64_matcher.is_match(i16t));
-        assert!(!i64_matcher.is_match(i32t));
-        assert!(i64_matcher.is_match(i64t));
-        assert!(!i64_matcher.is_match(f32t));
-        assert!(!i64_matcher.is_match(f64t));
+        assert!(!i64_matcher.is_match(&voidt));
+        assert!(!i64_matcher.is_match(&i8t));
+        assert!(!i64_matcher.is_match(&i16t));
+        assert!(!i64_matcher.is_match(&i32t));
+        assert!(i64_matcher.is_match(&i64t));
+        assert!(!i64_matcher.is_match(&f32t));
+        assert!(!i64_matcher.is_match(&f64t));
     }
 
     #[test]
@@ -312,17 +320,17 @@ mod tests {
             size: FloatTypeSize::Size64,
         };
 
-        assert!(!f32_matcher.is_match(voidt));
-        assert!(!f32_matcher.is_match(i32t));
-        assert!(!f32_matcher.is_match(i64t));
-        assert!(f32_matcher.is_match(f32t));
-        assert!(!f32_matcher.is_match(f64t));
+        assert!(!f32_matcher.is_match(&voidt));
+        assert!(!f32_matcher.is_match(&i32t));
+        assert!(!f32_matcher.is_match(&i64t));
+        assert!(f32_matcher.is_match(&f32t));
+        assert!(!f32_matcher.is_match(&f64t));
 
-        assert!(!f64_matcher.is_match(voidt));
-        assert!(!f64_matcher.is_match(i32t));
-        assert!(!f64_matcher.is_match(i64t));
-        assert!(!f64_matcher.is_match(f32t));
-        assert!(f64_matcher.is_match(f64t));
+        assert!(!f64_matcher.is_match(&voidt));
+        assert!(!f64_matcher.is_match(&i32t));
+        assert!(!f64_matcher.is_match(&i64t));
+        assert!(!f64_matcher.is_match(&f32t));
+        assert!(f64_matcher.is_match(&f64t));
     }
 
     #[test]
@@ -346,16 +354,16 @@ mod tests {
 
         let pointer_matcher = PointerTypeMatcher;
 
-        assert!(!pointer_matcher.is_match(voidt));
-        assert!(pointer_matcher.is_match(void_ptr_ty));
-        assert!(!pointer_matcher.is_match(i32t));
-        assert!(pointer_matcher.is_match(i32t_ptr_ty));
-        assert!(!pointer_matcher.is_match(i64t));
-        assert!(pointer_matcher.is_match(i64t_ptr_ty));
-        assert!(!pointer_matcher.is_match(f32t));
-        assert!(pointer_matcher.is_match(f32t_ptr_ty));
-        assert!(!pointer_matcher.is_match(f64t));
-        assert!(pointer_matcher.is_match(f64t_ptr_ty));
+        assert!(!pointer_matcher.is_match(&voidt));
+        assert!(pointer_matcher.is_match(&void_ptr_ty));
+        assert!(!pointer_matcher.is_match(&i32t));
+        assert!(pointer_matcher.is_match(&i32t_ptr_ty));
+        assert!(!pointer_matcher.is_match(&i64t));
+        assert!(pointer_matcher.is_match(&i64t_ptr_ty));
+        assert!(!pointer_matcher.is_match(&f32t));
+        assert!(pointer_matcher.is_match(&f32t_ptr_ty));
+        assert!(!pointer_matcher.is_match(&f64t));
+        assert!(pointer_matcher.is_match(&f64t_ptr_ty));
     }
 
     #[test]
@@ -388,15 +396,15 @@ mod tests {
             length: Some(10),
         };
 
-        assert!(un_sized_i32_array_matcher.is_match(i32t_array_10_n));
-        assert!(un_sized_i32_array_matcher.is_match(i32t_array_20_n));
-        assert!(!un_sized_i32_array_matcher.is_match(i64t_array_10_n));
-        assert!(!un_sized_i32_array_matcher.is_match(i64t_array_20_n));
+        assert!(un_sized_i32_array_matcher.is_match(&i32t_array_10_n));
+        assert!(un_sized_i32_array_matcher.is_match(&i32t_array_20_n));
+        assert!(!un_sized_i32_array_matcher.is_match(&i64t_array_10_n));
+        assert!(!un_sized_i32_array_matcher.is_match(&i64t_array_20_n));
 
-        assert!(!sized_i64_array_matcher.is_match(i32t_array_10_n));
-        assert!(!sized_i64_array_matcher.is_match(i32t_array_20_n));
-        assert!(sized_i64_array_matcher.is_match(i64t_array_10_n));
-        assert!(!sized_i64_array_matcher.is_match(i64t_array_20_n));
+        assert!(!sized_i64_array_matcher.is_match(&i32t_array_10_n));
+        assert!(!sized_i64_array_matcher.is_match(&i32t_array_20_n));
+        assert!(sized_i64_array_matcher.is_match(&i64t_array_10_n));
+        assert!(!sized_i64_array_matcher.is_match(&i64t_array_20_n));
     }
 
     #[test]
@@ -429,14 +437,14 @@ mod tests {
             length: Some(10),
         };
 
-        assert!(un_sized_i32_vec_matcher.is_match(i32t_vec_10_n));
-        assert!(un_sized_i32_vec_matcher.is_match(i32t_vec_20_n));
-        assert!(!un_sized_i32_vec_matcher.is_match(i64t_vec_10_n));
-        assert!(!un_sized_i32_vec_matcher.is_match(i64t_vec_20_n));
+        assert!(un_sized_i32_vec_matcher.is_match(&i32t_vec_10_n));
+        assert!(un_sized_i32_vec_matcher.is_match(&i32t_vec_20_n));
+        assert!(!un_sized_i32_vec_matcher.is_match(&i64t_vec_10_n));
+        assert!(!un_sized_i32_vec_matcher.is_match(&i64t_vec_20_n));
 
-        assert!(!sized_i64_vec_matcher.is_match(i32t_vec_10_n));
-        assert!(!sized_i64_vec_matcher.is_match(i32t_vec_20_n));
-        assert!(sized_i64_vec_matcher.is_match(i64t_vec_10_n));
-        assert!(!sized_i64_vec_matcher.is_match(i64t_vec_20_n));
+        assert!(!sized_i64_vec_matcher.is_match(&i32t_vec_10_n));
+        assert!(!sized_i64_vec_matcher.is_match(&i32t_vec_20_n));
+        assert!(sized_i64_vec_matcher.is_match(&i64t_vec_10_n));
+        assert!(!sized_i64_vec_matcher.is_match(&i64t_vec_20_n));
     }
 }

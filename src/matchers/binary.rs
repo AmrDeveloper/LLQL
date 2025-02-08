@@ -7,7 +7,7 @@ use inkwell::llvm_sys::core::LLVMPrintValueToString;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMOpcode;
 
-use super::InstMatcher;
+use super::Matcher;
 
 #[derive(PartialEq, Clone)]
 pub enum BinaryOperator {
@@ -88,17 +88,17 @@ impl BinaryOperator {
 /// General Binary Instruction Matcher
 #[derive(Clone)]
 pub struct BinaryInstMatcher {
-    pub lhs_matcher: Box<dyn InstMatcher>,
-    pub rhs_matcher: Box<dyn InstMatcher>,
+    pub lhs_matcher: Box<dyn Matcher<LLVMValueRef>>,
+    pub rhs_matcher: Box<dyn Matcher<LLVMValueRef>>,
     pub operator: BinaryOperator,
     pub commutatively: bool,
 }
 
 impl BinaryInstMatcher {
     pub fn create_any(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -108,9 +108,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_any(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -120,9 +120,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_add(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -132,9 +132,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_sub(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -144,9 +144,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_mul(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -156,9 +156,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_div(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -168,9 +168,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_rem(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -180,9 +180,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_add(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -192,9 +192,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_sub(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -204,9 +204,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_mul(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -216,9 +216,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_div(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -228,9 +228,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_rem(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -240,9 +240,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_float_add(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -252,9 +252,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_float_sub(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -264,9 +264,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_float_mul(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -276,9 +276,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_float_div(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -288,9 +288,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_float_rem(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -300,9 +300,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_float_add(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -312,9 +312,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_float_sub(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -324,9 +324,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_float_mul(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -336,9 +336,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_float_div(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -348,9 +348,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_float_rem(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -360,9 +360,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_logical_shl(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -372,9 +372,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_logical_shr(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -384,9 +384,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_arithmetic_shr(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -396,9 +396,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_logical_shl(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -408,9 +408,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_logical_shr(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -420,9 +420,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_arithmetic_shr(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -432,9 +432,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_and(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -443,7 +443,10 @@ impl BinaryInstMatcher {
         })
     }
 
-    pub fn create_or(lhs: Box<dyn InstMatcher>, rhs: Box<dyn InstMatcher>) -> Box<dyn InstMatcher> {
+    pub fn create_or(
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -453,9 +456,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_or_disjoint(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -465,9 +468,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_xor(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -477,9 +480,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_and(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -489,9 +492,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_or(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -501,9 +504,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_or_disjoint(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -513,9 +516,9 @@ impl BinaryInstMatcher {
     }
 
     pub fn create_commutatively_xor(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -525,14 +528,14 @@ impl BinaryInstMatcher {
     }
 }
 
-impl InstMatcher for BinaryInstMatcher {
+impl Matcher<LLVMValueRef> for BinaryInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let operator = LLVMGetInstructionOpcode(instruction);
+            let operator = LLVMGetInstructionOpcode(*instruction);
             if self.operator.match_llvm_opcode(operator) {
                 if self.operator == BinaryOperator::OrDisjoint {
-                    let instruction_string = LLVMPrintValueToString(instruction);
+                    let instruction_string = LLVMPrintValueToString(*instruction);
                     let instruction_cstr = CStr::from_ptr(instruction_string).to_owned();
                     let is_or_disjoint = instruction_cstr
                         .to_str()
@@ -544,16 +547,16 @@ impl InstMatcher for BinaryInstMatcher {
                     }
                 }
 
-                let lhs = LLVMGetOperand(instruction, 0);
-                let rhs = LLVMGetOperand(instruction, 1);
+                let lhs = LLVMGetOperand(*instruction, 0);
+                let rhs = LLVMGetOperand(*instruction, 1);
 
-                if self.lhs_matcher.is_match(lhs) && self.rhs_matcher.is_match(rhs) {
+                if self.lhs_matcher.is_match(&lhs) && self.rhs_matcher.is_match(&rhs) {
                     return true;
                 }
 
                 if self.commutatively
-                    && self.lhs_matcher.is_match(rhs)
-                    && self.rhs_matcher.is_match(lhs)
+                    && self.lhs_matcher.is_match(&rhs)
+                    && self.rhs_matcher.is_match(&lhs)
                 {
                     return true;
                 }

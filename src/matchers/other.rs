@@ -8,54 +8,64 @@ use inkwell::llvm_sys::core::LLVMGetOperand;
 use inkwell::llvm_sys::core::LLVMGetValueKind;
 use inkwell::llvm_sys::core::LLVMGetValueName2;
 use inkwell::llvm_sys::core::LLVMTypeOf;
+use inkwell::llvm_sys::prelude::LLVMTypeRef;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMOpcode;
 use inkwell::llvm_sys::LLVMValueKind;
 
-use super::InstMatcher;
-use super::TypeMatcher;
+use super::Matcher;
+
+/// Instruction Matcher to match to any instruction, used mostly as default matcher
+#[derive(Clone)]
+pub struct AnyInstMatcher;
+
+impl Matcher<LLVMValueRef> for AnyInstMatcher {
+    fn is_match(&self, _instruction: &LLVMValueRef) -> bool {
+        true
+    }
+}
 
 #[derive(Clone)]
 pub struct InstTypeMatcher {
-    pub matcher: Box<dyn TypeMatcher>,
+    pub matcher: Box<dyn Matcher<LLVMTypeRef>>,
 }
 
-impl InstMatcher for InstTypeMatcher {
+impl Matcher<LLVMValueRef> for InstTypeMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let value_type = LLVMTypeOf(instruction);
-            self.matcher.is_match(value_type)
+            let value_type = LLVMTypeOf(*instruction);
+            self.matcher.is_match(&value_type)
         }
     }
 }
 
 #[derive(Clone)]
 pub struct ExtractValueInstMatcher {
-    pub matcher: Box<dyn InstMatcher>,
+    pub matcher: Box<dyn Matcher<LLVMValueRef>>,
     pub indices: Option<Vec<i64>>,
 }
 
-impl InstMatcher for ExtractValueInstMatcher {
+impl Matcher<LLVMValueRef> for ExtractValueInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            if LLVMGetInstructionOpcode(instruction) == LLVMOpcode::LLVMExtractValue {
+            if LLVMGetInstructionOpcode(*instruction) == LLVMOpcode::LLVMExtractValue {
                 return false;
             }
 
-            let value = LLVMGetOperand(instruction, 0);
-            if !self.matcher.is_match(value) {
+            let value = LLVMGetOperand(*instruction, 0);
+            if !self.matcher.is_match(&value) {
                 return false;
             }
 
             if let Some(indices) = &self.indices {
-                let indices_num = LLVMGetNumIndices(instruction) as usize;
+                let indices_num = LLVMGetNumIndices(*instruction) as usize;
                 if indices.len() != indices_num {
                     return false;
                 }
 
-                let inst_indices = LLVMGetIndices(instruction);
+                let inst_indices = LLVMGetIndices(*instruction);
                 let indices_slice = std::slice::from_raw_parts(inst_indices, indices_num);
                 for i in 0..indices_num {
                     if indices[i] != indices_slice[i] as i64 {
@@ -72,11 +82,11 @@ impl InstMatcher for ExtractValueInstMatcher {
 #[derive(Clone)]
 pub struct PoisonValueMatcher;
 
-impl InstMatcher for PoisonValueMatcher {
+impl Matcher<LLVMValueRef> for PoisonValueMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let value_kind = LLVMGetValueKind(instruction);
+            let value_kind = LLVMGetValueKind(*instruction);
             value_kind == LLVMValueKind::LLVMPoisonValueKind
         }
     }
@@ -86,25 +96,25 @@ impl InstMatcher for PoisonValueMatcher {
 #[derive(Clone)]
 pub struct ArgumentMatcher {
     pub name: Option<String>,
-    pub type_matcher: Option<Box<dyn TypeMatcher>>,
+    pub type_matcher: Option<Box<dyn Matcher<LLVMTypeRef>>>,
 }
 
-impl InstMatcher for ArgumentMatcher {
+impl Matcher<LLVMValueRef> for ArgumentMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let value_kind = LLVMGetValueKind(instruction);
+            let value_kind = LLVMGetValueKind(*instruction);
             if value_kind == LLVMValueKind::LLVMArgumentValueKind {
                 if let Some(name) = &self.name {
                     let mut name_len: usize = 0;
                     let label_value_name =
-                        LLVMGetValueName2(instruction, &mut name_len as *mut usize);
+                        LLVMGetValueName2(*instruction, &mut name_len as *mut usize);
                     let name_str = CStr::from_ptr(label_value_name).to_str().unwrap();
                     let is_name_matches = name.eq(name_str);
                     if is_name_matches {
                         if let Some(type_matcher) = &self.type_matcher {
-                            let value_type = LLVMTypeOf(instruction);
-                            return type_matcher.is_match(value_type);
+                            let value_type = LLVMTypeOf(*instruction);
+                            return type_matcher.is_match(&value_type);
                         }
                         return true;
                     }
@@ -122,16 +132,16 @@ pub struct LabelInstMatcher {
     pub name: Option<String>,
 }
 
-impl InstMatcher for LabelInstMatcher {
+impl Matcher<LLVMValueRef> for LabelInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let value_kind = LLVMGetValueKind(instruction);
+            let value_kind = LLVMGetValueKind(*instruction);
             if value_kind == LLVMValueKind::LLVMBasicBlockValueKind {
                 if let Some(name) = &self.name {
                     let mut name_len: usize = 0;
                     let label_value_name =
-                        LLVMGetValueName2(instruction, &mut name_len as *mut usize);
+                        LLVMGetValueName2(*instruction, &mut name_len as *mut usize);
                     let name_str = CStr::from_ptr(label_value_name).to_str().unwrap();
                     return name.eq(name_str);
                 }
@@ -145,17 +155,17 @@ impl InstMatcher for LabelInstMatcher {
 /// Return instruction matcher to check if current instruction is return instruction with specific type or not
 #[derive(Clone)]
 pub struct ReturnInstMatcher {
-    pub matcher: Box<dyn InstMatcher>,
+    pub matcher: Box<dyn Matcher<LLVMValueRef>>,
 }
 
-impl InstMatcher for ReturnInstMatcher {
+impl Matcher<LLVMValueRef> for ReturnInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let opcode = LLVMGetInstructionOpcode(instruction);
+            let opcode = LLVMGetInstructionOpcode(*instruction);
             if opcode == LLVMOpcode::LLVMRet {
-                let return_value = LLVMGetOperand(instruction, 0);
-                return self.matcher.is_match(return_value);
+                let return_value = LLVMGetOperand(*instruction, 0);
+                return self.matcher.is_match(&return_value);
             }
             false
         }
@@ -166,10 +176,10 @@ impl InstMatcher for ReturnInstMatcher {
 #[derive(Clone)]
 pub struct UnreachableInstMatcher;
 
-impl InstMatcher for UnreachableInstMatcher {
+impl Matcher<LLVMValueRef> for UnreachableInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
-        unsafe { LLVMGetInstructionOpcode(instruction) == LLVMOpcode::LLVMUnreachable }
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        unsafe { LLVMGetInstructionOpcode(*instruction) == LLVMOpcode::LLVMUnreachable }
     }
 }
 
@@ -185,9 +195,9 @@ impl OperandCountMatcher {
     }
 }
 
-impl InstMatcher for OperandCountMatcher {
+impl Matcher<LLVMValueRef> for OperandCountMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
-        unsafe { LLVMGetNumOperands(instruction) == self.expected_number }
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        unsafe { LLVMGetNumOperands(*instruction) == self.expected_number }
     }
 }

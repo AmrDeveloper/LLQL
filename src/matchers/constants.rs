@@ -2,7 +2,7 @@ use inkwell::llvm_sys::core::{LLVMConstIntGetSExtValue, LLVMGetValueKind, LLVMIs
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMValueKind;
 
-use super::InstMatcher;
+use super::Matcher;
 
 #[derive(Clone)]
 enum ConstIntMatcherCondition {
@@ -46,16 +46,16 @@ impl ConstIntMatcher {
     }
 }
 
-impl InstMatcher for ConstIntMatcher {
+impl Matcher<LLVMValueRef> for ConstIntMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            if LLVMIsAConstantInt(instruction).is_null() {
+            if LLVMIsAConstantInt(*instruction).is_null() {
                 return false;
             }
 
             if let Some(matcher_condition) = &self.condition {
-                let si64_value = LLVMConstIntGetSExtValue(instruction);
+                let si64_value = LLVMConstIntGetSExtValue(*instruction);
                 return match matcher_condition {
                     ConstIntMatcherCondition::Specific(value) => si64_value == *value,
                     ConstIntMatcherCondition::PowerOfTwo => (si64_value & (si64_value - 1)) != 0,
@@ -71,11 +71,11 @@ impl InstMatcher for ConstIntMatcher {
 #[derive(Clone)]
 pub struct ConstFloatMatcher;
 
-impl InstMatcher for ConstFloatMatcher {
+impl Matcher<LLVMValueRef> for ConstFloatMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let value_kind = LLVMGetValueKind(instruction);
+            let value_kind = LLVMGetValueKind(*instruction);
             value_kind == LLVMValueKind::LLVMConstantFPValueKind
         }
     }
@@ -85,11 +85,11 @@ impl InstMatcher for ConstFloatMatcher {
 #[derive(Clone)]
 pub struct ConstPointerNullMatcher;
 
-impl InstMatcher for ConstPointerNullMatcher {
+impl Matcher<LLVMValueRef> for ConstPointerNullMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let value_kind = LLVMGetValueKind(instruction);
+            let value_kind = LLVMGetValueKind(*instruction);
             value_kind == LLVMValueKind::LLVMConstantPointerNullValueKind
         }
     }

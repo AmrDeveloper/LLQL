@@ -5,22 +5,22 @@ use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMIntPredicate;
 use inkwell::llvm_sys::LLVMOpcode;
 
-use super::InstMatcher;
+use super::Matcher;
 
 /// Int Comparison Inst Matcher to check if instruction is ICMP and match predicate, LHS, RHS and commutatively
 #[derive(Clone)]
 pub struct IntComparisonInstMatcher {
-    pub lhs_matcher: Box<dyn InstMatcher>,
-    pub rhs_matcher: Box<dyn InstMatcher>,
+    pub lhs_matcher: Box<dyn Matcher<LLVMValueRef>>,
+    pub rhs_matcher: Box<dyn Matcher<LLVMValueRef>>,
     pub predicate: LLVMIntPredicate,
     pub commutatively: bool,
 }
 
 impl IntComparisonInstMatcher {
     pub fn create_icmp_eq(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -30,9 +30,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_ne(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -42,9 +42,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_ugt(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -54,9 +54,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_uge(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -66,9 +66,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_ult(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -78,9 +78,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_ule(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -90,9 +90,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_sgt(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -102,9 +102,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_sge(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -114,9 +114,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_slt(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -126,9 +126,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_icmp_sle(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -138,9 +138,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_eq(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -150,9 +150,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_ne(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -162,9 +162,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_ugt(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -174,9 +174,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_uge(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -186,9 +186,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_ult(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -198,9 +198,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_ule(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -210,9 +210,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_sgt(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -222,9 +222,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_sge(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -234,9 +234,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_slt(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -246,9 +246,9 @@ impl IntComparisonInstMatcher {
     }
 
     pub fn create_commutatively_icmp_sle(
-        lhs: Box<dyn InstMatcher>,
-        rhs: Box<dyn InstMatcher>,
-    ) -> Box<dyn InstMatcher> {
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(IntComparisonInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
@@ -258,23 +258,24 @@ impl IntComparisonInstMatcher {
     }
 }
 
-impl InstMatcher for IntComparisonInstMatcher {
+impl Matcher<LLVMValueRef> for IntComparisonInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let opcode = LLVMGetInstructionOpcode(instruction);
-            if opcode == LLVMOpcode::LLVMICmp && self.predicate == LLVMGetICmpPredicate(instruction)
+            let opcode = LLVMGetInstructionOpcode(*instruction);
+            if opcode == LLVMOpcode::LLVMICmp
+                && self.predicate == LLVMGetICmpPredicate(*instruction)
             {
-                let rhs = LLVMGetOperand(instruction, 1);
-                let lhs = LLVMGetOperand(instruction, 0);
+                let rhs = LLVMGetOperand(*instruction, 1);
+                let lhs = LLVMGetOperand(*instruction, 0);
 
-                if self.lhs_matcher.is_match(lhs) && self.rhs_matcher.is_match(rhs) {
+                if self.lhs_matcher.is_match(&lhs) && self.rhs_matcher.is_match(&rhs) {
                     return true;
                 }
 
                 if self.commutatively
-                    && self.lhs_matcher.is_match(rhs)
-                    && self.rhs_matcher.is_match(lhs)
+                    && self.lhs_matcher.is_match(&rhs)
+                    && self.rhs_matcher.is_match(&lhs)
                 {
                     return true;
                 }

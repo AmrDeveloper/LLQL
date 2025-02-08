@@ -2,7 +2,7 @@ use inkwell::llvm_sys::core::LLVMGetInstructionOpcode;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMOpcode;
 
-use super::InstMatcher;
+use super::Matcher;
 
 #[derive(PartialEq, Clone)]
 enum CastMatcherKind {
@@ -94,9 +94,9 @@ impl CastInstMatcher {
     }
 }
 
-impl InstMatcher for CastInstMatcher {
+impl Matcher<LLVMValueRef> for CastInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
-        unsafe { self.kind.llvm_opcode() == LLVMGetInstructionOpcode(instruction) }
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        unsafe { self.kind.llvm_opcode() == LLVMGetInstructionOpcode(*instruction) }
     }
 }

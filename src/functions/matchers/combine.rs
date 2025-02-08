@@ -4,6 +4,7 @@ use gitql_ast::types::varargs::VarargsType;
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
+use inkwell::llvm_sys::prelude::LLVMValueRef;
 
 use crate::functions::binary_matchers_sides;
 use crate::ir::types::InstMatcherType;
@@ -11,7 +12,7 @@ use crate::ir::values::InstMatcherValue;
 use crate::matchers::combine::CombineBinaryInstMatcher;
 use crate::matchers::combine::CombineInstMatcher;
 use crate::matchers::combine::CombineUnaryInstMatcher;
-use crate::matchers::InstMatcher;
+use crate::matchers::Matcher;
 
 #[inline(always)]
 pub fn register_combine_matchers_function(map: &mut HashMap<&'static str, StandardFunction>) {
@@ -101,7 +102,7 @@ pub fn register_combine_matchers_function_signatures(map: &mut HashMap<&'static 
 }
 
 fn match_oneof_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let mut matchers: Vec<Box<dyn InstMatcher>> = vec![];
+    let mut matchers: Vec<Box<dyn Matcher<LLVMValueRef>>> = vec![];
     for value in values.iter() {
         if let Some(inst_matcher) = value.as_any().downcast_ref::<InstMatcherValue>() {
             matchers.push(inst_matcher.matcher.to_owned());
@@ -112,7 +113,7 @@ fn match_oneof_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 }
 
 fn match_allof_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let mut matchers: Vec<Box<dyn InstMatcher>> = vec![];
+    let mut matchers: Vec<Box<dyn Matcher<LLVMValueRef>>> = vec![];
     for value in values.iter() {
         if let Some(inst_matcher) = value.as_any().downcast_ref::<InstMatcherValue>() {
             matchers.push(inst_matcher.matcher.to_owned());
@@ -123,7 +124,7 @@ fn match_allof_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 }
 
 fn match_noneof_combine_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let mut matchers: Vec<Box<dyn InstMatcher>> = vec![];
+    let mut matchers: Vec<Box<dyn Matcher<LLVMValueRef>>> = vec![];
     for value in values.iter() {
         if let Some(inst_matcher) = value.as_any().downcast_ref::<InstMatcherValue>() {
             matchers.push(inst_matcher.matcher.to_owned());

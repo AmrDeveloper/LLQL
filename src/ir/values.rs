@@ -11,8 +11,7 @@ use llvm_sys::prelude::LLVMValueRef;
 
 use crate::matchers::combine::CombineBinaryInstMatcher;
 use crate::matchers::combine::CombineUnaryInstMatcher;
-use crate::matchers::InstMatcher;
-use crate::matchers::TypeMatcher;
+use crate::matchers::Matcher;
 
 use super::types::InstMatcherType;
 use super::types::LLVMDataType;
@@ -102,7 +101,7 @@ impl Value for LLVMTypeValue {
 
 #[derive(Clone)]
 pub struct InstMatcherValue {
-    pub matcher: Box<dyn InstMatcher>,
+    pub matcher: Box<dyn Matcher<LLVMValueRef>>,
 }
 
 impl Value for InstMatcherValue {
@@ -170,7 +169,7 @@ impl Value for InstMatcherValue {
 
 #[derive(Clone)]
 pub struct TypeMatcherValue {
-    pub matcher: Box<dyn TypeMatcher>,
+    pub matcher: Box<dyn Matcher<LLVMTypeRef>>,
 }
 
 impl Value for TypeMatcherValue {

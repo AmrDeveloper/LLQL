@@ -8,6 +8,7 @@ use gitql_core::values::base::Value;
 
 use gitql_std::standard::standard_function_signatures;
 use gitql_std::standard::standard_functions;
+use inkwell::llvm_sys::prelude::LLVMValueRef;
 use matchers::arithmetic::register_arithmetic_matchers_function_signatures;
 use matchers::arithmetic::register_arithmetic_matchers_functions;
 use matchers::binary::register_binary_inst_matchers_function_signatures;
@@ -37,8 +38,8 @@ use matchers::usage::register_usage_matchers_functions;
 
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
-use crate::matchers::AnyInstMatcher;
-use crate::matchers::InstMatcher;
+use crate::matchers::other::AnyInstMatcher;
+use crate::matchers::Matcher;
 
 pub(crate) mod matchers;
 
@@ -102,7 +103,10 @@ pub fn matcher_signature_without_parameters() -> Signature {
 #[inline]
 pub fn binary_matchers_sides(
     values: &[Box<dyn Value>],
-) -> (Box<dyn InstMatcher>, Box<dyn InstMatcher>) {
+) -> (
+    Box<dyn Matcher<LLVMValueRef>>,
+    Box<dyn Matcher<LLVMValueRef>>,
+) {
     let args_len = values.len();
 
     let lhs_matcher = if args_len > 0 {

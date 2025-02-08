@@ -2,41 +2,45 @@ use inkwell::llvm_sys::core::LLVMGetFirstUse;
 use inkwell::llvm_sys::core::LLVMGetNextUse;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 
-use super::InstMatcher;
+use super::Matcher;
 
 #[derive(Clone)]
 pub struct UsageInstMatcher {
-    pub matcher: Box<dyn InstMatcher>,
+    pub matcher: Box<dyn Matcher<LLVMValueRef>>,
     pub count: usize,
 }
 
 impl UsageInstMatcher {
-    pub fn create_unused_matcher(matcher: Box<dyn InstMatcher>) -> Box<dyn InstMatcher> {
+    pub fn create_unused_matcher(
+        matcher: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(UsageInstMatcher { matcher, count: 0 })
     }
 
-    pub fn create_has_one_use_matcher(matcher: Box<dyn InstMatcher>) -> Box<dyn InstMatcher> {
+    pub fn create_has_one_use_matcher(
+        matcher: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(UsageInstMatcher { matcher, count: 1 })
     }
 
     pub fn create_has_n_uses_matcher(
-        matcher: Box<dyn InstMatcher>,
+        matcher: Box<dyn Matcher<LLVMValueRef>>,
         n: usize,
-    ) -> Box<dyn InstMatcher> {
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
         Box::new(UsageInstMatcher { matcher, count: n })
     }
 }
 
-impl InstMatcher for UsageInstMatcher {
+impl Matcher<LLVMValueRef> for UsageInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
             // The instruction itself is not matches
             if !self.matcher.is_match(instruction) {
                 return false;
             }
 
-            let first_use = LLVMGetFirstUse(instruction);
+            let first_use = LLVMGetFirstUse(*instruction);
 
             // It's not used
             if first_use.is_null() {

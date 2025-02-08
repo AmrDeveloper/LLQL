@@ -1,6 +1,6 @@
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 
-use super::InstMatcher;
+use super::Matcher;
 
 #[allow(clippy::enum_variant_names)]
 #[derive(PartialEq, Clone)]
@@ -12,26 +12,26 @@ enum CombineMatcherKind {
 
 #[derive(Clone)]
 pub struct CombineInstMatcher {
-    matchers: Vec<Box<dyn InstMatcher>>,
+    matchers: Vec<Box<dyn Matcher<LLVMValueRef>>>,
     matcher_kind: CombineMatcherKind,
 }
 
 impl CombineInstMatcher {
-    pub fn create_one_of(matchers: Vec<Box<dyn InstMatcher>>) -> Self {
+    pub fn create_one_of(matchers: Vec<Box<dyn Matcher<LLVMValueRef>>>) -> Self {
         CombineInstMatcher {
             matchers,
             matcher_kind: CombineMatcherKind::OneOf,
         }
     }
 
-    pub fn create_all_of(matchers: Vec<Box<dyn InstMatcher>>) -> Self {
+    pub fn create_all_of(matchers: Vec<Box<dyn Matcher<LLVMValueRef>>>) -> Self {
         CombineInstMatcher {
             matchers,
             matcher_kind: CombineMatcherKind::AllOf,
         }
     }
 
-    pub fn create_none_of(matchers: Vec<Box<dyn InstMatcher>>) -> Self {
+    pub fn create_none_of(matchers: Vec<Box<dyn Matcher<LLVMValueRef>>>) -> Self {
         CombineInstMatcher {
             matchers,
             matcher_kind: CombineMatcherKind::AllOf,
@@ -39,8 +39,8 @@ impl CombineInstMatcher {
     }
 }
 
-impl InstMatcher for CombineInstMatcher {
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+impl Matcher<LLVMValueRef> for CombineInstMatcher {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         let mut matches_count = 0;
         let matcher_kind = &self.matcher_kind;
         for matcher in self.matchers.iter() {
@@ -83,13 +83,16 @@ enum CombineBinaryMatcherKind {
 
 #[derive(Clone)]
 pub struct CombineBinaryInstMatcher {
-    lhs: Box<dyn InstMatcher>,
-    rhs: Box<dyn InstMatcher>,
+    lhs: Box<dyn Matcher<LLVMValueRef>>,
+    rhs: Box<dyn Matcher<LLVMValueRef>>,
     kind: CombineBinaryMatcherKind,
 }
 
 impl CombineBinaryInstMatcher {
-    pub fn create_and(lhs: Box<dyn InstMatcher>, rhs: Box<dyn InstMatcher>) -> Self {
+    pub fn create_and(
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Self {
         CombineBinaryInstMatcher {
             lhs,
             rhs,
@@ -97,7 +100,10 @@ impl CombineBinaryInstMatcher {
         }
     }
 
-    pub fn create_or(lhs: Box<dyn InstMatcher>, rhs: Box<dyn InstMatcher>) -> Self {
+    pub fn create_or(
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Self {
         CombineBinaryInstMatcher {
             lhs,
             rhs,
@@ -105,7 +111,10 @@ impl CombineBinaryInstMatcher {
         }
     }
 
-    pub fn create_xor(lhs: Box<dyn InstMatcher>, rhs: Box<dyn InstMatcher>) -> Self {
+    pub fn create_xor(
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Self {
         CombineBinaryInstMatcher {
             lhs,
             rhs,
@@ -114,8 +123,8 @@ impl CombineBinaryInstMatcher {
     }
 }
 
-impl InstMatcher for CombineBinaryInstMatcher {
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+impl Matcher<LLVMValueRef> for CombineBinaryInstMatcher {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         match self.kind {
             CombineBinaryMatcherKind::And => {
                 self.lhs.is_match(instruction) && self.rhs.is_match(instruction)
@@ -132,17 +141,17 @@ impl InstMatcher for CombineBinaryInstMatcher {
 
 #[derive(Clone)]
 pub struct CombineUnaryInstMatcher {
-    rhs: Box<dyn InstMatcher>,
+    rhs: Box<dyn Matcher<LLVMValueRef>>,
 }
 
 impl CombineUnaryInstMatcher {
-    pub fn create_not(rhs: Box<dyn InstMatcher>) -> Self {
+    pub fn create_not(rhs: Box<dyn Matcher<LLVMValueRef>>) -> Self {
         CombineUnaryInstMatcher { rhs }
     }
 }
 
-impl InstMatcher for CombineUnaryInstMatcher {
-    fn is_match(&self, instruction: LLVMValueRef) -> bool {
+impl Matcher<LLVMValueRef> for CombineUnaryInstMatcher {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         !(self.rhs.is_match(instruction))
     }
 }

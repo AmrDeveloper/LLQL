@@ -17,6 +17,7 @@ use crate::ir::types::TypeMatcherType;
 use crate::ir::values::InstMatcherValue;
 use crate::ir::values::LLVMInstValue;
 use crate::ir::values::TypeMatcherValue;
+use crate::matchers::other::AnyInstMatcher;
 use crate::matchers::other::ArgumentMatcher;
 use crate::matchers::other::ExtractValueInstMatcher;
 use crate::matchers::other::InstTypeMatcher;
@@ -25,7 +26,6 @@ use crate::matchers::other::OperandCountMatcher;
 use crate::matchers::other::PoisonValueMatcher;
 use crate::matchers::other::ReturnInstMatcher;
 use crate::matchers::other::UnreachableInstMatcher;
-use crate::matchers::AnyInstMatcher;
 
 #[inline(always)]
 pub fn register_other_inst_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
@@ -136,7 +136,7 @@ fn match_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
         .downcast_ref::<InstMatcherValue>()
         .unwrap();
 
-    let is_match = matcher.matcher.is_match(inst.llvm_value);
+    let is_match = matcher.matcher.is_match(&inst.llvm_value);
     Box::new(BoolValue { value: is_match })
 }
 
