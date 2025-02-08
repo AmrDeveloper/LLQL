@@ -7,7 +7,7 @@ use gitql_core::values::base::Value;
 use crate::functions::binary_matcher_signature;
 use crate::functions::binary_matchers_sides;
 use crate::ir::values::InstMatcherValue;
-use crate::matchers::arithmetic::ArithmeticInstMatcher;
+use crate::matchers::binary::BinaryInstMatcher;
 
 #[inline(always)]
 pub fn register_arithmetic_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
@@ -67,120 +67,120 @@ pub fn register_arithmetic_matchers_function_signatures(
 
 fn match_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_add(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_add(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_sub_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_sub(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_sub(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_mul_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_mul(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_mul(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_div(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_div(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_div(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_div(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_add(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_add(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_sub_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_sub(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_sub(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_mul_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_mul(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_mul(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_div(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_div(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_rem(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_rem(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_float_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_float_add(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_float_add(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_float_sub_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_float_sub(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_float_sub(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_float_mul_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_float_mul(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_float_mul(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_float_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_float_div(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_float_div(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_float_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_float_div(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_float_div(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_float_add_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_float_add(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_float_add(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_float_sub_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_float_sub(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_float_sub(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_float_mul_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_float_mul(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_float_mul(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_float_div_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_float_div(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_float_div(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }
 
 fn match_commutatively_float_rem_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
-    let matcher = ArithmeticInstMatcher::create_commutatively_float_rem(lhs_matcher, rhs_matcher);
+    let matcher = BinaryInstMatcher::create_commutatively_float_rem(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }

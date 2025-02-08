@@ -11,19 +11,50 @@ use super::InstMatcher;
 
 #[derive(PartialEq, Clone)]
 pub enum BinaryOperator {
+    Add,
+    Sub,
+    Mul,
+    SDiv,
+    SRem,
+    FAdd,
+    FSub,
+    FMul,
+    FDiv,
+    FRem,
+
     And,
     Or,
     OrDisjoint,
     Xor,
+
+    LogicalShiftLeft,
+    LogicalShiftRight,
+    ArithmeticShiftRight,
 }
 
 impl BinaryOperator {
-    pub fn llvm_opcode(&self) -> LLVMOpcode {
-        match self {
-            BinaryOperator::And => LLVMOpcode::LLVMAnd,
-            BinaryOperator::Or => LLVMOpcode::LLVMOr,
-            BinaryOperator::OrDisjoint => LLVMOpcode::LLVMOr,
-            BinaryOperator::Xor => LLVMOpcode::LLVMXor,
+    pub fn match_llvm_opcode(&self, op: LLVMOpcode) -> bool {
+        match op {
+            LLVMOpcode::LLVMAdd => matches!(self, BinaryOperator::Add),
+            LLVMOpcode::LLVMSub => matches!(self, BinaryOperator::Sub),
+            LLVMOpcode::LLVMMul => matches!(self, BinaryOperator::Mul),
+            LLVMOpcode::LLVMSDiv => matches!(self, BinaryOperator::SDiv),
+            LLVMOpcode::LLVMSRem => matches!(self, BinaryOperator::SRem),
+            LLVMOpcode::LLVMFAdd => matches!(self, BinaryOperator::FAdd),
+            LLVMOpcode::LLVMFSub => matches!(self, BinaryOperator::FSub),
+            LLVMOpcode::LLVMFMul => matches!(self, BinaryOperator::FMul),
+            LLVMOpcode::LLVMFDiv => matches!(self, BinaryOperator::FDiv),
+            LLVMOpcode::LLVMFRem => matches!(self, BinaryOperator::FRem),
+
+            LLVMOpcode::LLVMAnd => matches!(self, BinaryOperator::And),
+            LLVMOpcode::LLVMOr => matches!(self, BinaryOperator::Or | BinaryOperator::OrDisjoint),
+            LLVMOpcode::LLVMXor => matches!(self, BinaryOperator::Xor),
+
+            LLVMOpcode::LLVMShl => matches!(self, BinaryOperator::LogicalShiftLeft),
+            LLVMOpcode::LLVMLShr => matches!(self, BinaryOperator::LogicalShiftRight),
+            LLVMOpcode::LLVMAShr => matches!(self, BinaryOperator::ArithmeticShiftRight),
+
+            _ => false,
         }
     }
 }
@@ -38,6 +69,318 @@ pub struct BinaryInstMatcher {
 }
 
 impl BinaryInstMatcher {
+    pub fn create_add(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Add,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_sub(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Sub,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_mul(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Mul,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_div(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::SDiv,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_rem(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::SRem,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_commutatively_add(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Add,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_sub(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Sub,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_mul(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Mul,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_div(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::SDiv,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_rem(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::SRem,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_float_add(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FAdd,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_float_sub(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FSub,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_float_mul(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FMul,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_float_div(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FDiv,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_float_rem(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FRem,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_commutatively_float_add(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FAdd,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_float_sub(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FSub,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_float_mul(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FMul,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_float_div(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FDiv,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_float_rem(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::FRem,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_logical_shl(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::LogicalShiftLeft,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_logical_shr(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::LogicalShiftRight,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_arithmetic_shr(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::ArithmeticShiftRight,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_commutatively_logical_shl(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::LogicalShiftLeft,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_logical_shr(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::LogicalShiftRight,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_commutatively_arithmetic_shr(
+        lhs: Box<dyn InstMatcher>,
+        rhs: Box<dyn InstMatcher>,
+    ) -> Box<dyn InstMatcher> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::ArithmeticShiftRight,
+            commutatively: true,
+        })
+    }
+
     pub fn create_and(
         lhs: Box<dyn InstMatcher>,
         rhs: Box<dyn InstMatcher>,
@@ -136,8 +479,8 @@ impl InstMatcher for BinaryInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: LLVMValueRef) -> bool {
         unsafe {
-            let opcode = LLVMGetInstructionOpcode(instruction);
-            if opcode == self.operator.llvm_opcode() {
+            let operator = LLVMGetInstructionOpcode(instruction);
+            if self.operator.match_llvm_opcode(operator) {
                 if self.operator == BinaryOperator::OrDisjoint {
                     let instruction_string = LLVMPrintValueToString(instruction);
                     let instruction_cstr = CStr::from_ptr(instruction_string).to_owned();
