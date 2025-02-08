@@ -1,5 +1,12 @@
 # Change Log
 
+## Version 0.5.0 _(2025-02-8)_
+
+- Implement `m_operands_number` Matcher.
+- Implement `m_trunc`, `m_fp_trunc`, `m_fp_to_ui` and `m_fp_to_si` Matchers.
+- Implement `m_int_to_ptr`, `m_ptr_to_int` and `m_bit_cast` Matchers.
+- Implement `m_addr_space_cast`, `m_zext` and `m_sext` Matchers.
+
 ## Version 0.4.0 _(2025-01-04)_
 
 - Implement `m_or_disjoint`, `m_c_or_disjoint` Matchers.
