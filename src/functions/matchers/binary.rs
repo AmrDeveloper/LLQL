@@ -12,12 +12,16 @@ use crate::matchers::binary::BinaryInstMatcher;
 #[inline(always)]
 pub fn register_binary_inst_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
     map.insert("m_binop", match_binary_inst);
+    map.insert("m_c_binop", match_commutatively_binary_inst);
+
+    map.insert("m_arithmetic", match_arithmetic_inst);
+    map.insert("m_c_arithmetic", match_commutatively_arithmetic_inst);
+
     map.insert("m_or", match_or_inst);
     map.insert("m_or_disjoint", match_or_disjoint_inst);
     map.insert("m_and", match_and_inst);
     map.insert("m_xor", match_xor_inst);
 
-    map.insert("m_c_binop", match_commutatively_binary_inst);
     map.insert("m_c_or", match_commutatively_or_inst);
     map.insert("m_c_or_disjoint", match_commutatively_or_disjoint_inst);
     map.insert("m_c_and", match_commutatively_and_inst);
@@ -29,12 +33,16 @@ pub fn register_binary_inst_matchers_function_signatures(
     map: &mut HashMap<&'static str, Signature>,
 ) {
     map.insert("m_binop", binary_matcher_signature());
+    map.insert("m_c_binop", binary_matcher_signature());
+
+    map.insert("m_arithmetic", binary_matcher_signature());
+    map.insert("m_c_arithmetic", binary_matcher_signature());
+
     map.insert("m_or", binary_matcher_signature());
     map.insert("m_or_disjoint", binary_matcher_signature());
     map.insert("m_and", binary_matcher_signature());
     map.insert("m_xor", binary_matcher_signature());
 
-    map.insert("m_c_binop", binary_matcher_signature());
     map.insert("m_c_or", binary_matcher_signature());
     map.insert("m_c_or_disjoint", binary_matcher_signature());
     map.insert("m_c_and", binary_matcher_signature());
@@ -98,5 +106,17 @@ fn match_binary_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
 fn match_commutatively_binary_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
     let matcher = BinaryInstMatcher::create_commutatively_any(lhs_matcher, rhs_matcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_arithmetic_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
+    let matcher = BinaryInstMatcher::create_arithmetic(lhs_matcher, rhs_matcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_commutatively_arithmetic_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let (lhs_matcher, rhs_matcher) = binary_matchers_sides(values);
+    let matcher = BinaryInstMatcher::create_commutatively_arithmetic(lhs_matcher, rhs_matcher);
     Box::new(InstMatcherValue { matcher })
 }

@@ -13,6 +13,7 @@ use super::Matcher;
 pub enum BinaryOperator {
     Any,
 
+    Arithmetic,
     Add,
     Sub,
     Mul,
@@ -37,26 +38,57 @@ pub enum BinaryOperator {
 impl BinaryOperator {
     pub fn match_llvm_opcode(&self, llvm_op: LLVMOpcode) -> bool {
         match llvm_op {
-            LLVMOpcode::LLVMAdd => matches!(self, BinaryOperator::Any | BinaryOperator::Add),
+            LLVMOpcode::LLVMAdd => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::Add
+            ),
 
-            LLVMOpcode::LLVMSub => matches!(self, BinaryOperator::Any | BinaryOperator::Sub),
+            LLVMOpcode::LLVMSub => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::Sub
+            ),
 
-            LLVMOpcode::LLVMMul => matches!(self, BinaryOperator::Any | BinaryOperator::Mul),
+            LLVMOpcode::LLVMMul => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::Mul
+            ),
 
-            LLVMOpcode::LLVMSDiv => matches!(self, BinaryOperator::Any | BinaryOperator::SDiv),
+            LLVMOpcode::LLVMSDiv => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::SDiv
+            ),
 
-            LLVMOpcode::LLVMSRem => matches!(self, BinaryOperator::Any | BinaryOperator::SRem),
+            LLVMOpcode::LLVMSRem => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::SRem
+            ),
 
-            LLVMOpcode::LLVMFAdd => matches!(self, BinaryOperator::Any | BinaryOperator::FAdd),
+            LLVMOpcode::LLVMFAdd => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::FAdd
+            ),
 
-            LLVMOpcode::LLVMFSub => matches!(self, BinaryOperator::Any | BinaryOperator::FSub),
+            LLVMOpcode::LLVMFSub => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::FSub
+            ),
 
-            LLVMOpcode::LLVMFMul => matches!(self, BinaryOperator::Any | BinaryOperator::FMul),
+            LLVMOpcode::LLVMFMul => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::FMul
+            ),
 
-            LLVMOpcode::LLVMFDiv => matches!(self, BinaryOperator::Any | BinaryOperator::FDiv),
+            LLVMOpcode::LLVMFDiv => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::FDiv
+            ),
 
-            LLVMOpcode::LLVMFRem => matches!(self, BinaryOperator::Any | BinaryOperator::FRem),
+            LLVMOpcode::LLVMFRem => matches!(
+                self,
+                BinaryOperator::Any | BinaryOperator::Arithmetic | BinaryOperator::FRem
+            ),
 
+            // And, Or, Xor
             LLVMOpcode::LLVMAnd => matches!(self, BinaryOperator::Any | BinaryOperator::And),
 
             LLVMOpcode::LLVMOr => matches!(
@@ -66,6 +98,7 @@ impl BinaryOperator {
 
             LLVMOpcode::LLVMXor => matches!(self, BinaryOperator::Any | BinaryOperator::Xor),
 
+            // Shifts
             LLVMOpcode::LLVMShl => {
                 matches!(self, BinaryOperator::Any | BinaryOperator::LogicalShiftLeft)
             }
@@ -115,6 +148,30 @@ impl BinaryInstMatcher {
             lhs_matcher: lhs,
             rhs_matcher: rhs,
             operator: BinaryOperator::Any,
+            commutatively: true,
+        })
+    }
+
+    pub fn create_arithmetic(
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Arithmetic,
+            commutatively: false,
+        })
+    }
+
+    pub fn create_commutatively_arithmetic(
+        lhs: Box<dyn Matcher<LLVMValueRef>>,
+        rhs: Box<dyn Matcher<LLVMValueRef>>,
+    ) -> Box<dyn Matcher<LLVMValueRef>> {
+        Box::new(BinaryInstMatcher {
+            lhs_matcher: lhs,
+            rhs_matcher: rhs,
+            operator: BinaryOperator::Arithmetic,
             commutatively: true,
         })
     }
