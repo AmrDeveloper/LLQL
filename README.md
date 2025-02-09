@@ -40,7 +40,7 @@ FROM instructions WHERE m_inst(instruction, m_trunc(m_binop(m_zext() || m_sext()
 
 If we have LLVM IR function like this, and we want to match `add` instruction that has result of sub instruction as Left hand side and result of mul instruction as Right hand side.
 
-```ir
+```llvm
 define i32 @function(i32 %a, i32 %b) {
   %sub = sub i32 %a, %b
   %mull = mul i32 %a, %b
@@ -63,7 +63,7 @@ SELECT function_name, count() FROM instructions WHERE m_inst(instruction, m_add(
 
 You can also filter by number of times the value is used for example for not used values
 
-```IR
+```llvm
 define i32 @function(i32 %a, i32 %b) {
   %unused_add = add i32 %a, 1
 
