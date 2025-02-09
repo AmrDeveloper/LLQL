@@ -4,6 +4,7 @@ use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
 
+use crate::functions::single_optional_matcher_value;
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
 use crate::matchers::cast::CastInstMatcher;
@@ -40,52 +41,62 @@ fn cast_function_signature() -> Signature {
     Signature::with_return(Box::new(InstMatcherType))
 }
 
-fn match_trunc(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_trunc());
+fn match_trunc(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_trunc(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_fp_to_ui(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_fp_to_ui());
+fn match_fp_to_ui(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_fp_to_ui(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_fp_to_si(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_fp_to_si());
+fn match_fp_to_si(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_fp_to_si(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_fp_trunc(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_fp_trunc());
+fn match_fp_trunc(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_fp_trunc(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_int_to_ptr(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_int_to_ptr());
+fn match_int_to_ptr(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_int_to_ptr(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_ptr_to_int(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_ptr_to_int());
+fn match_ptr_to_int(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_ptr_to_int(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_zext(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_zext());
+fn match_zext(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_zext(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_sext(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_sext());
+fn match_sext(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_sext(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_bit_cast(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_bit_cast());
+fn match_bit_cast(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_bit_cast(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_addr_space_cast(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(CastInstMatcher::create_addr_space_cast());
+fn match_addr_space_cast(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_addr_space_cast(value_matcher));
     Box::new(InstMatcherValue { matcher })
 }

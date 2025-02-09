@@ -133,3 +133,17 @@ pub fn binary_matchers_sides(
 
     (lhs_matcher, rhs_matcher)
 }
+
+#[inline]
+pub fn single_optional_matcher_value(values: &[Box<dyn Value>]) -> Box<dyn Matcher<LLVMValueRef>> {
+    if !values.is_empty() {
+        values[0]
+            .as_any()
+            .downcast_ref::<InstMatcherValue>()
+            .unwrap()
+            .matcher
+            .to_owned()
+    } else {
+        Box::new(AnyInstMatcher)
+    }
+}
