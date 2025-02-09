@@ -26,6 +26,18 @@ LLQL is a tool that allow you to run SQL-like query with Pattern matching functi
 
 ### Sample
 
+You can search for missing optimizaitons patterns for example
+
+```SQL
+-- trunc (binop (Y, (ext X))) --> binop ((trunc Y), X)
+SELECT instruction AS "Missing Optimization: trunc (binop (Y, (ext X))) --> binop ((trunc Y), X)"
+FROM instructions WHERE m_inst(instruction, m_trunc(m_binop(m_any_inst(), m_zext() || m_sext())));
+
+-- trunc (binop (ext X), Y) --> binop X, (trunc Y)
+SELECT instruction AS "Missing Optimization: trunc (binop (ext X), Y) --> binop X, (trunc Y)"
+FROM instructions WHERE m_inst(instruction, m_trunc(m_binop(m_zext() || m_sext())));
+```
+
 If we have LLVM IR function like this, and we want to match `add` instruction that has result of sub instruction as Left hand side and result of mul instruction as Right hand side.
 
 ```ir
@@ -122,7 +134,7 @@ Options:
 ```
 MIT License
 
-Copyright (c) 2024 Amr Hesham
+Copyright (c) 2024 - 2025 Amr Hesham
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

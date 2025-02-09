@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use gitql_ast::types::optional::OptionType;
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
 use gitql_core::values::base::Value;
@@ -37,8 +38,10 @@ pub fn register_cast_matchers_function_signatures(map: &mut HashMap<&'static str
     map.insert("m_addr_space_cast", cast_function_signature());
 }
 
+#[inline(always)]
 fn cast_function_signature() -> Signature {
     Signature::with_return(Box::new(InstMatcherType))
+        .add_parameter(Box::new(OptionType::new(Some(Box::new(InstMatcherType)))))
 }
 
 fn match_trunc(values: &[Box<dyn Value>]) -> Box<dyn Value> {
