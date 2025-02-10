@@ -12,6 +12,7 @@ enum CastMatcherKind {
     FPToUI,
     FPToSI,
     FPTrunc,
+    Ext,
     FPExt,
     ZExt,
     SExt,
@@ -20,19 +21,22 @@ enum CastMatcherKind {
 }
 
 impl CastMatcherKind {
-    pub fn llvm_opcode(&self) -> LLVMOpcode {
-        match self {
-            CastMatcherKind::Trunc => LLVMOpcode::LLVMTrunc,
-            CastMatcherKind::FPToUI => LLVMOpcode::LLVMFPToUI,
-            CastMatcherKind::FPToSI => LLVMOpcode::LLVMFPToSI,
-            CastMatcherKind::FPTrunc => LLVMOpcode::LLVMFPTrunc,
-            CastMatcherKind::FPExt => LLVMOpcode::LLVMFPExt,
-            CastMatcherKind::IntToPtr => LLVMOpcode::LLVMIntToPtr,
-            CastMatcherKind::PtrToInt => LLVMOpcode::LLVMPtrToInt,
-            CastMatcherKind::ZExt => LLVMOpcode::LLVMZExt,
-            CastMatcherKind::SExt => LLVMOpcode::LLVMSExt,
-            CastMatcherKind::BitCast => LLVMOpcode::LLVMBitCast,
-            CastMatcherKind::AddrSpaceCast => LLVMOpcode::LLVMAddrSpaceCast,
+    pub fn match_llvm_opcode(&self, llvm_op: LLVMOpcode) -> bool {
+        match llvm_op {
+            LLVMOpcode::LLVMTrunc => matches!(self, CastMatcherKind::Trunc),
+            LLVMOpcode::LLVMFPToUI => matches!(self, CastMatcherKind::FPToUI),
+            LLVMOpcode::LLVMFPToSI => matches!(self, CastMatcherKind::FPToSI),
+            LLVMOpcode::LLVMFPTrunc => matches!(self, CastMatcherKind::FPTrunc),
+
+            LLVMOpcode::LLVMFPExt => matches!(self, CastMatcherKind::Ext | CastMatcherKind::FPExt),
+            LLVMOpcode::LLVMZExt => matches!(self, CastMatcherKind::Ext | CastMatcherKind::ZExt),
+            LLVMOpcode::LLVMSExt => matches!(self, CastMatcherKind::Ext | CastMatcherKind::SExt),
+
+            LLVMOpcode::LLVMIntToPtr => matches!(self, CastMatcherKind::IntToPtr),
+            LLVMOpcode::LLVMPtrToInt => matches!(self, CastMatcherKind::PtrToInt),
+            LLVMOpcode::LLVMBitCast => matches!(self, CastMatcherKind::BitCast),
+            LLVMOpcode::LLVMAddrSpaceCast => matches!(self, CastMatcherKind::AddrSpaceCast),
+            _ => false,
         }
     }
 }
@@ -67,6 +71,10 @@ impl CastInstMatcher {
 
     pub fn create_fp_trunc(value_matcher: Box<dyn Matcher<LLVMValueRef>>) -> CastInstMatcher {
         CastInstMatcher::new(value_matcher, CastMatcherKind::FPTrunc)
+    }
+
+    pub fn create_ext(value_matcher: Box<dyn Matcher<LLVMValueRef>>) -> CastInstMatcher {
+        CastInstMatcher::new(value_matcher, CastMatcherKind::Ext)
     }
 
     pub fn create_fpext(value_matcher: Box<dyn Matcher<LLVMValueRef>>) -> CastInstMatcher {
@@ -104,7 +112,8 @@ impl Matcher<LLVMValueRef> for CastInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            if self.kind.llvm_opcode() != LLVMGetInstructionOpcode(*instruction) {
+            let opcode = LLVMGetInstructionOpcode(*instruction);
+            if !self.kind.match_llvm_opcode(opcode) {
                 return false;
             }
 

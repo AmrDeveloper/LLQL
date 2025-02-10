@@ -589,8 +589,8 @@ impl Matcher<LLVMValueRef> for BinaryInstMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let operator = LLVMGetInstructionOpcode(*instruction);
-            if self.operator.match_llvm_opcode(operator) {
+            let opcode = LLVMGetInstructionOpcode(*instruction);
+            if self.operator.match_llvm_opcode(opcode) {
                 if self.operator == BinaryOperator::OrDisjoint {
                     let instruction_string = LLVMPrintValueToString(*instruction);
                     let instruction_cstr = CStr::from_ptr(instruction_string).to_owned();
