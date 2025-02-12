@@ -12,6 +12,7 @@ use crate::matchers::cast::CastInstMatcher;
 
 #[inline(always)]
 pub fn register_cast_matchers_function(map: &mut HashMap<&'static str, StandardFunction>) {
+    map.insert("m_cast", match_any_cast);
     map.insert("m_trunc", match_trunc);
     map.insert("m_fp_to_ui", match_fp_to_ui);
     map.insert("m_fp_to_si", match_fp_to_si);
@@ -28,6 +29,7 @@ pub fn register_cast_matchers_function(map: &mut HashMap<&'static str, StandardF
 
 #[inline(always)]
 pub fn register_cast_matchers_function_signatures(map: &mut HashMap<&'static str, Signature>) {
+    map.insert("m_cast", cast_function_signature());
     map.insert("m_trunc", cast_function_signature());
     map.insert("m_fp_to_ui", cast_function_signature());
     map.insert("m_fp_to_si", cast_function_signature());
@@ -46,6 +48,12 @@ pub fn register_cast_matchers_function_signatures(map: &mut HashMap<&'static str
 fn cast_function_signature() -> Signature {
     Signature::with_return(Box::new(InstMatcherType))
         .add_parameter(Box::new(OptionType::new(Some(Box::new(InstMatcherType)))))
+}
+
+fn match_any_cast(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let value_matcher = single_optional_matcher_value(values);
+    let matcher = Box::new(CastInstMatcher::create_any(value_matcher));
+    Box::new(InstMatcherValue { matcher })
 }
 
 fn match_trunc(values: &[Box<dyn Value>]) -> Box<dyn Value> {

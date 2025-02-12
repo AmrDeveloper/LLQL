@@ -6,6 +6,7 @@ use super::Matcher;
 
 #[derive(PartialEq, Clone)]
 enum CastMatcherKind {
+    Any,
     Trunc,
     IntToPtr,
     PtrToInt,
@@ -23,19 +24,42 @@ enum CastMatcherKind {
 impl CastMatcherKind {
     pub fn match_llvm_opcode(&self, llvm_op: LLVMOpcode) -> bool {
         match llvm_op {
-            LLVMOpcode::LLVMTrunc => matches!(self, CastMatcherKind::Trunc),
-            LLVMOpcode::LLVMFPToUI => matches!(self, CastMatcherKind::FPToUI),
-            LLVMOpcode::LLVMFPToSI => matches!(self, CastMatcherKind::FPToSI),
-            LLVMOpcode::LLVMFPTrunc => matches!(self, CastMatcherKind::FPTrunc),
+            LLVMOpcode::LLVMTrunc => matches!(self, CastMatcherKind::Any | CastMatcherKind::Trunc),
+            LLVMOpcode::LLVMFPToUI => {
+                matches!(self, CastMatcherKind::Any | CastMatcherKind::FPToUI)
+            }
+            LLVMOpcode::LLVMFPToSI => {
+                matches!(self, CastMatcherKind::Any | CastMatcherKind::FPToSI)
+            }
+            LLVMOpcode::LLVMFPTrunc => {
+                matches!(self, CastMatcherKind::Any | CastMatcherKind::FPTrunc)
+            }
 
-            LLVMOpcode::LLVMFPExt => matches!(self, CastMatcherKind::Ext | CastMatcherKind::FPExt),
-            LLVMOpcode::LLVMZExt => matches!(self, CastMatcherKind::Ext | CastMatcherKind::ZExt),
-            LLVMOpcode::LLVMSExt => matches!(self, CastMatcherKind::Ext | CastMatcherKind::SExt),
+            LLVMOpcode::LLVMFPExt => matches!(
+                self,
+                CastMatcherKind::Any | CastMatcherKind::Ext | CastMatcherKind::FPExt
+            ),
+            LLVMOpcode::LLVMZExt => matches!(
+                self,
+                CastMatcherKind::Any | CastMatcherKind::Ext | CastMatcherKind::ZExt
+            ),
+            LLVMOpcode::LLVMSExt => matches!(
+                self,
+                CastMatcherKind::Any | CastMatcherKind::Ext | CastMatcherKind::SExt
+            ),
 
-            LLVMOpcode::LLVMIntToPtr => matches!(self, CastMatcherKind::IntToPtr),
-            LLVMOpcode::LLVMPtrToInt => matches!(self, CastMatcherKind::PtrToInt),
-            LLVMOpcode::LLVMBitCast => matches!(self, CastMatcherKind::BitCast),
-            LLVMOpcode::LLVMAddrSpaceCast => matches!(self, CastMatcherKind::AddrSpaceCast),
+            LLVMOpcode::LLVMIntToPtr => {
+                matches!(self, CastMatcherKind::Any | CastMatcherKind::IntToPtr)
+            }
+            LLVMOpcode::LLVMPtrToInt => {
+                matches!(self, CastMatcherKind::Any | CastMatcherKind::PtrToInt)
+            }
+            LLVMOpcode::LLVMBitCast => {
+                matches!(self, CastMatcherKind::Any | CastMatcherKind::BitCast)
+            }
+            LLVMOpcode::LLVMAddrSpaceCast => {
+                matches!(self, CastMatcherKind::Any | CastMatcherKind::AddrSpaceCast)
+            }
             _ => false,
         }
     }
@@ -57,6 +81,10 @@ impl CastInstMatcher {
 }
 
 impl CastInstMatcher {
+    pub fn create_any(value_matcher: Box<dyn Matcher<LLVMValueRef>>) -> CastInstMatcher {
+        CastInstMatcher::new(value_matcher, CastMatcherKind::Any)
+    }
+
     pub fn create_trunc(value_matcher: Box<dyn Matcher<LLVMValueRef>>) -> CastInstMatcher {
         CastInstMatcher::new(value_matcher, CastMatcherKind::Trunc)
     }
