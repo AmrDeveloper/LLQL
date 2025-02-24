@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use gitql_ast::types::optional::OptionType;
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
-use gitql_core::values::base::Value;
+use gitql_core::values::Value;
 
 use crate::functions::single_optional_matcher_value;
 use crate::ir::types::InstMatcherType;

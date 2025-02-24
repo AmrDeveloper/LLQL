@@ -1,9 +1,9 @@
 use std::sync::LazyLock;
 
 use gitql_core::object::Row;
-use gitql_core::values::base::Value;
 use gitql_core::values::null::NullValue;
 use gitql_core::values::text::TextValue;
+use gitql_core::values::Value;
 use gitql_engine::data_provider::DataProvider;
 use inkwell::context::Context;
 use inkwell::module::Module;

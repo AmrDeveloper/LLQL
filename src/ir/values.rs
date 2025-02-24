@@ -2,8 +2,8 @@ use std::any::Any;
 use std::cmp::Ordering;
 use std::ffi::CString;
 
-use gitql_ast::types::base::DataType;
-use gitql_core::values::base::Value;
+use gitql_ast::types::DataType;
+use gitql_core::values::Value;
 use inkwell::llvm_sys;
 use llvm_sys::core::LLVMPrintValueToString;
 use llvm_sys::prelude::LLVMTypeRef;

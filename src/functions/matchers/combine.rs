@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use gitql_ast::types::varargs::VarargsType;
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
-use gitql_core::values::base::Value;
+use gitql_core::values::Value;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 
 use crate::functions::binary_matchers_sides;

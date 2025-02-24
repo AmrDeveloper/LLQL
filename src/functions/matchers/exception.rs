@@ -7,7 +7,7 @@ use crate::matchers::exception::LandingPadInstMatcher;
 
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
-use gitql_core::values::base::Value;
+use gitql_core::values::Value;
 
 #[inline(always)]
 pub fn register_exception_inst_matchers_functions(

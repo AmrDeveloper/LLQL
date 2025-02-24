@@ -4,7 +4,7 @@ use std::sync::OnceLock;
 use gitql_ast::types::optional::OptionType;
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
-use gitql_core::values::base::Value;
+use gitql_core::values::Value;
 
 use gitql_std::standard::standard_function_signatures;
 use gitql_std::standard::standard_functions;

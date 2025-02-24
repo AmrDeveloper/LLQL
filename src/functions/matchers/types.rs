@@ -4,7 +4,7 @@ use gitql_ast::types::integer::IntType;
 use gitql_ast::types::optional::OptionType;
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
-use gitql_core::values::base::Value;
+use gitql_core::values::Value;
 
 use crate::ir::types::TypeMatcherType;
 use crate::ir::values::TypeMatcherValue;
