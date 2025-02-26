@@ -19,6 +19,7 @@ pub fn register_constants_matchers_functions(map: &mut HashMap<&'static str, Sta
     map.insert("m_one", match_const_one_inst);
     map.insert("m_power2", match_const_power_of_two_inst);
     map.insert("m_specific_int", match_const_specific_int_inst);
+    map.insert("m_range_int", match_range_int_inst);
 
     map.insert("m_const_fp", match_const_fp_inst);
     map.insert("m_const_null", match_const_null_inst);
@@ -34,6 +35,14 @@ pub fn register_constants_matchers_function_signatures(map: &mut HashMap<&'stati
         "m_specific_int",
         Signature {
             parameters: vec![Box::new(IntType)],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_range_int",
+        Signature {
+            parameters: vec![Box::new(IntType), Box::new(IntType)],
             return_type: Box::new(InstMatcherType),
         },
     );
@@ -65,6 +74,13 @@ fn match_const_power_of_two_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 fn match_const_specific_int_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let int_value = values[0].as_int().unwrap();
     let matcher = Box::new(ConstIntMatcher::create_specific_int(int_value));
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_range_int_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let range_start = values[0].as_int().unwrap();
+    let range_end = values[1].as_int().unwrap();
+    let matcher = Box::new(ConstIntMatcher::create_range_int(range_start, range_end));
     Box::new(InstMatcherValue { matcher })
 }
 

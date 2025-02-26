@@ -7,6 +7,7 @@ use super::Matcher;
 #[derive(Clone)]
 enum ConstIntMatcherCondition {
     Specific(i64),
+    InRange(i64, i64),
     PowerOfTwo,
 }
 
@@ -30,6 +31,12 @@ impl ConstIntMatcher {
     pub fn create_power_of_two() -> Self {
         ConstIntMatcher {
             condition: Some(ConstIntMatcherCondition::PowerOfTwo),
+        }
+    }
+
+    pub fn create_range_int(start: i64, end: i64) -> Self {
+        ConstIntMatcher {
+            condition: Some(ConstIntMatcherCondition::InRange(start, end)),
         }
     }
 
@@ -59,6 +66,7 @@ impl Matcher<LLVMValueRef> for ConstIntMatcher {
                 return match matcher_condition {
                     ConstIntMatcherCondition::Specific(value) => si64_value == *value,
                     ConstIntMatcherCondition::PowerOfTwo => (si64_value & (si64_value - 1)) != 0,
+                    ConstIntMatcherCondition::InRange(s, e) => si64_value >= *s || si64_value <= *e,
                 };
             }
 
