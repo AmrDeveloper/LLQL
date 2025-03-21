@@ -1,5 +1,14 @@
 # Change Log
 
+## Version 0.6.0 _(2025-03-21)_
+
+- Implement `m_cast`, `m_fpext` and `m_ext` Cast Matchers.
+- Implement `m_binop`, `m_c_binop` Matchers.
+- Implement `m_arithmetic`, `m_c_arithmetic` Matchers.
+- Implement `m_range_int` Matcher
+- Allow Cast matchers to match the value.
+- Migrate to GitQL 0.37.0
+
 ## Version 0.5.0 _(2025-02-8)_
 
 - Implement `m_operands_number` Matcher.
