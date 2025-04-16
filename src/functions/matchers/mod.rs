@@ -4,6 +4,7 @@ pub mod call;
 pub mod cast;
 pub mod combine;
 pub mod constants;
+pub mod debug;
 pub mod exception;
 pub mod fcmp;
 pub mod icmp;

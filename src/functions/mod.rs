@@ -21,6 +21,8 @@ use matchers::combine::register_combine_matchers_function;
 use matchers::combine::register_combine_matchers_function_signatures;
 use matchers::constants::register_constants_matchers_function_signatures;
 use matchers::constants::register_constants_matchers_functions;
+use matchers::debug::register_debug_inst_matchers_function_signatures;
+use matchers::debug::register_debug_inst_matchers_functions;
 use matchers::exception::register_exception_inst_matchers_function_signatures;
 use matchers::exception::register_exception_inst_matchers_functions;
 use matchers::fcmp::register_float_comparisons_matchers_function_signatures;
@@ -61,6 +63,7 @@ pub fn llvm_ir_functions() -> &'static HashMap<&'static str, StandardFunction> {
         register_combine_matchers_function(&mut map);
         register_call_inst_matchers_functions(&mut map);
         register_cast_matchers_function(&mut map);
+        register_debug_inst_matchers_functions(&mut map);
         map
     })
 }
@@ -81,6 +84,7 @@ pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     register_combine_matchers_function_signatures(&mut map);
     register_call_inst_matchers_function_signatures(&mut map);
     register_cast_matchers_function_signatures(&mut map);
+    register_debug_inst_matchers_function_signatures(&mut map);
     map
 }
 

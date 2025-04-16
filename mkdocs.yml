@@ -99,6 +99,7 @@ nav:
     - Cast: matchers/cast.md
     - Combine: matchers/combine.md
     - Types: matchers/types.md
+    - Debug: matchers/debug.md
 
 extra:
   social:
