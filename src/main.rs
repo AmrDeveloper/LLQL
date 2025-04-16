@@ -51,12 +51,12 @@ fn main() {
                     "",
                     Diagnostic::error(files_validation_result.err().unwrap().as_str()),
                 );
-                return;
+                std::process::exit(1);
             }
 
             if let Err(parse_modules_error) = parse_llvm_modules(&arguments.files) {
                 reporter.report_diagnostic("", Diagnostic::error(parse_modules_error.as_str()));
-                return;
+                std::process::exit(1);
             }
 
             let mut env = create_llql_environment();
@@ -74,12 +74,12 @@ fn main() {
             if let Err(validate_files_errors) = validate_files_paths(&arguments.files) {
                 reporter
                     .report_diagnostic(&query, Diagnostic::error(validate_files_errors.as_str()));
-                return;
+                std::process::exit(1);
             }
 
             if let Err(parse_modules_error) = parse_llvm_modules(&arguments.files) {
                 reporter.report_diagnostic("", Diagnostic::error(parse_modules_error.as_str()));
-                return;
+                std::process::exit(1);
             }
 
             let mut env = create_llql_environment();
@@ -96,6 +96,7 @@ fn main() {
         }
         Command::Error(error_message) => {
             println!("{}", error_message);
+            std::process::exit(1);
         }
     }
 }
@@ -105,12 +106,12 @@ fn launch_llql_repl(arguments: &Arguments) {
     let files = &arguments.files;
     if let Err(error) = validate_files_paths(files) {
         reporter.report_diagnostic("", Diagnostic::error(error.as_str()));
-        return;
+        std::process::exit(1);
     }
 
     if let Err(parse_modules_error) = parse_llvm_modules(files) {
         reporter.report_diagnostic("", Diagnostic::error(parse_modules_error.as_str()));
-        return;
+        std::process::exit(1);
     }
 
     let mut global_env = create_llql_environment();
@@ -203,19 +204,19 @@ fn execute_llql_query(
     if tokenizer_result.is_err() {
         let diagnostic = tokenizer_result.err().unwrap();
         reporter.report_diagnostic(&query, *diagnostic);
-        return;
+        std::process::exit(1);
     }
 
     let tokens = tokenizer_result.ok().unwrap();
     if tokens.is_empty() {
-        return;
+        std::process::exit(1);
     }
 
     let parser_result = parser::parse_gql(tokens, env);
     if parser_result.is_err() {
         let diagnostic = parser_result.err().unwrap();
         reporter.report_diagnostic(&query, *diagnostic);
-        return;
+        std::process::exit(1);
     }
 
     let query_node = parser_result.ok().unwrap();
@@ -229,7 +230,7 @@ fn execute_llql_query(
     if evaluation_result.is_err() {
         let exception = Diagnostic::exception(&evaluation_result.err().unwrap());
         reporter.report_diagnostic(&query, exception);
-        return;
+        std::process::exit(1);
     }
 
     // Render the result only if they are selected groups not any other statement
