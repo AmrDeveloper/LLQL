@@ -1,4 +1,4 @@
-use gitql_cli::arguments::OutputFormat;
+use gitql_cli::printer::OutputFormatKind;
 
 /// Arguments for LLQL
 #[derive(Debug, PartialEq)]
@@ -8,7 +8,7 @@ pub struct Arguments {
     pub pagination: bool,
     pub page_size: usize,
     pub enable_line_editor: bool,
-    pub output_format: OutputFormat,
+    pub output_format: OutputFormatKind,
 }
 
 /// Create a new instance of Arguments with the default settings
@@ -20,7 +20,7 @@ impl Arguments {
             pagination: false,
             page_size: 10,
             enable_line_editor: false,
-            output_format: OutputFormat::Render,
+            output_format: OutputFormatKind::Table,
         }
     }
 }
@@ -146,11 +146,13 @@ pub fn parse_arguments(args: &[String]) -> Command {
 
                 let output_type = &args[arg_index].to_lowercase();
                 if output_type == "csv" {
-                    arguments.output_format = OutputFormat::CSV;
+                    arguments.output_format = OutputFormatKind::CSV;
                 } else if output_type == "json" {
-                    arguments.output_format = OutputFormat::JSON;
-                } else if output_type == "render" {
-                    arguments.output_format = OutputFormat::Render;
+                    arguments.output_format = OutputFormatKind::JSON;
+                } else if output_type == "yaml" {
+                    arguments.output_format = OutputFormatKind::YAML;
+                } else if output_type == "render" || output_type == "table" {
+                    arguments.output_format = OutputFormatKind::Table;
                 } else {
                     return Command::Error("Invalid output format".to_string());
                 }
