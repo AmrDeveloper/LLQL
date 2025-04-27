@@ -1,4 +1,7 @@
-use inkwell::llvm_sys::core::{LLVMConstIntGetSExtValue, LLVMGetValueKind, LLVMIsAConstantInt};
+use inkwell::llvm_sys::core::LLVMConstIntGetSExtValue;
+use inkwell::llvm_sys::core::LLVMGetValueKind;
+use inkwell::llvm_sys::core::LLVMIsAConstantFP;
+use inkwell::llvm_sys::core::LLVMIsAConstantInt;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMValueKind;
 
@@ -96,9 +99,20 @@ pub struct ConstPointerNullMatcher;
 impl Matcher<LLVMValueRef> for ConstPointerNullMatcher {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        unsafe { !LLVMIsAConstantFP(*instruction).is_null() }
+    }
+}
+
+/// Return instruction matcher to check if current value is a constants number
+#[derive(Clone)]
+pub struct ConstNumberMatcher;
+
+impl Matcher<LLVMValueRef> for ConstNumberMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
         unsafe {
-            let value_kind = LLVMGetValueKind(*instruction);
-            value_kind == LLVMValueKind::LLVMConstantPointerNullValueKind
+            !LLVMIsAConstantInt(*instruction).is_null()
+                || !LLVMIsAConstantFP(*instruction).is_null()
         }
     }
 }

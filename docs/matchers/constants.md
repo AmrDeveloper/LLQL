@@ -2,6 +2,7 @@
 
 |    Function    |       Parameters        |   Return    |                           Description                            |
 | :------------: | :---------------------: | :---------: | :--------------------------------------------------------------: |
+|  m_const_num   |                         | InstMatcher |       Build Inst Matcher that match constants number value       |
 |  m_const_int   |                         | InstMatcher |        Build Inst Matcher that match constants int value         |
 |     m_zero     |                         | InstMatcher |     Build Inst Matcher that match constants int with value 0     |
 |     m_one      |                         | InstMatcher |     Build Inst Matcher that match constants int with value 1     |
