@@ -8,6 +8,7 @@ use gitql_core::values::Value;
 use crate::functions::matcher_signature_without_parameters;
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
+use crate::matchers::constants::ConstExprMatcher;
 use crate::matchers::constants::ConstFloatMatcher;
 use crate::matchers::constants::ConstIntMatcher;
 use crate::matchers::constants::ConstNumberMatcher;
@@ -15,6 +16,8 @@ use crate::matchers::constants::ConstPointerNullMatcher;
 
 #[inline(always)]
 pub fn register_constants_matchers_functions(map: &mut HashMap<&'static str, StandardFunction>) {
+    map.insert("m_const_expr", match_const_expr_inst);
+
     map.insert("m_const_num", match_const_num_inst);
     map.insert("m_const_int", match_const_int_inst);
     map.insert("m_zero", match_const_zero_inst);
@@ -29,6 +32,7 @@ pub fn register_constants_matchers_functions(map: &mut HashMap<&'static str, Sta
 
 #[inline(always)]
 pub fn register_constants_matchers_function_signatures(map: &mut HashMap<&'static str, Signature>) {
+    map.insert("m_const_expr", matcher_signature_without_parameters());
     map.insert("m_const_num", matcher_signature_without_parameters());
     map.insert("m_const_int", matcher_signature_without_parameters());
     map.insert("m_zero", matcher_signature_without_parameters());
@@ -52,6 +56,11 @@ pub fn register_constants_matchers_function_signatures(map: &mut HashMap<&'stati
 
     map.insert("m_const_fp", matcher_signature_without_parameters());
     map.insert("m_const_null", matcher_signature_without_parameters());
+}
+
+fn match_const_expr_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(ConstExprMatcher);
+    Box::new(InstMatcherValue { matcher })
 }
 
 fn match_const_num_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {

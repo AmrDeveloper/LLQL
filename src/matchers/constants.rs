@@ -1,11 +1,22 @@
 use inkwell::llvm_sys::core::LLVMConstIntGetSExtValue;
 use inkwell::llvm_sys::core::LLVMGetValueKind;
+use inkwell::llvm_sys::core::LLVMIsAConstantExpr;
 use inkwell::llvm_sys::core::LLVMIsAConstantFP;
 use inkwell::llvm_sys::core::LLVMIsAConstantInt;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMValueKind;
 
 use super::Matcher;
+
+/// Return instruction matcher to check if current value is a constants expr
+#[derive(Clone)]
+pub struct ConstExprMatcher;
+
+impl Matcher<LLVMValueRef> for ConstExprMatcher {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        unsafe { !LLVMIsAConstantExpr(*instruction).is_null() }
+    }
+}
 
 #[derive(Clone)]
 enum ConstIntMatcherCondition {
