@@ -1,5 +1,12 @@
 # Change Log
 
+## Version 0.7.0 _(2025-05-04)_
+
+- Implement `m_dbg_line` and `m_dbg_column` matchers.
+- Implement `m_const_num` and `m_const_expr` matchers.
+- Migrate to GitQL 0.38.0.
+- Migrate to use llvm 18.1
+
 ## Version 0.6.0 _(2025-03-21)_
 
 - Implement `m_cast`, `m_fpext` and `m_ext` Cast Matchers.
