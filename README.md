@@ -22,6 +22,12 @@ LLQL is a tool that allow you to run SQL-like query with Pattern matching functi
   <img src="media/llql_demo.png" alt="animated" width="100%"/>
 </p>
 
+### Using LLQL in LIT test
+
+<p align="center">
+  <img src="media/llql_lit.png" alt="animated" width="100%"/>
+</p>
+
 ---
 
 ### Sample
