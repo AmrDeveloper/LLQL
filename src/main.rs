@@ -96,7 +96,7 @@ fn main() {
             println!("LLQL version {}", env!("CARGO_PKG_VERSION"));
         }
         Command::Error(error_message) => {
-            println!("{}", error_message);
+            println!("{error_message}");
             std::process::exit(1);
         }
     }
@@ -165,7 +165,7 @@ fn launch_llql_repl(arguments: &Arguments) {
                 }
             }
             Err(error) => {
-                reporter.report_diagnostic(&input, Diagnostic::error(&format!("{}", error)));
+                reporter.report_diagnostic(&input, Diagnostic::error(&format!("{error}")));
             }
         }
 
@@ -258,8 +258,7 @@ fn execute_llql_query(
         if arguments.analysis {
             let total_time = front_duration + engine_duration;
             println!(
-                "{} row in set (total: {:?}, front: {:?}, engine: {:?})",
-                rows_count, total_time, front_duration, engine_duration
+                "{rows_count} row in set (total: {total_time:?}, front: {front_duration:?}, engine: {engine_duration:?})"
             );
         }
     }
@@ -268,14 +267,14 @@ fn execute_llql_query(
 fn validate_files_paths(files: &[String]) -> Result<(), String> {
     for file in files {
         if !Path::new(file).exists() {
-            return Err(format!("File ${} is not exists", file));
+            return Err(format!("File ${file} is not exists"));
         }
 
         if file.ends_with(".ll") || file.ends_with(".bc") {
             continue;
         }
 
-        return Err(format!("File ${} must end with LL or BC extension", file));
+        return Err(format!("File ${file} must end with LL or BC extension"));
     }
     Ok(())
 }
