@@ -97,6 +97,7 @@ nav:
     - Exceptions: matchers/exceptions.md
     - Call: matchers/call.md
     - Cast: matchers/cast.md
+    - Operand Bundle: matchers/operand_bundle.md
     - Combine: matchers/combine.md
     - Types: matchers/types.md
     - Debug: matchers/debug.md

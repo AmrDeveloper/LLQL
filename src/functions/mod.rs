@@ -29,6 +29,8 @@ use matchers::fcmp::register_float_comparisons_matchers_function_signatures;
 use matchers::fcmp::register_float_comparisons_matchers_functions;
 use matchers::icmp::register_int_comparisons_matchers_function_signatures;
 use matchers::icmp::register_int_comparisons_matchers_functions;
+use matchers::operand_bundle::register_operand_bundle_inst_matchers_function_signatures;
+use matchers::operand_bundle::register_operand_bundle_inst_matchers_functions;
 use matchers::other::register_other_inst_matchers_function_signatures;
 use matchers::other::register_other_inst_matchers_functions;
 use matchers::shifts::register_shift_matchers_function_signatures;
@@ -64,6 +66,7 @@ pub fn llvm_ir_functions() -> &'static HashMap<&'static str, StandardFunction> {
         register_call_inst_matchers_functions(&mut map);
         register_cast_matchers_function(&mut map);
         register_debug_inst_matchers_functions(&mut map);
+        register_operand_bundle_inst_matchers_functions(&mut map);
         map
     })
 }
@@ -85,6 +88,8 @@ pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     register_call_inst_matchers_function_signatures(&mut map);
     register_cast_matchers_function_signatures(&mut map);
     register_debug_inst_matchers_function_signatures(&mut map);
+    register_operand_bundle_inst_matchers_function_signatures(&mut map);
+
     map
 }
 

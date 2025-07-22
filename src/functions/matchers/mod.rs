@@ -8,6 +8,7 @@ pub mod debug;
 pub mod exception;
 pub mod fcmp;
 pub mod icmp;
+pub mod operand_bundle;
 pub mod other;
 pub mod shifts;
 pub mod types;

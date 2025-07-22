@@ -162,7 +162,8 @@ fn match_extract_value(values: &[Box<dyn Value>]) -> Box<dyn Value> {
         indices = Some(i64_indices);
     }
 
-    let inst_matcher = Box::new(ExtractValueInstMatcher { matcher, indices });
+    let inst_matcher: Box<ExtractValueInstMatcher> =
+        Box::new(ExtractValueInstMatcher { matcher, indices });
 
     Box::new(InstMatcherValue {
         matcher: inst_matcher,
