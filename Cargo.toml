@@ -13,12 +13,12 @@ categories = ["command-line-utilities"]
 exclude = [".github/**", "docs/**", "media/**", "scripts/**"]
 
 [dependencies]
-gitql-core = "0.15.0"
-gitql-std = "0.15.0"
-gitql-ast = "0.34.0"
-gitql-parser = "0.37.0"
-gitql-engine = "0.38.0"
-gitql-cli = "0.38.0"
+gitql-core = "0.16.0"
+gitql-std = "0.16.0"
+gitql-ast = "0.35.0"
+gitql-parser = "0.38.0"
+gitql-engine = "0.39.0"
+gitql-cli = "0.39.0"
 
 inkwell = { version = "0.6.0", features = ["llvm18-1"] }
 
