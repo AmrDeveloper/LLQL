@@ -1,7 +1,9 @@
 use inkwell::llvm_sys::core::LLVMGetCalledValue;
 use inkwell::llvm_sys::core::LLVMGetInstructionOpcode;
 use inkwell::llvm_sys::core::LLVMGetIntrinsicID;
+use inkwell::llvm_sys::core::LLVMGetValueName2;
 use inkwell::llvm_sys::core::LLVMIsACallInst;
+use inkwell::llvm_sys::core::LLVMIsAFunction;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMOpcode;
 
@@ -24,11 +26,13 @@ impl Matcher<LLVMValueRef> for CallInstMatcher {
 }
 
 #[derive(Clone)]
-pub struct IntrinsicInstMatcher;
+pub struct IntrinsicInstMatcher {
+    pub name: Option<String>,
+}
 
 impl IntrinsicInstMatcher {
-    pub fn create_call() -> Self {
-        IntrinsicInstMatcher
+    pub fn create_call(name: Option<String>) -> Self {
+        IntrinsicInstMatcher { name }
     }
 }
 
@@ -39,8 +43,26 @@ impl Matcher<LLVMValueRef> for IntrinsicInstMatcher {
             if !LLVMIsACallInst(*instruction).is_null() {
                 let called_value = LLVMGetCalledValue(*instruction);
                 let intrinsic_id = LLVMGetIntrinsicID(called_value);
-                return intrinsic_id != 0;
+                if intrinsic_id == 0 {
+                    return false;
+                }
+
+                if let Some(intrinsic_name) = &self.name {
+                    let function = LLVMIsAFunction(called_value);
+                    if function.is_null() {
+                        return false;
+                    }
+
+                    let mut len: usize = 0;
+                    let name_ptr = LLVMGetValueName2(function, &mut len);
+                    let name_slice = std::slice::from_raw_parts(name_ptr as *const u8, len);
+                    let name = std::str::from_utf8_unchecked(name_slice).to_string();
+                    return name.eq(intrinsic_name);
+                }
+
+                return true;
             }
+
             false
         }
     }

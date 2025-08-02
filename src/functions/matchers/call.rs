@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use gitql_ast::types::optional::OptionType;
+use gitql_ast::types::text::TextType;
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
 use gitql_core::values::Value;
@@ -20,7 +22,8 @@ pub fn register_call_inst_matchers_function_signatures(map: &mut HashMap<&'stati
     map.insert("m_call", Signature::with_return(Box::new(InstMatcherType)));
     map.insert(
         "m_intrinsic",
-        Signature::with_return(Box::new(InstMatcherType)),
+        Signature::with_return(Box::new(InstMatcherType))
+            .add_parameter(Box::new(OptionType::new(Some(Box::new(TextType))))),
     );
 }
 
@@ -29,7 +32,13 @@ fn match_call_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     Box::new(InstMatcherValue { matcher })
 }
 
-fn match_intrinsic_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
-    let matcher = Box::new(IntrinsicInstMatcher::create_call());
+fn match_intrinsic_inst(values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let intrinsic_name: Option<String> = if values.is_empty() {
+        None
+    } else {
+        values[0].as_text()
+    };
+
+    let matcher = Box::new(IntrinsicInstMatcher::create_call(intrinsic_name));
     Box::new(InstMatcherValue { matcher })
 }
