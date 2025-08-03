@@ -1,5 +1,12 @@
 # Change Log
 
+## Version 0.8.0 _(2025-08-03)_
+
+- Migrate to GitQL 0.40.0.
+- Implement `m_operand_bundle` inst matcher.
+- Implement `m_intrinsic` with optional name inst matcher.
+- Extend `m_call` to be able to filter by name.
+
 ## Version 0.7.0 _(2025-05-04)_
 
 - Implement `m_dbg_line` and `m_dbg_column` matchers.
