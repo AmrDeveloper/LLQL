@@ -1,5 +1,10 @@
 # Change Log
 
+## Version 0.9.0 _(2025-11-21)_
+
+- Migrate to GitQL SDK 42.
+- Migrate to LLVM 20.1.
+
 ## Version 0.8.0 _(2025-08-03)_
 
 - Migrate to GitQL 0.40.0.
