@@ -20,7 +20,7 @@ gitql-parser = "0.41.0"
 gitql-engine = "0.42.0"
 gitql-cli = "0.42.0"
 
-inkwell = { version = "0.7.1", features = ["llvm20-1"] }
+inkwell = { version = "0.7.1", features = ["llvm21-1"] }
 
 lineeditor = "0.4.1"
 dyn-clone = "1.0.20"
