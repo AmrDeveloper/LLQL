@@ -98,6 +98,7 @@ nav:
     - Call: matchers/call.md
     - Cast: matchers/cast.md
     - Operand Bundle: matchers/operand_bundle.md
+    - GetElementPtr: matchers/get_element_ptr.md
     - Combine: matchers/combine.md
     - Types: matchers/types.md
     - Debug: matchers/debug.md
