@@ -4,3 +4,4 @@
 | :----------: | :--------: | :---------: | :--------------------------------------------------: |
 |   m_invoke   |            | InstMatcher |   Build Inst Matcher that match invoke Instruction   |
 | m_landingpad |            | InstMatcher | Build Inst Matcher that match landingpad Instruction |
+|   m_resume   |            | InstMatcher |   Build Inst Matcher that match resume Instruction   |
