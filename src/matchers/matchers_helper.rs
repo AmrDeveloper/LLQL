@@ -4,7 +4,7 @@ use inkwell::llvm_sys::core::LLVMGetValueName2;
 use inkwell::llvm_sys::prelude::LLVMValueRef;
 use inkwell::llvm_sys::LLVMOpcode;
 
-pub(crate) fn is_call_or_invoke_inst_with_specific_name(
+pub(crate) fn is_call_base_inst_with_specific_name(
     instruction: &LLVMValueRef,
     name: &'static str,
 ) -> bool {

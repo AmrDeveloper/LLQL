@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
+use crate::matchers::exception::EHTypeIdInstMatcher;
 use crate::matchers::exception::InvokeInstMatcher;
 use crate::matchers::exception::LandingPadInstMatcher;
 use crate::matchers::exception::ResumeInstMatcher;
@@ -21,6 +22,7 @@ pub fn register_exception_inst_matchers_functions(
     map.insert("m_resume", match_resume_inst);
     map.insert("m_throw", match_throw_inst);
     map.insert("m_rethrow", match_rethrow_inst);
+    map.insert("m_eh_typeid", match_eh_typeid_inst);
 }
 
 #[inline(always)]
@@ -66,6 +68,14 @@ pub fn register_exception_inst_matchers_function_signatures(
             return_type: Box::new(InstMatcherType),
         },
     );
+
+    map.insert(
+        "m_eh_typeid",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
 }
 
 fn match_invoke_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
@@ -90,5 +100,10 @@ fn match_throw_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
 fn match_rethrow_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let matcher = Box::new(RethrowInstMatcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_eh_typeid_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(EHTypeIdInstMatcher);
     Box::new(InstMatcherValue { matcher })
 }
