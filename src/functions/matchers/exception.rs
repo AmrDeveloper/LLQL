@@ -5,6 +5,8 @@ use crate::ir::values::InstMatcherValue;
 use crate::matchers::exception::InvokeInstMatcher;
 use crate::matchers::exception::LandingPadInstMatcher;
 use crate::matchers::exception::ResumeInstMatcher;
+use crate::matchers::exception::RethrowInstMatcher;
+use crate::matchers::exception::ThrowInstMatcher;
 
 use gitql_core::signature::Signature;
 use gitql_core::signature::StandardFunction;
@@ -17,6 +19,8 @@ pub fn register_exception_inst_matchers_functions(
     map.insert("m_invoke", match_invoke_inst);
     map.insert("m_landingpad", match_landingpad_inst);
     map.insert("m_resume", match_resume_inst);
+    map.insert("m_throw", match_throw_inst);
+    map.insert("m_rethrow", match_rethrow_inst);
 }
 
 #[inline(always)]
@@ -46,6 +50,22 @@ pub fn register_exception_inst_matchers_function_signatures(
             return_type: Box::new(InstMatcherType),
         },
     );
+
+    map.insert(
+        "m_throw",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_rethrow",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
 }
 
 fn match_invoke_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
@@ -60,5 +80,15 @@ fn match_landingpad_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
 fn match_resume_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let matcher = Box::new(ResumeInstMatcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_throw_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(ThrowInstMatcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_rethrow_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(RethrowInstMatcher);
     Box::new(InstMatcherValue { matcher })
 }

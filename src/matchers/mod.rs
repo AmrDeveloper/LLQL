@@ -15,6 +15,8 @@ pub mod other;
 pub mod types;
 pub mod usage;
 
+mod matchers_helper;
+
 dyn_clone::clone_trait_object!(<T> Matcher<T>);
 
 pub trait Matcher<T: Clone>: DynClone {
