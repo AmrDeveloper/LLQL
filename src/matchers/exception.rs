@@ -63,3 +63,21 @@ impl Matcher<LLVMValueRef> for EHTypeIdInstMatcher {
         is_call_base_inst_with_specific_name(instruction, "llvm.eh.typeid.for.p0")
     }
 }
+
+#[derive(Clone)]
+pub struct AllocaExceptionInstMatcher;
+
+impl Matcher<LLVMValueRef> for AllocaExceptionInstMatcher {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        is_call_base_inst_with_specific_name(instruction, "__cxa_allocate_exception")
+    }
+}
+
+#[derive(Clone)]
+pub struct FreeExceptionInstMatcher;
+
+impl Matcher<LLVMValueRef> for FreeExceptionInstMatcher {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        is_call_base_inst_with_specific_name(instruction, "__cxa_free_exception")
+    }
+}

@@ -2,7 +2,9 @@ use std::collections::HashMap;
 
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
+use crate::matchers::exception::AllocaExceptionInstMatcher;
 use crate::matchers::exception::EHTypeIdInstMatcher;
+use crate::matchers::exception::FreeExceptionInstMatcher;
 use crate::matchers::exception::InvokeInstMatcher;
 use crate::matchers::exception::LandingPadInstMatcher;
 use crate::matchers::exception::ResumeInstMatcher;
@@ -23,6 +25,8 @@ pub fn register_exception_inst_matchers_functions(
     map.insert("m_throw", match_throw_inst);
     map.insert("m_rethrow", match_rethrow_inst);
     map.insert("m_eh_typeid", match_eh_typeid_inst);
+    map.insert("m_alloca_exception", match_alloca_exception_inst);
+    map.insert("m_free_exception", match_free_exception_inst);
 }
 
 #[inline(always)]
@@ -76,6 +80,22 @@ pub fn register_exception_inst_matchers_function_signatures(
             return_type: Box::new(InstMatcherType),
         },
     );
+
+    map.insert(
+        "m_alloca_exception",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_free_exception",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
 }
 
 fn match_invoke_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
@@ -105,5 +125,15 @@ fn match_rethrow_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
 fn match_eh_typeid_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let matcher = Box::new(EHTypeIdInstMatcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_alloca_exception_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(AllocaExceptionInstMatcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_free_exception_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(FreeExceptionInstMatcher);
     Box::new(InstMatcherValue { matcher })
 }
