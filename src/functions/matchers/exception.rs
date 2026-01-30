@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
 use crate::matchers::exception::AllocaExceptionInstMatcher;
+use crate::matchers::exception::CatchBeginInstMatcher;
+use crate::matchers::exception::CatchEndInstMatcher;
 use crate::matchers::exception::EHTypeIdInstMatcher;
 use crate::matchers::exception::FreeExceptionInstMatcher;
 use crate::matchers::exception::InvokeInstMatcher;
@@ -27,6 +29,8 @@ pub fn register_exception_inst_matchers_functions(
     map.insert("m_eh_typeid", match_eh_typeid_inst);
     map.insert("m_alloca_exception", match_alloca_exception_inst);
     map.insert("m_free_exception", match_free_exception_inst);
+    map.insert("m_begin_catch", match_begin_catch_inst);
+    map.insert("m_end_catch", match_end_catch_inst);
 }
 
 #[inline(always)]
@@ -96,6 +100,22 @@ pub fn register_exception_inst_matchers_function_signatures(
             return_type: Box::new(InstMatcherType),
         },
     );
+
+    map.insert(
+        "m_begin_catch",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
+
+    map.insert(
+        "m_end_catch",
+        Signature {
+            parameters: vec![],
+            return_type: Box::new(InstMatcherType),
+        },
+    );
 }
 
 fn match_invoke_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
@@ -135,5 +155,15 @@ fn match_alloca_exception_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
 
 fn match_free_exception_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
     let matcher = Box::new(FreeExceptionInstMatcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_begin_catch_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(CatchBeginInstMatcher);
+    Box::new(InstMatcherValue { matcher })
+}
+
+fn match_end_catch_inst(_values: &[Box<dyn Value>]) -> Box<dyn Value> {
+    let matcher = Box::new(CatchEndInstMatcher);
     Box::new(InstMatcherValue { matcher })
 }

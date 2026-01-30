@@ -10,3 +10,6 @@
 |    m_eh_typeid     |            | InstMatcher |    Build Inst Matcher that match call to `llvm.eh.typeid.for`    |
 | m_alloca_exception |            | InstMatcher | Build Inst Matcher that match call to `__cxa_allocate_exception` |
 |  m_free_exception  |            | InstMatcher |   Build Inst Matcher that match call to `__cxa_free_exception`   |
+|   m_begin_catch    |            | InstMatcher |   Build Inst Matcher that match call to `__cxa_begin_catch`   |
+|    m_end_catch     |            | InstMatcher |   Build Inst Matcher that match call to `__cxa_end_catch`   |
+

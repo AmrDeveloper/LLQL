@@ -81,3 +81,21 @@ impl Matcher<LLVMValueRef> for FreeExceptionInstMatcher {
         is_call_base_inst_with_specific_name(instruction, "__cxa_free_exception")
     }
 }
+
+#[derive(Clone)]
+pub struct CatchBeginInstMatcher;
+
+impl Matcher<LLVMValueRef> for CatchBeginInstMatcher {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        is_call_base_inst_with_specific_name(instruction, "__cxa_begin_catch")
+    }
+}
+
+#[derive(Clone)]
+pub struct CatchEndInstMatcher;
+
+impl Matcher<LLVMValueRef> for CatchEndInstMatcher {
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        is_call_base_inst_with_specific_name(instruction, "__cxa_end_catch")
+    }
+}
