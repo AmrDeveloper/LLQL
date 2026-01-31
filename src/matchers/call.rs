@@ -41,6 +41,37 @@ impl Matcher<LLVMValueRef> for CallInstMatcher {
 }
 
 #[derive(Clone)]
+pub struct CallBrInstMatcher {
+    pub name: Option<String>,
+}
+
+impl CallBrInstMatcher {
+    pub fn create_call(name: Option<String>) -> Self {
+        CallBrInstMatcher { name }
+    }
+}
+
+impl Matcher<LLVMValueRef> for CallBrInstMatcher {
+    #[allow(clippy::not_unsafe_ptr_arg_deref)]
+    fn is_match(&self, instruction: &LLVMValueRef) -> bool {
+        unsafe {
+            if LLVMGetInstructionOpcode(*instruction) == LLVMOpcode::LLVMCallBr {
+                if let Some(expected_name) = &self.name {
+                    let called_value = LLVMGetCalledValue(*instruction);
+                    let mut len: usize = 0;
+                    let name_ptr = LLVMGetValueName2(called_value, &mut len);
+                    let name_slice = std::slice::from_raw_parts(name_ptr as *const u8, len);
+                    let name = std::str::from_utf8_unchecked(name_slice).to_string();
+                    return name.eq(expected_name);
+                }
+                return true;
+            }
+        }
+        false
+    }
+}
+
+#[derive(Clone)]
 pub struct IntrinsicInstMatcher {
     pub name: Option<String>,
 }
