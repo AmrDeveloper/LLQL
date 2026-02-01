@@ -1,5 +1,16 @@
 # Change Log
 
+## Version 0.11.0 _(2025-02-01)_
+
+- Implement `m_alloca_exception` and `m_free_exception` matchers.
+- Implement `m_begin_catch` and `m_end_catch` matchers.
+- Implement `m_throw` and `m_rethrow` matchers.
+- Implement `m_callbr` inst matcher.
+- Implement `m_eh_typeid` matcher.
+- Implement `m_resume` matcher.
+- Implement `m_get_element_ptr` matcher
+- Migrate to inkwell 0.8.0.
+
 ## Version 0.10.0 _(2025-12-12)_
 
 - Migrate to LLVM 21.1.
