@@ -42,6 +42,8 @@ use matchers::usage::register_usage_matchers_functions;
 
 use crate::functions::matchers::get_element_ptr::register_get_element_ptr_inst_matchers_function_signatures;
 use crate::functions::matchers::get_element_ptr::register_get_element_ptr_inst_matchers_functions;
+use crate::functions::matchers::globals::register_globals_matchers_function_signatures;
+use crate::functions::matchers::globals::register_globals_matchers_functions;
 use crate::ir::types::InstMatcherType;
 use crate::ir::values::InstMatcherValue;
 use crate::matchers::other::AnyInstMatcher;
@@ -70,6 +72,7 @@ pub fn llvm_ir_functions() -> &'static HashMap<&'static str, StandardFunction> {
         register_debug_inst_matchers_functions(&mut map);
         register_operand_bundle_inst_matchers_functions(&mut map);
         register_get_element_ptr_inst_matchers_functions(&mut map);
+        register_globals_matchers_functions(&mut map);
         map
     })
 }
@@ -93,7 +96,7 @@ pub fn llvm_ir_function_signatures() -> HashMap<&'static str, Signature> {
     register_debug_inst_matchers_function_signatures(&mut map);
     register_operand_bundle_inst_matchers_function_signatures(&mut map);
     register_get_element_ptr_inst_matchers_function_signatures(&mut map);
-
+    register_globals_matchers_function_signatures(&mut map);
     map
 }
 

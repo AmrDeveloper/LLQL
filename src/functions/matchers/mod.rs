@@ -8,6 +8,7 @@ pub mod debug;
 pub mod exception;
 pub mod fcmp;
 pub mod get_element_ptr;
+pub mod globals;
 pub mod icmp;
 pub mod operand_bundle;
 pub mod other;
