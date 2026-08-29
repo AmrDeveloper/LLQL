@@ -213,7 +213,7 @@ mod tests {
     use llvm_sys::core::LLVMInt8TypeInContext;
     use llvm_sys::core::LLVMPointerType;
     use llvm_sys::core::LLVMVectorType;
-    use llvm_sys::core::LLVMVoidType;
+    use llvm_sys::core::LLVMVoidTypeInContext;
 
     #[test]
     fn test_any_type_matcher() {
@@ -221,7 +221,7 @@ mod tests {
 
         let matcher = AnyTypeMatcher;
 
-        let voidt = unsafe { LLVMVoidType() };
+        let voidt = unsafe { LLVMVoidTypeInContext(context) };
         let i64t = unsafe { LLVMInt64TypeInContext(context) };
 
         assert!(matcher.is_match(&voidt));
@@ -232,7 +232,7 @@ mod tests {
     fn test_void_type_matcher() {
         let context = unsafe { LLVMContextCreate() };
 
-        let voidt = unsafe { LLVMVoidType() };
+        let voidt = unsafe { LLVMVoidTypeInContext(context) };
         let i64t = unsafe { LLVMInt64TypeInContext(context) };
 
         let matcher = VoidTypeMatcher;
@@ -245,7 +245,7 @@ mod tests {
     fn test_int_type_matcher() {
         let context = unsafe { LLVMContextCreate() };
 
-        let voidt = unsafe { LLVMVoidType() };
+        let voidt = unsafe { LLVMVoidTypeInContext(context) };
         let i8t = unsafe { LLVMInt8TypeInContext(context) };
         let i16t = unsafe { LLVMInt16TypeInContext(context) };
         let i32t = unsafe { LLVMInt32TypeInContext(context) };
@@ -306,7 +306,7 @@ mod tests {
     fn test_float_type_matcher() {
         let context = unsafe { LLVMContextCreate() };
 
-        let voidt = unsafe { LLVMVoidType() };
+        let voidt = unsafe { LLVMVoidTypeInContext(context) };
         let i32t = unsafe { LLVMInt32TypeInContext(context) };
         let i64t = unsafe { LLVMInt64TypeInContext(context) };
         let f32t = unsafe { LLVMFloatTypeInContext(context) };
@@ -337,7 +337,7 @@ mod tests {
     fn test_pointer_type_matcher() {
         let context = unsafe { LLVMContextCreate() };
 
-        let voidt = unsafe { LLVMVoidType() };
+        let voidt = unsafe { LLVMVoidTypeInContext(context) };
         let void_ptr_ty = unsafe { LLVMPointerType(voidt, 0) };
 
         let i32t = unsafe { LLVMInt32TypeInContext(context) };
